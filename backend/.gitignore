@@ -1,0 +1,86 @@
+# =========================
+# 🐍 PYTHON / DJANGO
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django stuff:
+*.log
+local_settings.py
+db.sqlite3
+media/
+staticfiles/
+static/
+
+# =========================
+# 📦 POETRY / VENV
+# =========================
+.venv/
+poetry.lock
+# (descomente a linha abaixo se você quiser commitar o poetry.lock)
+# !poetry.lock
+
+# =========================
+# 🧪 TESTES / COVERAGE
+# =========================
+.coverage
+htmlcov/
+.tox/
+.pytest_cache/
+.cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+*.pid
+*.log
+*.out
+*.err
+
+# =========================
+# ⚙️ IDEs / SISTEMA
+# =========================
+# VSCode / JetBrains / etc
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+*.tmp
+*.orig
+
+# macOS / Windows
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================
+# 🐋 DOCKER
+# =========================
+# Volumes / cache
+postgres_data/
+redis_data/
+*.env
+.env.*
+.envrc
+
+# =========================
+# ⚙️ BUILD / DIST
+# =========================
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+MANIFEST
+
+# =========================
+# 🔒 SECRETOS
+# =========================
+.env
+.env.local
+.env.dev
+.env.prod
+.env.test
+.env.example
