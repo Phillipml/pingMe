@@ -16,7 +16,8 @@ dependencies = [
     "celery (>=5.5.3,<6.0.0)",
     "redis (>=7.0.0,<8.0.0)",
     "django-debug-toolbar (>=6.0.0,<7.0.0)",
-    "uvicorn[standard] (>=0.38.0,<0.39.0)"
+    "uvicorn[standard] (>=0.38.0,<0.39.0)",
+    "djangorestframework-simplejwt (>=5.5.1,<6.0.0)"
 ]
 
 [tool.poetry]
