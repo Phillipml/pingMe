@@ -4,7 +4,10 @@ from decouple import config, Csv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = config("SECRET_KEY", default="django-insecure-er$+y3!ulnidz8bwe&kx))p1p1y$*xve((!cn^jb+9p9m3u4p-")
+SECRET_KEY = config(
+    "SECRET_KEY",
+    default="django-insecure-er$+y3!ulnidz8bwe&kx))p1p1y$*xve((!cn^jb+9p9m3u4p-",
+)
 
 DEBUG = config("DEBUG", default=True, cast=bool)
 
@@ -62,9 +65,8 @@ DATABASE_URL = config("DATABASE_URL", default=None)
 
 if DATABASE_URL:
     import dj_database_url
-    DATABASES = {
-        "default": dj_database_url.parse(DATABASE_URL, conn_max_age=600)
-    }
+
+    DATABASES = {"default": dj_database_url.parse(DATABASE_URL, conn_max_age=600)}
 else:
     DATABASES = {
         "default": {
@@ -117,7 +119,7 @@ SIMPLE_JWT = {
 CORS_ALLOWED_ORIGINS = config(
     "CORS_ALLOWED_ORIGINS",
     default="http://localhost:3000,http://127.0.0.1:3000",
-    cast=Csv()
+    cast=Csv(),
 )
 
 
