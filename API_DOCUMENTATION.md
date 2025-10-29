@@ -100,6 +100,30 @@ POST /api/auth/token/refresh/
 - `400`: Refresh token é obrigatório
 - `401`: Token inválido ou expirado
 
+### Fazer Logout
+```http
+POST /api/auth/logout/
+```
+
+**Body:**
+```json
+{
+  "refresh": "token-refresh"
+}
+```
+
+**Resposta:**
+```json
+{
+  "message": "Logout realizado com sucesso"
+}
+```
+
+**Erros:**
+- `400`: Refresh token é obrigatório ou inválido
+
+**Nota:** Este endpoint invalida o refresh token adicionando-o à blacklist, impedindo que seja usado para gerar novos access tokens.
+
 ### Ver Perfil
 ```http
 GET /api/auth/profile/
@@ -465,6 +489,8 @@ Authorization: Bearer <token>
 5. **Criar posts**
 6. **Curtir e comentar**
 7. **Ver feed**
+8. **Renovar access token** (quando necessário)
+9. **Fazer logout** (invalidar refresh token)
 
 ### Exemplo com cURL
 
@@ -481,6 +507,11 @@ curl -X POST http://localhost:8000/api/auth/login/ \
 
 # Renovar access token
 curl -X POST http://localhost:8000/api/auth/token/refresh/ \
+  -H "Content-Type: application/json" \
+  -d '{"refresh": "seu-refresh-token"}'
+
+# Logout (invalidar refresh token)
+curl -X POST http://localhost:8000/api/auth/logout/ \
   -H "Content-Type: application/json" \
   -d '{"refresh": "seu-refresh-token"}'
 
@@ -511,4 +542,5 @@ curl -X POST http://localhost:8000/api/posts/create/ \
 - **Upload de Imagens**: O avatar do perfil aceita upload direto de arquivos de imagem (JPG, PNG, GIF, etc.)
 - Imagens são salvas em `backend/media/avatars/` e servidas via `/media/avatars/`
 - Use `Content-Type: multipart/form-data` ao fazer upload de imagens
+- **Blacklist de Tokens**: Para usar o endpoint de logout, é necessário rodar as migrações do `token_blacklist`: `python manage.py migrate token_blacklist`
 

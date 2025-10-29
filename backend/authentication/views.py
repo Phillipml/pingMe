@@ -94,3 +94,21 @@ def token_refresh(request):
         return Response(
             {"error": "Token inválido ou expirado"}, status=status.HTTP_401_UNAUTHORIZED
         )
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def logout(request):
+    refresh_token = request.data.get("refresh")
+    if not refresh_token:
+        return Response(
+            {"error": "Refresh token é obrigatório"}, status=status.HTTP_400_BAD_REQUEST
+        )
+    try:
+        refresh = RefreshToken(refresh_token)
+        refresh.blacklist()
+        return Response({"message": "Logout realizado com sucesso"})
+    except Exception:
+        return Response(
+            {"error": "Token inválido"}, status=status.HTTP_400_BAD_REQUEST
+        )

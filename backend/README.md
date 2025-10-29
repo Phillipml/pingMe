@@ -242,6 +242,7 @@ DATABASE_URL=sqlite:///db.sqlite3
 - Django REST Framework configurado
 - Autenticação JWT pronta (Simple JWT)
 - Endpoint de refresh token: `POST /api/auth/token/refresh/`
+- Endpoint de logout: `POST /api/auth/logout/` (invalida refresh token)
 - Media files configurados (`MEDIA_URL` e `MEDIA_ROOT`)
 - Upload de imagens habilitado (Pillow instalado)
 
