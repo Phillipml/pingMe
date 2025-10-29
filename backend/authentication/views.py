@@ -4,7 +4,12 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import User, Profile
-from .serializers import UserSerializer, UserRegistrationSerializer, ProfileSerializer
+from .serializers import (
+    UserSerializer,
+    UserRegistrationSerializer,
+    ProfileSerializer,
+    ProfileDetailSerializer,
+)
 
 
 @api_view(["POST"])
@@ -109,6 +114,22 @@ def logout(request):
         refresh.blacklist()
         return Response({"message": "Logout realizado com sucesso"})
     except Exception:
+        return Response({"error": "Token inválido"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def profile_detail(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+        profile = Profile.objects.get(user=user)
+        serializer = ProfileDetailSerializer(profile)
+        return Response(serializer.data)
+    except User.DoesNotExist:
         return Response(
-            {"error": "Token inválido"}, status=status.HTTP_400_BAD_REQUEST
+            {"error": "Usuário não encontrado"}, status=status.HTTP_404_NOT_FOUND
+        )
+    except Profile.DoesNotExist:
+        return Response(
+            {"error": "Perfil não encontrado"}, status=status.HTTP_404_NOT_FOUND
         )

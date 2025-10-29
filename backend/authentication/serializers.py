@@ -27,3 +27,12 @@ class ProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ["first_name", "last_name", "bio", "avatar"]
+
+
+class ProfileDetailSerializer(serializers.ModelSerializer):
+    avatar = serializers.ImageField(required=False, allow_null=True)
+    user = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Profile
+        fields = ["user", "first_name", "last_name", "bio", "avatar"]
