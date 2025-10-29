@@ -11,7 +11,7 @@ Uma API backend de rede social construída com Django REST Framework, incluindo 
   - Curtir e comentar em posts
   - Seguir/deixar de seguir outros usuários
 - **API RESTful** construída com Django REST Framework
-- **Autenticação JWT** com refresh de token
+- **Autenticação JWT** com refresh de token (`POST /api/auth/token/refresh/`)
 - **Suporte CORS** para integração com frontend
 - **Suporte Docker** com PostgreSQL e Redis
 - **Tarefas Assíncronas** com Celery
@@ -253,6 +253,7 @@ Atualize `backend/backend/settings.py` para configurações de produção.
 
 - **Autenticação JWT**: Autenticação stateless com tokens de acesso/refresh
 - **Segurança de Token**: Tokens de acesso de 60 minutos, tokens de refresh de 7 dias com rotação
+- **Endpoint de Refresh**: `POST /api/auth/token/refresh/` para renovar access tokens
 - **Proteção CORS**: Configurado para origens específicas do frontend
 - **Modelo de Usuário Personalizado**: Gerenciamento seguro de campos com nomes relacionados únicos
 - **Validação de Senha**: Validadores de senha integrados do Django

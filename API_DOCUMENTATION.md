@@ -77,6 +77,29 @@ POST /api/auth/login/
 }
 ```
 
+### Renovar Access Token
+```http
+POST /api/auth/token/refresh/
+```
+
+**Body:**
+```json
+{
+  "refresh": "token-refresh"
+}
+```
+
+**Resposta:**
+```json
+{
+  "access": "novo-token-acesso"
+}
+```
+
+**Erros:**
+- `400`: Refresh token é obrigatório
+- `401`: Token inválido ou expirado
+
 ### Ver Perfil
 ```http
 GET /api/auth/profile/
@@ -455,6 +478,11 @@ curl -X POST http://localhost:8000/api/auth/register/ \
 curl -X POST http://localhost:8000/api/auth/login/ \
   -H "Content-Type: application/json" \
   -d '{"email": "teste@email.com", "password": "senha123"}'
+
+# Renovar access token
+curl -X POST http://localhost:8000/api/auth/token/refresh/ \
+  -H "Content-Type: application/json" \
+  -d '{"refresh": "seu-refresh-token"}'
 
 # Atualizar perfil com upload de avatar
 curl -X PUT http://localhost:8000/api/auth/profile/update/ \
