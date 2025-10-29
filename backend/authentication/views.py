@@ -163,3 +163,22 @@ def change_password(request):
     request.user.save()
 
     return Response({"message": "Senha alterada com sucesso"})
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def user_list(request):
+    from rest_framework.pagination import PageNumberPagination
+
+    if not request.user.is_superuser:
+        return Response(
+            {"error": "Acesso negado. Apenas administradores podem acessar esta lista."},
+            status=status.HTTP_403_FORBIDDEN
+        )
+    
+    users = User.objects.all().order_by("-created_at")
+    
+    paginator = PageNumberPagination()
+    paginator.page_size = 20
+    paginated_users = paginator.paginate_queryset(users, request)
+    serializer = UserSerializer(paginated_users, many=True)
+    
+    return paginator.get_paginated_response(serializer.data)
