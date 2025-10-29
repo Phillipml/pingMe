@@ -1,6 +1,6 @@
-# Documentação Completa da API PingMe
+# Documentação da API PingMe
 
-Esta é a documentação completa da API REST do PingMe, uma rede social com autenticação, posts, curtidas, comentários e sistema de seguir usuários.
+Documentação completa da API REST. Explica como usar todos os endpoints para autenticação, posts, curtidas, comentários e seguir usuários.
 
 ## Índice
 
@@ -22,26 +22,26 @@ Esta é a documentação completa da API REST do PingMe, uma rede social com aut
 http://localhost:8000/api/
 ```
 
-### Autenticação JWT
+### Como Funciona a Autenticação
 
-A API usa tokens JWT (JSON Web Tokens) para autenticação. Você precisa incluir o token de acesso no header de todas as requisições protegidas:
+A API usa JWT (JSON Web Tokens). Para usar endpoints protegidos, você precisa enviar o token no header:
 
 ```
 Authorization: Bearer seu-token-aqui
 ```
 
-### Fluxo de Autenticação
+### Passo a Passo
 
-1. **Registrar** um novo usuário (`POST /api/auth/register/`)
-2. **Fazer login** e receber tokens (`POST /api/auth/login/`)
-3. Usar o **access token** nas requisições protegidas
-4. Quando o access token expirar, **renovar** usando o refresh token (`POST /api/auth/token/refresh/`)
-5. **Fazer logout** quando necessário (`POST /api/auth/logout/`)
+1. Registrar um usuário (POST /api/auth/register/)
+2. Fazer login e receber os tokens (POST /api/auth/login/)
+3. Usar o access token nas requisições
+4. Quando o access token expirar, renovar com o refresh token (POST /api/auth/token/refresh/)
+5. Fazer logout quando precisar (POST /api/auth/logout/)
 
-### Tipos de Tokens
+### Sobre os Tokens
 
-- **Access Token**: Válido por 60 minutos, usado em todas as requisições autenticadas
-- **Refresh Token**: Válido por 7 dias, usado apenas para renovar o access token
+- Access Token: Válido por 60 minutos, use em todas as requisições autenticadas
+- Refresh Token: Válido por 7 dias, use só para renovar o access token
 
 ---
 
@@ -67,12 +67,12 @@ Content-Type: application/json
 }
 ```
 
-**Campos:**
-- `username` (obrigatório): Nome de usuário único
-- `email` (obrigatório): Email único
-- `password` (obrigatório): Senha mínima de 8 caracteres
+**Campos necessários:**
+- username: Nome de usuário (único, obrigatório)
+- email: Email do usuário (único, obrigatório)
+- password: Senha (mínimo 8 caracteres, obrigatório)
 
-**Resposta de Sucesso (201):**
+**Resposta quando dá certo (201):**
 ```json
 {
   "message": "Usuário criado com sucesso",
@@ -85,8 +85,8 @@ Content-Type: application/json
 }
 ```
 
-**Erros Possíveis:**
-- `400`: Email ou username já existem, ou campos inválidos
+**Erros que podem acontecer:**
+- 400: Email ou username já existem, ou algum campo está inválido
 - Campos obrigatórios faltando
 
 **Exemplo com cURL:**
