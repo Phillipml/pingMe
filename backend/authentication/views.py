@@ -133,3 +133,33 @@ def profile_detail(request, user_id):
         return Response(
             {"error": "Perfil não encontrado"}, status=status.HTTP_404_NOT_FOUND
         )
+
+
+@api_view(["PUT"])
+@permission_classes([IsAuthenticated])
+def change_password(request):
+    old_password = request.data.get("old_password")
+    new_password = request.data.get("new_password")
+
+    if not old_password or not new_password:
+        return Response(
+            {"error": "old_password e new_password são obrigatórios"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    if not request.user.check_password(old_password):
+        return Response(
+            {"error": "Senha atual incorreta"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    if len(new_password) < 8:
+        return Response(
+            {"error": "Nova senha deve ter pelo menos 8 caracteres"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )
+
+    request.user.set_password(new_password)
+    request.user.save()
+
+    return Response({"message": "Senha alterada com sucesso"})

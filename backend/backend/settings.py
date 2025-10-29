@@ -1,14 +1,17 @@
 from pathlib import Path
 from datetime import timedelta
+from decouple import config, Csv
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+SECRET_KEY = config(
+    "SECRET_KEY",
+    default="django-insecure-er$+y3!ulnidz8bwe&kx))p1p1y$*xve((!cn^jb+9p9m3u4p-",
+)
 
-SECRET_KEY = "django-insecure-er$+y3!ulnidz8bwe&kx))p1p1y$*xve((!cn^jb+9p9m3u4p-"
+DEBUG = config("DEBUG", default=True, cast=bool)
 
-DEBUG = True
-
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="*", cast=Csv())
 
 
 INSTALLED_APPS = [
@@ -58,12 +61,23 @@ TEMPLATES = [
 WSGI_APPLICATION = "backend.wsgi.application"
 
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+DATABASE_URL = config("DATABASE_URL", default=None)
+
+if DATABASE_URL:
+    import dj_database_url
+
+    DATABASES = {"default": dj_database_url.parse(DATABASE_URL, conn_max_age=600)}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": config("DB_ENGINE", default="django.db.backends.sqlite3"),
+            "NAME": config("DB_NAME", default=str(BASE_DIR / "db.sqlite3")),
+            "USER": config("DB_USER", default=""),
+            "PASSWORD": config("DB_PASSWORD", default=""),
+            "HOST": config("DB_HOST", default=""),
+            "PORT": config("DB_PORT", default=""),
+        }
     }
-}
 
 
 AUTH_USER_MODEL = "authentication.User"
@@ -102,10 +116,11 @@ SIMPLE_JWT = {
     "BLACKLIST_AFTER_ROTATION": True,
     "UPDATE_LAST_LOGIN": True,
 }
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-]
+CORS_ALLOWED_ORIGINS = config(
+    "CORS_ALLOWED_ORIGINS",
+    default="http://localhost:3000,http://127.0.0.1:3000",
+    cast=Csv(),
+)
 
 
 LANGUAGE_CODE = "en-us"
@@ -117,7 +132,9 @@ USE_I18N = True
 USE_TZ = True
 
 
-STATIC_URL = "static/"
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
