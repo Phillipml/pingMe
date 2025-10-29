@@ -243,6 +243,7 @@ DATABASE_URL=sqlite:///db.sqlite3
 - Autenticação JWT pronta (Simple JWT)
 - Endpoint de refresh token: `POST /api/auth/token/refresh/`
 - Endpoint de logout: `POST /api/auth/logout/` (invalida refresh token)
+- Paginação aplicada em todas as views que retornam listas (20 itens por página)
 - Media files configurados (`MEDIA_URL` e `MEDIA_ROOT`)
 - Upload de imagens habilitado (Pillow instalado)
 

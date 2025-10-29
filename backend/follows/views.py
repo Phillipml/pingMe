@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import get_object_or_404
 from .models import Follow
 from .serializers import FollowSerializer, FollowCreateSerializer
@@ -66,14 +67,11 @@ def followers_list(request, user_id):
     user = get_object_or_404(User, id=user_id)
     followers = Follow.objects.filter(following=user).select_related("follower")
 
-    serializer = FollowSerializer(followers, many=True)
-    return Response(
-        {
-            "user": user.username,
-            "followers_count": followers.count(),
-            "followers": serializer.data,
-        }
-    )
+    paginator = PageNumberPagination()
+    paginator.page_size = 20
+    paginated_followers = paginator.paginate_queryset(followers, request)
+    serializer = FollowSerializer(paginated_followers, many=True)
+    return paginator.get_paginated_response(serializer.data)
 
 
 @api_view(["GET"])
@@ -82,14 +80,11 @@ def following_list(request, user_id):
     user = get_object_or_404(User, id=user_id)
     following = Follow.objects.filter(follower=user).select_related("following")
 
-    serializer = FollowSerializer(following, many=True)
-    return Response(
-        {
-            "user": user.username,
-            "following_count": following.count(),
-            "following": serializer.data,
-        }
-    )
+    paginator = PageNumberPagination()
+    paginator.page_size = 20
+    paginated_following = paginator.paginate_queryset(following, request)
+    serializer = FollowSerializer(paginated_following, many=True)
+    return paginator.get_paginated_response(serializer.data)
 
 
 @api_view(["GET"])
@@ -97,10 +92,11 @@ def following_list(request, user_id):
 def my_followers(request):
     followers = Follow.objects.filter(following=request.user).select_related("follower")
 
-    serializer = FollowSerializer(followers, many=True)
-    return Response(
-        {"followers_count": followers.count(), "followers": serializer.data}
-    )
+    paginator = PageNumberPagination()
+    paginator.page_size = 20
+    paginated_followers = paginator.paginate_queryset(followers, request)
+    serializer = FollowSerializer(paginated_followers, many=True)
+    return paginator.get_paginated_response(serializer.data)
 
 
 @api_view(["GET"])
@@ -108,7 +104,8 @@ def my_followers(request):
 def my_following(request):
     following = Follow.objects.filter(follower=request.user).select_related("following")
 
-    serializer = FollowSerializer(following, many=True)
-    return Response(
-        {"following_count": following.count(), "following": serializer.data}
-    )
+    paginator = PageNumberPagination()
+    paginator.page_size = 20
+    paginated_following = paginator.paginate_queryset(following, request)
+    serializer = FollowSerializer(paginated_following, many=True)
+    return paginator.get_paginated_response(serializer.data)

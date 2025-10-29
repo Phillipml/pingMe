@@ -224,16 +224,17 @@ Authorization: Bearer <token>
 
 ### Listar Seguidores de um Usuário
 ```http
-GET /api/follows/followers/2/
+GET /api/follows/followers/2/?page=1
 Authorization: Bearer <token>
 ```
 
 **Resposta:**
 ```json
 {
-  "user": "usuario456",
-  "followers_count": 5,
-  "followers": [
+  "count": 5,
+  "next": null,
+  "previous": null,
+  "results": [
     {
       "id": 1,
       "follower": {
@@ -254,23 +255,61 @@ Authorization: Bearer <token>
 }
 ```
 
+**Nota:** Retorna 20 seguidores por página.
+
 ### Listar Quem um Usuário Segue
 ```http
-GET /api/follows/following/2/
+GET /api/follows/following/2/?page=1
 Authorization: Bearer <token>
 ```
+
+**Resposta:**
+```json
+{
+  "count": 10,
+  "next": null,
+  "previous": null,
+  "results": [...]
+}
+```
+
+**Nota:** Retorna 20 itens por página.
 
 ### Meus Seguidores
 ```http
-GET /api/follows/my-followers/
+GET /api/follows/my-followers/?page=1
 Authorization: Bearer <token>
 ```
 
+**Resposta:**
+```json
+{
+  "count": 30,
+  "next": "http://localhost:8000/api/follows/my-followers/?page=2",
+  "previous": null,
+  "results": [...]
+}
+```
+
+**Nota:** Retorna 20 seguidores por página.
+
 ### Quem Estou Seguindo
 ```http
-GET /api/follows/my-following/
+GET /api/follows/my-following/?page=1
 Authorization: Bearer <token>
 ```
+
+**Resposta:**
+```json
+{
+  "count": 12,
+  "next": null,
+  "previous": null,
+  "results": [...]
+}
+```
+
+**Nota:** Retorna 20 itens por página.
 
 ---
 
@@ -278,15 +317,17 @@ Authorization: Bearer <token>
 
 ### Feed Principal
 ```http
-GET /api/posts/
+GET /api/posts/?page=1
 Authorization: Bearer <token>
 ```
 
 **Resposta:**
 ```json
 {
-  "posts_count": 10,
-  "posts": [
+  "count": 10,
+  "next": "http://localhost:8000/api/posts/?page=2",
+  "previous": null,
+  "results": [
     {
       "id": 1,
       "author": {
@@ -306,6 +347,8 @@ Authorization: Bearer <token>
   ]
 }
 ```
+
+**Nota:** Este endpoint retorna 20 posts por página. Use `?page=` para navegar entre páginas.
 
 ### Criar Post
 ```http
@@ -364,22 +407,35 @@ Authorization: Bearer <token>
 
 ### Listar Quem Curtiu
 ```http
-GET /api/posts/1/likes/
-Authorization: Bearer <token>
-```
-
-### Listar Comentários
-```http
-GET /api/posts/1/comments/
+GET /api/posts/1/likes/?page=1
 Authorization: Bearer <token>
 ```
 
 **Resposta:**
 ```json
 {
-  "post_id": 1,
-  "comments_count": 3,
-  "comments": [
+  "count": 50,
+  "next": "http://localhost:8000/api/posts/1/likes/?page=2",
+  "previous": null,
+  "results": [...]
+}
+```
+
+**Nota:** Retorna 20 itens por página.
+
+### Listar Comentários
+```http
+GET /api/posts/1/comments/?page=1
+Authorization: Bearer <token>
+```
+
+**Resposta:**
+```json
+{
+  "count": 3,
+  "next": null,
+  "previous": null,
+  "results": [
     {
       "id": 1,
       "post": 1,
@@ -431,15 +487,39 @@ Authorization: Bearer <token>
 
 ### Posts de um Usuário
 ```http
-GET /api/posts/user/2/
+GET /api/posts/user/2/?page=1
 Authorization: Bearer <token>
 ```
 
+**Resposta:**
+```json
+{
+  "count": 25,
+  "next": "http://localhost:8000/api/posts/user/2/?page=2",
+  "previous": null,
+  "results": [...]
+}
+```
+
+**Nota:** Retorna 20 posts por página.
+
 ### Meus Posts
 ```http
-GET /api/posts/my-posts/
+GET /api/posts/my-posts/?page=1
 Authorization: Bearer <token>
 ```
+
+**Resposta:**
+```json
+{
+  "count": 15,
+  "next": null,
+  "previous": null,
+  "results": [...]
+}
+```
+
+**Nota:** Retorna 20 posts por página.
 
 ---
 
@@ -539,6 +619,7 @@ curl -X POST http://localhost:8000/api/posts/create/ \
 - Não é possível seguir a si mesmo
 - O feed mostra apenas posts de usuários que você segue + seus próprios posts
 - Likes são toggle (curtir/descurtir com o mesmo endpoint)
+- **Paginação**: Todos os endpoints que retornam listas estão paginados com 20 itens por página. Use `?page=` para navegar entre páginas.
 - **Upload de Imagens**: O avatar do perfil aceita upload direto de arquivos de imagem (JPG, PNG, GIF, etc.)
 - Imagens são salvas em `backend/media/avatars/` e servidas via `/media/avatars/`
 - Use `Content-Type: multipart/form-data` ao fazer upload de imagens

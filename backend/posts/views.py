@@ -2,6 +2,7 @@ from rest_framework import status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.pagination import PageNumberPagination
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from .models import Post, Like, Comment
@@ -26,8 +27,13 @@ def post_list(request):
         .order_by("-created_at")
     )
 
-    serializer = PostSerializer(posts, many=True, context={"request": request})
-    return Response({"posts_count": posts.count(), "posts": serializer.data})
+    paginator = PageNumberPagination()
+    paginator.page_size = 20
+    paginated_posts = paginator.paginate_queryset(posts, request)
+    serializer = PostSerializer(
+        paginated_posts, many=True, context={"request": request}
+    )
+    return paginator.get_paginated_response(serializer.data)
 
 
 @api_view(["POST"])
@@ -118,10 +124,11 @@ def post_likes(request, post_id):
     post = get_object_or_404(Post, id=post_id)
     likes = Like.objects.filter(post=post).select_related("user")
 
-    serializer = LikeSerializer(likes, many=True)
-    return Response(
-        {"post_id": post_id, "likes_count": likes.count(), "likes": serializer.data}
-    )
+    paginator = PageNumberPagination()
+    paginator.page_size = 20
+    paginated_likes = paginator.paginate_queryset(likes, request)
+    serializer = LikeSerializer(paginated_likes, many=True)
+    return paginator.get_paginated_response(serializer.data)
 
 
 @api_view(["POST"])
@@ -152,14 +159,11 @@ def comment_list(request, post_id):
         .order_by("-created_at")
     )
 
-    serializer = CommentSerializer(comments, many=True)
-    return Response(
-        {
-            "post_id": post_id,
-            "comments_count": comments.count(),
-            "comments": serializer.data,
-        }
-    )
+    paginator = PageNumberPagination()
+    paginator.page_size = 20
+    paginated_comments = paginator.paginate_queryset(comments, request)
+    serializer = CommentSerializer(paginated_comments, many=True)
+    return paginator.get_paginated_response(serializer.data)
 
 
 @api_view(["PUT", "DELETE"])
@@ -205,10 +209,13 @@ def user_posts(request, user_id):
         .order_by("-created_at")
     )
 
-    serializer = PostSerializer(posts, many=True, context={"request": request})
-    return Response(
-        {"user": user.username, "posts_count": posts.count(), "posts": serializer.data}
+    paginator = PageNumberPagination()
+    paginator.page_size = 20
+    paginated_posts = paginator.paginate_queryset(posts, request)
+    serializer = PostSerializer(
+        paginated_posts, many=True, context={"request": request}
     )
+    return paginator.get_paginated_response(serializer.data)
 
 
 @api_view(["GET"])
@@ -221,5 +228,10 @@ def my_posts(request):
         .order_by("-created_at")
     )
 
-    serializer = PostSerializer(posts, many=True, context={"request": request})
-    return Response({"posts_count": posts.count(), "posts": serializer.data})
+    paginator = PageNumberPagination()
+    paginator.page_size = 20
+    paginated_posts = paginator.paginate_queryset(posts, request)
+    serializer = PostSerializer(
+        paginated_posts, many=True, context={"request": request}
+    )
+    return paginator.get_paginated_response(serializer.data)
