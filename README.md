@@ -1,283 +1,284 @@
-# pingMe
+# PingMe
 
-A social media backend API built with Django REST Framework, featuring user authentication, posts, likes, comments, and follow functionality.
+Uma API backend de rede social construída com Django REST Framework, incluindo autenticação de usuários, posts, curtidas, comentários e funcionalidade de seguir.
 
-## 🚀 Features
+## 🚀 Funcionalidades
 
-- **User Authentication**: Custom User model with JWT authentication
-- **User Profiles**: Extended profile information with bio and avatar
-- **Social Features**:
-  - Create and manage posts
-  - Like and comment on posts
-  - Follow/unfollow other users
-- **RESTful API** built with Django REST Framework
-- **JWT Authentication** with token refresh and blacklisting
-- **CORS Support** for frontend integration
-- **Docker Support** with PostgreSQL and Redis
-- **Async Tasks** with Celery
+- **Autenticação de Usuários**: Modelo de usuário personalizado com autenticação JWT
+- **Perfis de Usuário**: Informações estendidas do perfil com bio e avatar
+- **Recursos Sociais**:
+  - Criar e gerenciar posts
+  - Curtir e comentar em posts
+  - Seguir/deixar de seguir outros usuários
+- **API RESTful** construída com Django REST Framework
+- **Autenticação JWT** com refresh de token
+- **Suporte CORS** para integração com frontend
+- **Suporte Docker** com PostgreSQL e Redis
+- **Tarefas Assíncronas** com Celery
 
-## 📁 Project Structure
+## 📁 Estrutura do Projeto
 
 ```
 pingMe/
-├── backend/              # Django REST API
-│   ├── authentication/  # User authentication app
-│   │   ├── models.py    # Custom User & Profile models
-│   │   └── ...
-│   ├── posts/          # Posts app (Post, Like, Comment)
-│   ├── follows/        # Follow relationships
-│   ├── db.sqlite3      # Local development database
+├── backend/              # API Django REST
+│   ├── authentication/  # App de autenticação
+│   │   ├── models.py    # Modelos User & Profile personalizados
+│   │   ├── views.py     # Views da API
+│   │   ├── serializers.py # Serializers para validação
+│   │   └── urls.py      # Rotas de autenticação
+│   ├── posts/          # App de posts (Post, Like, Comment)
+│   │   ├── models.py    # Modelos de posts
+│   │   ├── views.py     # Views da API
+│   │   ├── serializers.py # Serializers
+│   │   └── urls.py      # Rotas de posts
+│   ├── follows/        # Relacionamentos de seguir
+│   │   ├── models.py    # Modelo Follow
+│   │   ├── views.py     # Views da API
+│   │   ├── serializers.py # Serializers
+│   │   └── urls.py      # Rotas de seguir
+│   ├── db.sqlite3      # Banco de dados local
 │   ├── manage.py
-│   ├── pyproject.toml  # Poetry dependencies
+│   ├── pyproject.toml  # Dependências Poetry
 │   └── docker-compose.yml
-├── frontend/            # (To be implemented)
+├── frontend/            # (A ser implementado)
 ├── Makefile
 └── README.md
 ```
 
-## 🛠️ Tech Stack
+## 🛠️ Stack Tecnológica
 
 ### Backend
-- **Django 5.2** - Web framework
-- **Django REST Framework** - API toolkit
-- **Simple JWT** - JWT authentication
-- **Celery** - Async task queue
-- **Redis** - Cache and message broker
-- **PostgreSQL** - Production database
-- **SQLite** - Development database
-- **Poetry** - Dependency management
+- **Django 5.2** - Framework web
+- **Django REST Framework** - Kit de ferramentas para API
+- **Simple JWT** - Autenticação JWT
+- **Celery** - Fila de tarefas assíncronas
+- **Redis** - Cache e message broker
+- **PostgreSQL** - Banco de dados de produção
+- **SQLite** - Banco de dados de desenvolvimento
+- **Poetry** - Gerenciamento de dependências
 
-### Development Tools
-- **pytest** - Testing framework
-- **black** - Code formatter
+### Ferramentas de Desenvolvimento
+- **pytest** - Framework de testes
+- **black** - Formatador de código
 - **flake8** - Linter
-- **mypy** - Type checking
+- **mypy** - Verificação de tipos
 - **pre-commit** - Git hooks
 
-## 🚀 Quick Start
+## 🚀 Início Rápido
 
-### Prerequisites
+### Pré-requisitos
 
 - **Python 3.13+**
-- **Poetry** (recommended)** or pip
-- **PostgreSQL** (for production)
-- **Redis** (for caching and Celery)
-- **Docker & Docker Compose** (optional)
+- **Poetry** (recomendado) ou pip
+- **PostgreSQL** (para produção)
+- **Redis** (para cache e Celery)
+- **Docker & Docker Compose** (opcional)
 
-### Installation
+### Instalação
 
-1. **Clone the repository**
+1. **Clone o repositório**
    ```bash
-   git clone <repository-url>
+   git clone <url-do-repositorio>
    cd pingMe
    ```
 
-2. **Setup Backend (using Poetry)**
+2. **Configure o Backend (usando Poetry)**
    ```bash
    cd backend
    poetry install
    poetry shell
    ```
 
-3. **Setup Database**
+3. **Configure o Banco de Dados**
    ```bash
-   # Make and run migrations
+   # Criar e executar migrações
    make migrations
-   # or manually:
+   # ou manualmente:
    python manage.py migrate
    ```
 
-4. **Create Superuser**
+4. **Criar Superusuário**
    ```bash
    python manage.py createsuperuser
    ```
 
-5. **Run Development Server**
+5. **Executar Servidor de Desenvolvimento**
    ```bash
    make dev-backend
-   # or
+   # ou
    python manage.py runserver
    ```
 
-6. **Test the Setup**
+6. **Testar a Configuração**
    ```bash
-   # Check for configuration errors
+   # Verificar erros de configuração
    python manage.py check
    
-   # Access the application
-   # Backend API: http://127.0.0.1:8000/
-   # Admin Panel: http://127.0.0.1:8000/admin/
+   # Acessar a aplicação
+   # API Backend: http://127.0.0.1:8000/
+   # Painel Admin: http://127.0.0.1:8000/admin/
    ```
 
-### Using Docker
+### Usando Docker
 
-1. **Start services** (PostgreSQL + Redis)
+1. **Iniciar serviços** (PostgreSQL + Redis)
    ```bash
    docker-compose up -d
    ```
 
-2. **Run migrations**
+2. **Executar migrações**
    ```bash
    cd backend
    poetry run python manage.py migrate
    ```
 
-3. **Run the server**
+3. **Executar o servidor**
    ```bash
    make dev-backend
    ```
 
-## 📚 API Structure
+## 📚 Estrutura da API
 
 ### Apps
 
-#### **authentication** - User Management
-- `User` model (extends AbstractUser)
-- `Profile` model (OneToOne with User)
-- Email-based authentication (`USERNAME_FIELD = 'email'`)
-- Custom groups and permissions with unique related names
-- JWT authentication configured
+#### **authentication** - Gerenciamento de Usuários
+- Modelo `User` (estende AbstractUser)
+- Modelo `Profile` (OneToOne com User)
+- Autenticação baseada em email (`USERNAME_FIELD = 'email'`)
+- Grupos e permissões personalizados com nomes relacionados únicos
+- Autenticação JWT configurada
 
-#### **posts** - Content Management
-- `Post` - User posts with content and images
-- `Like` - User likes on posts (unique constraint)
-- `Comment` - User comments on posts
+#### **posts** - Gerenciamento de Conteúdo
+- `Post` - Posts de usuários com conteúdo e imagens
+- `Like` - Curtidas de usuários em posts (restrição única)
+- `Comment` - Comentários de usuários em posts
 
-#### **follows** - Social Relationships
-- `Follow` - User follow relationships (unique constraint)
+#### **follows** - Relacionamentos Sociais
+- `Follow` - Relacionamentos de seguir entre usuários (restrição única)
 
-### Configuration Status
+### Status da Configuração
 
-✅ **Completed:**
-- Django REST Framework configured
-- JWT authentication with Simple JWT
-- CORS headers for frontend integration
-- Custom User model with proper field management
-- Database migrations applied
-- Admin interface configured
+✅ **Concluído:**
+- Django REST Framework configurado
+- Autenticação JWT com Simple JWT
+- Headers CORS para integração com frontend
+- Modelo de usuário personalizado com gerenciamento adequado de campos
+- Migrações de banco de dados aplicadas
+- Interface de admin configurada
+- Serializers implementados
+- Views da API implementadas
+- URLs configuradas
 
-🔄 **In Progress:**
-- API endpoints implementation
-- Serializers for data validation
-- Authentication views (register, login, logout)
-- Profile management endpoints
-
-📋 **Next Steps:**
-- Implement authentication API endpoints
-- Create serializers for User and Profile
-- Add API documentation
-- Write comprehensive tests
-
-## 🧪 Testing
+## 🧪 Testes
 
 ```bash
-# Run all tests
+# Executar todos os testes
 cd backend
 pytest
 
-# Run specific app tests
+# Executar testes de app específico
 make pytest-authentication
 
-# With coverage
+# Com cobertura
 poetry run pytest --cov=.
 ```
 
-## 🛠️ Development
+## 🛠️ Desenvolvimento
 
-### Available Commands
+### Comandos Disponíveis
 
 ```bash
-# Start development server
+# Iniciar servidor de desenvolvimento
 make dev-backend
-# or
+# ou
 python manage.py runserver
 
-# Run tests
+# Executar testes
 make pytest-authentication
-# or
+# ou
 pytest authentication/tests/ -v
 
-# Create/Apply migrations
+# Criar/Aplicar migrações
 make migrations
-# or
+# ou
 python manage.py makemigrations && python manage.py migrate
 
-# Check configuration
+# Verificar configuração
 python manage.py check
 
-# Create superuser
+# Criar superusuário
 python manage.py createsuperuser
 
-# Access Django admin
+# Acessar Django admin
 # http://127.0.0.1:8000/admin/
 ```
 
-### Code Quality
+### Qualidade do Código
 
 ```bash
-# Format code
+# Formatar código
 poetry run black .
 
-# Lint code
+# Linter
 poetry run flake8
 
-# Type check
+# Verificação de tipos
 poetry run mypy
 
-# Run all checks
+# Executar todas as verificações
 poetry run pre-commit run --all-files
 ```
 
-## 📝 Configuration
+## 📝 Configuração
 
-### Current Setup
-- **SQLite** for local development (see `db.sqlite3`)
-- **PostgreSQL** for production (configured in `docker-compose.yml`)
-- **Redis** for caching and Celery (configured in `docker-compose.yml`)
+### Configuração Atual
+- **SQLite** para desenvolvimento local (veja `db.sqlite3`)
+- **PostgreSQL** para produção (configurado em `docker-compose.yml`)
+- **Redis** para cache e Celery (configurado em `docker-compose.yml`)
 
-### Key Settings
-- **AUTH_USER_MODEL**: `authentication.User` (custom user model)
-- **JWT Tokens**: 60min access, 7-day refresh with rotation
-- **CORS Origins**: `http://localhost:3000`, `http://127.0.0.1:3000`
-- **Pagination**: 20 items per page
-- **Default Permissions**: `IsAuthenticated` (protects all endpoints)
+### Configurações Principais
+- **AUTH_USER_MODEL**: `authentication.User` (modelo de usuário personalizado)
+- **Tokens JWT**: 60min de acesso, 7 dias de refresh com rotação
+- **Origens CORS**: `http://localhost:3000`, `http://127.0.0.1:3000`
+- **Paginação**: 20 itens por página
+- **Permissões Padrão**: `IsAuthenticated` (protege todos os endpoints)
 
-### Environment Variables (Ready)
-The project is configured to use environment variables with `python-decouple`:
+### Variáveis de Ambiente (Prontas)
+O projeto está configurado para usar variáveis de ambiente com `python-decouple`:
 ```env
-SECRET_KEY=your-secret-key
+SECRET_KEY=sua-chave-secreta
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
 DATABASE_URL=sqlite:///db.sqlite3
 ```
 
-Update `backend/backend/settings.py` for production configurations.
+Atualize `backend/backend/settings.py` para configurações de produção.
 
-## 🔐 Security
+## 🔐 Segurança
 
-- **JWT Authentication**: Stateless authentication with access/refresh tokens
-- **Token Security**: 60-minute access tokens, 7-day refresh tokens with rotation
-- **CORS Protection**: Configured for specific frontend origins
-- **Custom User Model**: Secure field management with unique related names
-- **Password Validation**: Django's built-in password validators
-- **CSRF Protection**: Enabled for session-based requests
-- **Environment Variables**: Support with python-decouple (ready for production)
+- **Autenticação JWT**: Autenticação stateless com tokens de acesso/refresh
+- **Segurança de Token**: Tokens de acesso de 60 minutos, tokens de refresh de 7 dias com rotação
+- **Proteção CORS**: Configurado para origens específicas do frontend
+- **Modelo de Usuário Personalizado**: Gerenciamento seguro de campos com nomes relacionados únicos
+- **Validação de Senha**: Validadores de senha integrados do Django
+- **Proteção CSRF**: Habilitada para requisições baseadas em sessão
+- **Variáveis de Ambiente**: Suporte com python-decouple (pronto para produção)
 
-## 🤝 Contributing
+## 🤝 Contribuindo
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes
-4. Run tests and linting
-5. Commit your changes (`git commit -m 'Add amazing feature'`)
-6. Push to the branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
+1. Faça um fork do repositório
+2. Crie uma branch de feature (`git checkout -b feature/feature-incrivel`)
+3. Faça suas alterações
+4. Execute testes e linting
+5. Commit suas alterações (`git commit -m 'Adicionar feature incrível'`)
+6. Push para a branch (`git push origin feature/feature-incrivel`)
+7. Abra um Pull Request
 
-## 📄 License
+## 📄 Licença
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
 
-## 👤 Author
+## 👤 Autor
 
 **Phillip Menezes**
 - Email: contato.phillip.menezes@gmail.com
