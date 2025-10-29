@@ -41,7 +41,7 @@ backend/
 
 ### authentication
 - **User**: Modelo de usuário personalizado estendendo AbstractUser com autenticação por email
-- **Profile**: Perfil estendido com first_name, last_name, bio, avatar
+- **Profile**: Perfil estendido com first_name, last_name, bio, avatar (upload de imagem)
 
 ### posts
 - **Post**: Posts de usuários com conteúdo e URL de imagem opcional
@@ -56,7 +56,7 @@ backend/
 ### Pré-requisitos
 
 - Python 3.13+
-- Poetry (recomendado)
+- Poetry
 - PostgreSQL (produção) ou SQLite (desenvolvimento)
 - Redis (opcional, para Celery)
 
@@ -68,31 +68,27 @@ backend/
    poetry install
    ```
 
-2. **Ativar ambiente virtual**
+2. **Executar migrações (do diretório raiz)**
    ```bash
-   poetry shell
-   ```
-
-3. **Executar migrações**
-   ```bash
+   # Voltar para o diretório raiz
+   cd ..
    make migrations
-   # ou
-   python manage.py migrate
    ```
 
-4. **Criar superusuário**
+3. **Criar superusuário**
    ```bash
-   python manage.py createsuperuser
+   make createsuperuser
    ```
 
-5. **Executar servidor de desenvolvimento**
+4. **Executar servidor de desenvolvimento**
    ```bash
    make dev-backend
-   # ou
-   poetry run uvicorn backend.asgi:application --reload --host 0.0.0.0 --port 8000
    ```
 
-A API estará disponível em http://localhost:8000
+A API estará disponível em:
+- API: http://localhost:8000
+- Admin: http://localhost:8000/admin/
+- Media: http://localhost:8000/media/
 
 ## 🗄️ Modelos do Banco de Dados
 
@@ -104,8 +100,10 @@ A API estará disponível em http://localhost:8000
 
 ### Modelo Profile
 - Relacionamento OneToOne com User
-- Campos: `first_name`, `last_name`, `bio`, `avatar`, `created_at`, `updated_at`
+- Campos: `first_name`, `last_name`, `bio`, `avatar` (ImageField para upload), `created_at`, `updated_at`
 - Acesso via `user.profile`
+- Avatar: suporta upload direto de arquivos de imagem (JPG, PNG, etc.)
+- Imagens são armazenadas em `backend/media/avatars/`
 
 ### Modelo Post
 - Autor: ForeignKey para User
@@ -133,46 +131,62 @@ A API estará disponível em http://localhost:8000
 
 ### Comandos Make Disponíveis
 
+**Importante:** Execute todos os comandos `make` do diretório raiz (`pingMe/`), não de dentro de `backend/`.
+
 ```bash
-# Executar servidor de desenvolvimento com uvicorn
+# Executar servidor de desenvolvimento
 make dev-backend
+
+# Verificar configuração
+make check
 
 # Executar migrações
 make migrations
 
 # Executar testes
-make pytest-authentication
+make test           # Todos os testes
+make test-auth      # Testes de autenticação
+make test-coverage  # Com cobertura
+
+# Criar superusuário
+make createsuperuser
+
+# Qualidade de código
+make format         # Formatar código
+make lint           # Verificar código
+make type-check     # Verificar tipos
+make quality        # Tudo junto
 ```
 
 ### Executando Testes
 
 ```bash
-# Executar todos os testes
-pytest
+# Do diretório raiz, use o Makefile:
+make test           # Todos os testes
+make test-auth      # Testes de autenticação
+make test-coverage  # Com relatório de cobertura
 
-# Executar testes de app específico
-pytest authentication/tests/ -v
-
-# Com cobertura
-pytest --cov=. --cov-report=html
+# Ou manualmente (do diretório backend):
+poetry run pytest
+poetry run pytest authentication/tests/ -v
+poetry run pytest --cov=. --cov-report=html
 ```
 
 ### Qualidade do Código
 
 ```bash
-# Formatar código
+# Do diretório raiz com Makefile (recomendado):
+make format         # Formatar com black
+make lint           # Verificar com flake8
+make type-check      # Verificar tipos com mypy
+make quality         # Executa tudo junto
+
+# Ou manualmente:
+cd backend
 poetry run black .
-
-# Linter
 poetry run flake8
-
-# Verificação de tipos
 poetry run mypy
-
-# Ordenar imports
 poetry run isort .
-
-# Verificação de segurança
 poetry run bandit -r .
 ```
 
@@ -227,6 +241,10 @@ DATABASE_URL=sqlite:///db.sqlite3
 - CORS habilitado para integração com frontend
 - Django REST Framework configurado
 - Autenticação JWT pronta (Simple JWT)
+- Endpoint de refresh token: `POST /api/auth/token/refresh/`
+- Endpoint de logout: `POST /api/auth/logout/` (invalida refresh token)
+- Media files configurados (`MEDIA_URL` e `MEDIA_ROOT`)
+- Upload de imagens habilitado (Pillow instalado)
 
 ## 🔐 Recursos de Segurança
 
@@ -235,6 +253,27 @@ DATABASE_URL=sqlite:///db.sqlite3
 - Headers CORS configurados
 - Validadores de senha habilitados
 - Debug toolbar para desenvolvimento
+- Upload de arquivos seguro (apenas autenticados podem fazer upload)
+
+## 📸 Upload de Imagens
+
+O sistema suporta upload direto de arquivos de imagem para o avatar do perfil:
+
+- **Endpoint**: `PUT /api/auth/profile/update/`
+- **Formato**: `multipart/form-data`
+- **Campo**: `avatar` (arquivo de imagem)
+- **Formatos aceitos**: JPG, PNG, GIF, etc.
+- **Localização**: Imagens são salvas em `backend/media/avatars/`
+- **Acesso**: Imagens são servidas via `/media/avatars/nome-do-arquivo.jpg`
+
+**Exemplo de uso:**
+```bash
+curl -X PUT http://localhost:8000/api/auth/profile/update/ \
+  -H "Authorization: Bearer <token>" \
+  -F "avatar=@foto.jpg" \
+  -F "first_name=João" \
+  -F "bio=Minha bio"
+```
 
 ## 📦 Dependências
 
@@ -242,6 +281,7 @@ DATABASE_URL=sqlite:///db.sqlite3
 - Django 5.2.7
 - Django REST Framework 3.16.1
 - Simple JWT 5.5.1
+- Pillow 12.0.0 (processamento de imagens)
 - Celery 5.5.3
 - Redis 7.0.0
 - Adaptador PostgreSQL (psycopg2-binary)

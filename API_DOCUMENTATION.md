@@ -77,6 +77,53 @@ POST /api/auth/login/
 }
 ```
 
+### Renovar Access Token
+```http
+POST /api/auth/token/refresh/
+```
+
+**Body:**
+```json
+{
+  "refresh": "token-refresh"
+}
+```
+
+**Resposta:**
+```json
+{
+  "access": "novo-token-acesso"
+}
+```
+
+**Erros:**
+- `400`: Refresh token é obrigatório
+- `401`: Token inválido ou expirado
+
+### Fazer Logout
+```http
+POST /api/auth/logout/
+```
+
+**Body:**
+```json
+{
+  "refresh": "token-refresh"
+}
+```
+
+**Resposta:**
+```json
+{
+  "message": "Logout realizado com sucesso"
+}
+```
+
+**Erros:**
+- `400`: Refresh token é obrigatório ou inválido
+
+**Nota:** Este endpoint invalida o refresh token adicionando-o à blacklist, impedindo que seja usado para gerar novos access tokens.
+
 ### Ver Perfil
 ```http
 GET /api/auth/profile/
@@ -89,25 +136,38 @@ Authorization: Bearer <token>
   "first_name": "João",
   "last_name": "Silva",
   "bio": "Desenvolvedor apaixonado por tecnologia",
-  "avatar": "https://exemplo.com/avatar.jpg"
+  "avatar": "/media/avatars/usuario123_avatar.jpg"
 }
 ```
+
+**Nota:** Se o avatar foi feito upload, retorna o caminho relativo. A imagem pode ser acessada em `http://localhost:8000/media/avatars/nome-do-arquivo.jpg`.
 
 ### Atualizar Perfil
 ```http
 PUT /api/auth/profile/update/
 Authorization: Bearer <token>
+Content-Type: multipart/form-data
 ```
 
-**Body:**
+**Body (Form Data):**
+```
+first_name: João
+last_name: Silva
+bio: Nova bio atualizada
+avatar: [arquivo de imagem]
+```
+
+**Resposta:**
 ```json
 {
   "first_name": "João",
   "last_name": "Silva",
   "bio": "Nova bio atualizada",
-  "avatar": "https://exemplo.com/novo-avatar.jpg"
+  "avatar": "/media/avatars/usuario123_avatar.jpg"
 }
 ```
+
+**Nota:** O campo `avatar` aceita upload direto de arquivo de imagem. A imagem será salva em `backend/media/avatars/` e servida via `/media/avatars/nome-do-arquivo.jpg`.
 
 ---
 
@@ -429,6 +489,8 @@ Authorization: Bearer <token>
 5. **Criar posts**
 6. **Curtir e comentar**
 7. **Ver feed**
+8. **Renovar access token** (quando necessário)
+9. **Fazer logout** (invalidar refresh token)
 
 ### Exemplo com cURL
 
@@ -442,6 +504,24 @@ curl -X POST http://localhost:8000/api/auth/register/ \
 curl -X POST http://localhost:8000/api/auth/login/ \
   -H "Content-Type: application/json" \
   -d '{"email": "teste@email.com", "password": "senha123"}'
+
+# Renovar access token
+curl -X POST http://localhost:8000/api/auth/token/refresh/ \
+  -H "Content-Type: application/json" \
+  -d '{"refresh": "seu-refresh-token"}'
+
+# Logout (invalidar refresh token)
+curl -X POST http://localhost:8000/api/auth/logout/ \
+  -H "Content-Type: application/json" \
+  -d '{"refresh": "seu-refresh-token"}'
+
+# Atualizar perfil com upload de avatar
+curl -X PUT http://localhost:8000/api/auth/profile/update/ \
+  -H "Authorization: Bearer <seu-token>" \
+  -F "avatar=@/caminho/para/sua/foto.jpg" \
+  -F "first_name=João" \
+  -F "last_name=Silva" \
+  -F "bio=Minha bio"
 
 # Criar post (usando token do login)
 curl -X POST http://localhost:8000/api/posts/create/ \
@@ -459,4 +539,8 @@ curl -X POST http://localhost:8000/api/posts/create/ \
 - Não é possível seguir a si mesmo
 - O feed mostra apenas posts de usuários que você segue + seus próprios posts
 - Likes são toggle (curtir/descurtir com o mesmo endpoint)
+- **Upload de Imagens**: O avatar do perfil aceita upload direto de arquivos de imagem (JPG, PNG, GIF, etc.)
+- Imagens são salvas em `backend/media/avatars/` e servidas via `/media/avatars/`
+- Use `Content-Type: multipart/form-data` ao fazer upload de imagens
+- **Blacklist de Tokens**: Para usar o endpoint de logout, é necessário rodar as migrações do `token_blacklist`: `python manage.py migrate token_blacklist`
 

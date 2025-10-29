@@ -22,6 +22,8 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
+    avatar = serializers.ImageField(required=False, allow_null=True)
+
     class Meta:
         model = Profile
         fields = ["first_name", "last_name", "bio", "avatar"]
