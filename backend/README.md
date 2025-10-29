@@ -1,193 +1,199 @@
 # PingMe Backend
 
-Django REST API backend for a social media application with authentication, posts, likes, comments, and follow features.
+API REST Django para aplicação de rede social com autenticação, posts, curtidas, comentários e funcionalidade de seguir.
 
-## 📁 Project Structure
+## 📁 Estrutura do Projeto
 
 ```
 backend/
-├── authentication/      # User authentication app
-│   ├── models.py       # Custom User & Profile models
-│   ├── admin.py        # Django admin configuration
-│   ├── views.py        # API views
-│   └── migrations/     # Database migrations
-├── posts/              # Posts app
-│   ├── models.py       # Post, Like, Comment models
-│   ├── views.py        # API views
+├── authentication/      # App de autenticação
+│   ├── models.py       # Modelos User & Profile personalizados
+│   ├── admin.py        # Configuração Django admin
+│   ├── views.py        # Views da API
+│   ├── serializers.py  # Serializers para validação
+│   ├── urls.py         # Rotas de autenticação
+│   └── migrations/     # Migrações do banco de dados
+├── posts/              # App de posts
+│   ├── models.py       # Modelos Post, Like, Comment
+│   ├── views.py        # Views da API
+│   ├── serializers.py  # Serializers
+│   ├── urls.py         # Rotas de posts
 │   └── migrations/
-├── follows/            # Follow relationships
-│   ├── models.py       # Follow model
-│   ├── views.py        # API views
+├── follows/            # Relacionamentos de seguir
+│   ├── models.py       # Modelo Follow
+│   ├── views.py        # Views da API
+│   ├── serializers.py  # Serializers
+│   ├── urls.py         # Rotas de seguir
 │   └── migrations/
-├── backend/            # Django project settings
-│   ├── settings.py     # Project configuration
-│   ├── urls.py         # URL routing
-│   ├── asgi.py         # ASGI application
-│   └── wsgi.py         # WSGI application
+├── backend/            # Configurações do projeto Django
+│   ├── settings.py     # Configuração do projeto
+│   ├── urls.py         # Roteamento de URLs
+│   ├── asgi.py         # Aplicação ASGI
+│   └── wsgi.py         # Aplicação WSGI
 ├── manage.py
-├── pyproject.toml      # Poetry dependencies
-├── db.sqlite3         # Development database
-├── docker-compose.yml # Docker services
+├── pyproject.toml      # Dependências Poetry
+├── db.sqlite3         # Banco de dados de desenvolvimento
+├── docker-compose.yml # Serviços Docker
 └── Dockerfile
 ```
 
-## 🗂️ Apps Overview
+## 🗂️ Visão Geral dos Apps
 
 ### authentication
-- **User**: Custom user model extending AbstractUser with email authentication
-- **Profile**: Extended profile with first_name, last_name, bio, avatar
+- **User**: Modelo de usuário personalizado estendendo AbstractUser com autenticação por email
+- **Profile**: Perfil estendido com first_name, last_name, bio, avatar
 
 ### posts
-- **Post**: User posts with content and optional image URL
-- **Like**: User likes on posts (unique constraint)
-- **Comment**: User comments on posts
+- **Post**: Posts de usuários com conteúdo e URL de imagem opcional
+- **Like**: Curtidas de usuários em posts (restrição única)
+- **Comment**: Comentários de usuários em posts
 
 ### follows
-- **Follow**: Follow relationships between users (unique constraint)
+- **Follow**: Relacionamentos de seguir entre usuários (restrição única)
 
-## 🚀 Getting Started
+## 🚀 Começando
 
-### Prerequisites
+### Pré-requisitos
 
 - Python 3.13+
-- Poetry (recommended)
-- PostgreSQL (production) or SQLite (development)
-- Redis (optional, for Celery)
+- Poetry (recomendado)
+- PostgreSQL (produção) ou SQLite (desenvolvimento)
+- Redis (opcional, para Celery)
 
-### Installation
+### Instalação
 
-1. **Install dependencies**
+1. **Instalar dependências**
    ```bash
    cd backend
    poetry install
    ```
 
-2. **Activate virtual environment**
+2. **Ativar ambiente virtual**
    ```bash
    poetry shell
    ```
 
-3. **Run migrations**
+3. **Executar migrações**
    ```bash
    make migrations
-   # or
+   # ou
    python manage.py migrate
    ```
 
-4. **Create superuser**
+4. **Criar superusuário**
    ```bash
    python manage.py createsuperuser
    ```
 
-5. **Run development server**
+5. **Executar servidor de desenvolvimento**
    ```bash
    make dev-backend
-   # or
+   # ou
    poetry run uvicorn backend.asgi:application --reload --host 0.0.0.0 --port 8000
    ```
 
-The API will be available at http://localhost:8000
+A API estará disponível em http://localhost:8000
 
-## 🗄️ Database Models
+## 🗄️ Modelos do Banco de Dados
 
-### User Model
-- Extends Django's `AbstractUser`
-- Email-based authentication (`USERNAME_FIELD = 'email'`)
-- Custom `groups` and `user_permissions` with unique related names
-- Additional fields: `email`, `is_active`, `create_at`, `updated_at`
+### Modelo User
+- Estende `AbstractUser` do Django
+- Autenticação baseada em email (`USERNAME_FIELD = 'email'`)
+- Grupos e permissões personalizados com nomes relacionados únicos
+- Campos adicionais: `email`, `is_active`, `create_at`, `updated_at`
 
-### Profile Model
-- OneToOne relationship with User
-- Fields: `first_name`, `last_name`, `bio`, `avatar`, `created_at`, `updated_at`
-- Access via `user.profile`
+### Modelo Profile
+- Relacionamento OneToOne com User
+- Campos: `first_name`, `last_name`, `bio`, `avatar`, `created_at`, `updated_at`
+- Acesso via `user.profile`
 
-### Post Model
-- Author: ForeignKey to User
-- Content: TextField
-- Image: Optional URLField
+### Modelo Post
+- Autor: ForeignKey para User
+- Conteúdo: TextField
+- Imagem: URLField opcional
 - Timestamps: `created_at`, `updated_at`
 
-### Like Model
-- User: ForeignKey to User (related_name='likes')
-- Post: ForeignKey to Post (related_name='likes')
-- Unique constraint on (user, post)
+### Modelo Like
+- Usuário: ForeignKey para User (related_name='likes')
+- Post: ForeignKey para Post (related_name='likes')
+- Restrição única em (user, post)
 
-### Comment Model
-- Post: ForeignKey to Post (related_name='comments')
-- Author: ForeignKey to User (related_name='comments')
-- Content: TextField
+### Modelo Comment
+- Post: ForeignKey para Post (related_name='comments')
+- Autor: ForeignKey para User (related_name='comments')
+- Conteúdo: TextField
 - Timestamps: `created_at`, `updated_at`
 
-### Follow Model
-- Follower: ForeignKey to User (related_name='following')
-- Following: ForeignKey to User (related_name='followers')
-- Unique constraint on (follower, following)
+### Modelo Follow
+- Seguidor: ForeignKey para User (related_name='following')
+- Seguindo: ForeignKey para User (related_name='followers')
+- Restrição única em (follower, following)
 
-## 🛠️ Development
+## 🛠️ Desenvolvimento
 
-### Available Make Commands
+### Comandos Make Disponíveis
 
 ```bash
-# Run development server with uvicorn
+# Executar servidor de desenvolvimento com uvicorn
 make dev-backend
 
-# Run migrations
+# Executar migrações
 make migrations
 
-# Run tests
+# Executar testes
 make pytest-authentication
 ```
 
-### Running Tests
+### Executando Testes
 
 ```bash
-# Run all tests
+# Executar todos os testes
 pytest
 
-# Run specific app tests
+# Executar testes de app específico
 pytest authentication/tests/ -v
 
-# With coverage
+# Com cobertura
 pytest --cov=. --cov-report=html
 ```
 
-### Code Quality
+### Qualidade do Código
 
 ```bash
-# Format code
+# Formatar código
 poetry run black .
 
-# Lint code
+# Linter
 poetry run flake8
 
-# Type check
+# Verificação de tipos
 poetry run mypy
 
-# Sort imports
+# Ordenar imports
 poetry run isort .
 
-# Security check
+# Verificação de segurança
 poetry run bandit -r .
 ```
 
-## 🐳 Docker Support
+## 🐳 Suporte Docker
 
-### Start Services (PostgreSQL + Redis)
+### Iniciar Serviços (PostgreSQL + Redis)
 
 ```bash
-# From backend directory
+# Do diretório backend
 docker-compose up -d
 
-# Check services
+# Verificar serviços
 docker-compose ps
 
-# Stop services
+# Parar serviços
 docker-compose down
 ```
 
-### Using PostgreSQL
+### Usando PostgreSQL
 
-Update `backend/backend/settings.py`:
+Atualize `backend/backend/settings.py`:
 
 ```python
 DATABASES = {
@@ -202,59 +208,59 @@ DATABASES = {
 }
 ```
 
-## 📝 Configuration
+## 📝 Configuração
 
-### Environment Variables
+### Variáveis de Ambiente
 
-The project uses `python-decouple` for configuration. Create a `.env` file:
+O projeto usa `python-decouple` para configuração. Crie um arquivo `.env`:
 
 ```env
-SECRET_KEY=your-secret-key
+SECRET_KEY=sua-chave-secreta
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
 DATABASE_URL=sqlite:///db.sqlite3
 ```
 
-### Settings Key Points
+### Pontos Principais das Configurações
 
 - `AUTH_USER_MODEL = 'authentication.User'`
-- CORS enabled for frontend integration
-- Django REST Framework configured
-- JWT authentication ready (Simple JWT)
+- CORS habilitado para integração com frontend
+- Django REST Framework configurado
+- Autenticação JWT pronta (Simple JWT)
 
-## 🔐 Security Features
+## 🔐 Recursos de Segurança
 
-- Custom User model with secure field management
-- JWT authentication support
-- CORS headers configured
-- Password validators enabled
-- Debug toolbar for development
+- Modelo de usuário personalizado com gerenciamento seguro de campos
+- Suporte à autenticação JWT
+- Headers CORS configurados
+- Validadores de senha habilitados
+- Debug toolbar para desenvolvimento
 
-## 📦 Dependencies
+## 📦 Dependências
 
-### Main Dependencies
+### Dependências Principais
 - Django 5.2.7
 - Django REST Framework 3.16.1
 - Simple JWT 5.5.1
 - Celery 5.5.3
 - Redis 7.0.0
-- PostgreSQL adapter (psycopg2-binary)
+- Adaptador PostgreSQL (psycopg2-binary)
 - Uvicorn 0.38.0
 
-### Development Dependencies
+### Dependências de Desenvolvimento
 - pytest & pytest-django
 - black, flake8, isort
 - mypy & django-stubs
-- bandit (security)
+- bandit (segurança)
 - pre-commit
 
-## 🤝 Contributing
+## 🤝 Contribuindo
 
-1. Create a feature branch
-2. Make your changes
-3. Run tests and linting
-4. Submit a pull request
+1. Crie uma branch de feature
+2. Faça suas alterações
+3. Execute testes e linting
+4. Submeta um pull request
 
-## 📄 License
+## 📄 Licença
 
-MIT License
+Licença MIT
