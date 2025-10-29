@@ -51,6 +51,7 @@ pingMe/
 - **Django 5.2** - Framework web
 - **Django REST Framework** - Kit de ferramentas para API
 - **Simple JWT** - Autenticação JWT
+- **Pillow** - Processamento de imagens (upload de avatar)
 - **Celery** - Fila de tarefas assíncronas
 - **Redis** - Cache e message broker
 - **PostgreSQL** - Banco de dados de produção
@@ -69,7 +70,7 @@ pingMe/
 ### Pré-requisitos
 
 - **Python 3.13+**
-- **Poetry** (recomendado) ou pip
+- **Poetry** (recomendado)
 - **PostgreSQL** (para produção)
 - **Redis** (para cache e Celery)
 - **Docker & Docker Compose** (opcional)
@@ -82,54 +83,45 @@ pingMe/
    cd pingMe
    ```
 
-2. **Configure o Backend (usando Poetry)**
+2. **Instale as dependências**
    ```bash
    cd backend
    poetry install
-   poetry shell
    ```
 
 3. **Configure o Banco de Dados**
    ```bash
-   # Criar e executar migrações
-   make migrations
-   # ou manualmente:
-   python manage.py migrate
+   # Do diretório raiz (pingMe/)
+   make check          # Verifica se está tudo OK
+   make migrations      # Cria e aplica migrações
    ```
 
 4. **Criar Superusuário**
    ```bash
-   python manage.py createsuperuser
+   make createsuperuser
    ```
 
 5. **Executar Servidor de Desenvolvimento**
    ```bash
+   # Do diretório raiz (pingMe/)
    make dev-backend
-   # ou
-   python manage.py runserver
    ```
 
-6. **Testar a Configuração**
-   ```bash
-   # Verificar erros de configuração
-   python manage.py check
-   
-   # Acessar a aplicação
-   # API Backend: http://127.0.0.1:8000/
-   # Painel Admin: http://127.0.0.1:8000/admin/
-   ```
+6. **Acessar a aplicação**
+   - API Backend: http://127.0.0.1:8000/
+   - Painel Admin: http://127.0.0.1:8000/admin/
+   - Media files: http://127.0.0.1:8000/media/
 
 ### Usando Docker
 
 1. **Iniciar serviços** (PostgreSQL + Redis)
    ```bash
-   docker-compose up -d
+   make docker-up
    ```
 
 2. **Executar migrações**
    ```bash
-   cd backend
-   poetry run python manage.py migrate
+   make migrations
    ```
 
 3. **Executar o servidor**
@@ -147,6 +139,7 @@ pingMe/
 - Autenticação baseada em email (`USERNAME_FIELD = 'email'`)
 - Grupos e permissões personalizados com nomes relacionados únicos
 - Autenticação JWT configurada
+- Upload de avatar (imagem) para perfil de usuário
 
 #### **posts** - Gerenciamento de Conteúdo
 - `Post` - Posts de usuários com conteúdo e imagens
@@ -168,66 +161,65 @@ pingMe/
 - Serializers implementados
 - Views da API implementadas
 - URLs configuradas
+- Upload de arquivos de imagem (avatar de perfil)
+- Configuração de media files (imagens uploadadas)
 
 ## 🧪 Testes
 
 ```bash
-# Executar todos os testes
-cd backend
-pytest
+# Executar todos os testes (do diretório raiz)
+make test
 
 # Executar testes de app específico
-make pytest-authentication
+make test-auth
 
-# Com cobertura
-poetry run pytest --cov=.
+# Testes com cobertura
+make test-coverage
 ```
 
 ## 🛠️ Desenvolvimento
 
-### Comandos Disponíveis
+### Comandos Makefile (Use do diretório raiz!)
+
+Todos os comandos devem ser executados do diretório raiz (`pingMe/`). O Makefile já configura o ambiente Poetry automaticamente.
 
 ```bash
 # Iniciar servidor de desenvolvimento
 make dev-backend
-# ou
-python manage.py runserver
 
-# Executar testes
-make pytest-authentication
-# ou
-pytest authentication/tests/ -v
+# Verificar configuração Django
+make check
 
-# Criar/Aplicar migrações
+# Criar migrações
+make makemigrations
+
+# Aplicar migrações
+make migrate
+
+# Criar e aplicar migrações (comando combinado)
 make migrations
-# ou
-python manage.py makemigrations && python manage.py migrate
-
-# Verificar configuração
-python manage.py check
 
 # Criar superusuário
-python manage.py createsuperuser
+make createsuperuser
 
-# Acessar Django admin
-# http://127.0.0.1:8000/admin/
+# Executar testes
+make test              # Todos os testes
+make test-auth         # Testes de autenticação
+make test-coverage     # Testes com cobertura
+
+# Qualidade de código
+make format            # Formatar com black
+make lint              # Verificar com flake8
+make type-check        # Verificar tipos com mypy
+make quality           # Executa format, lint e type-check
+
+# Docker
+make docker-up         # Iniciar containers
+make docker-down       # Parar containers
+make docker-logs       # Ver logs
 ```
 
-### Qualidade do Código
-
-```bash
-# Formatar código
-poetry run black .
-
-# Linter
-poetry run flake8
-
-# Verificação de tipos
-poetry run mypy
-
-# Executar todas as verificações
-poetry run pre-commit run --all-files
-```
+**Importante:** O Makefile já usa `poetry run` automaticamente, então não precisa ativar o shell do Poetry manualmente!
 
 ## 📝 Configuração
 
@@ -235,6 +227,7 @@ poetry run pre-commit run --all-files
 - **SQLite** para desenvolvimento local (veja `db.sqlite3`)
 - **PostgreSQL** para produção (configurado em `docker-compose.yml`)
 - **Redis** para cache e Celery (configurado em `docker-compose.yml`)
+- **Media Files**: Upload de imagens armazenadas em `backend/media/`
 
 ### Configurações Principais
 - **AUTH_USER_MODEL**: `authentication.User` (modelo de usuário personalizado)
@@ -242,6 +235,8 @@ poetry run pre-commit run --all-files
 - **Origens CORS**: `http://localhost:3000`, `http://127.0.0.1:3000`
 - **Paginação**: 20 itens por página
 - **Permissões Padrão**: `IsAuthenticated` (protege todos os endpoints)
+- **Media URL**: `/media/` - Arquivos de imagem são servidos através desta URL
+- **Media Root**: `backend/media/` - Local onde as imagens são armazenadas
 
 ### Variáveis de Ambiente (Prontas)
 O projeto está configurado para usar variáveis de ambiente com `python-decouple`:

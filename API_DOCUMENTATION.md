@@ -89,25 +89,38 @@ Authorization: Bearer <token>
   "first_name": "João",
   "last_name": "Silva",
   "bio": "Desenvolvedor apaixonado por tecnologia",
-  "avatar": "https://exemplo.com/avatar.jpg"
+  "avatar": "/media/avatars/usuario123_avatar.jpg"
 }
 ```
+
+**Nota:** Se o avatar foi feito upload, retorna o caminho relativo. A imagem pode ser acessada em `http://localhost:8000/media/avatars/nome-do-arquivo.jpg`.
 
 ### Atualizar Perfil
 ```http
 PUT /api/auth/profile/update/
 Authorization: Bearer <token>
+Content-Type: multipart/form-data
 ```
 
-**Body:**
+**Body (Form Data):**
+```
+first_name: João
+last_name: Silva
+bio: Nova bio atualizada
+avatar: [arquivo de imagem]
+```
+
+**Resposta:**
 ```json
 {
   "first_name": "João",
   "last_name": "Silva",
   "bio": "Nova bio atualizada",
-  "avatar": "https://exemplo.com/novo-avatar.jpg"
+  "avatar": "/media/avatars/usuario123_avatar.jpg"
 }
 ```
+
+**Nota:** O campo `avatar` aceita upload direto de arquivo de imagem. A imagem será salva em `backend/media/avatars/` e servida via `/media/avatars/nome-do-arquivo.jpg`.
 
 ---
 
@@ -443,6 +456,14 @@ curl -X POST http://localhost:8000/api/auth/login/ \
   -H "Content-Type: application/json" \
   -d '{"email": "teste@email.com", "password": "senha123"}'
 
+# Atualizar perfil com upload de avatar
+curl -X PUT http://localhost:8000/api/auth/profile/update/ \
+  -H "Authorization: Bearer <seu-token>" \
+  -F "avatar=@/caminho/para/sua/foto.jpg" \
+  -F "first_name=João" \
+  -F "last_name=Silva" \
+  -F "bio=Minha bio"
+
 # Criar post (usando token do login)
 curl -X POST http://localhost:8000/api/posts/create/ \
   -H "Content-Type: application/json" \
@@ -459,4 +480,7 @@ curl -X POST http://localhost:8000/api/posts/create/ \
 - Não é possível seguir a si mesmo
 - O feed mostra apenas posts de usuários que você segue + seus próprios posts
 - Likes são toggle (curtir/descurtir com o mesmo endpoint)
+- **Upload de Imagens**: O avatar do perfil aceita upload direto de arquivos de imagem (JPG, PNG, GIF, etc.)
+- Imagens são salvas em `backend/media/avatars/` e servidas via `/media/avatars/`
+- Use `Content-Type: multipart/form-data` ao fazer upload de imagens
 
