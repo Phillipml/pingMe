@@ -182,3 +182,9 @@ def user_list(request):
     serializer = UserSerializer(paginated_users, many=True)
     
     return paginator.get_paginated_response(serializer.data)
+@api_view(["DELETE"])
+@permission_classes([IsAuthenticated])
+def delete_account(request):
+    user = request.user
+    user.delete()
+    return Response({"message": "Usuário deletado com sucesso"}, status=status.HTTP_200_OK)
