@@ -696,14 +696,12 @@ Content-Type: application/json
 **Body:**
 ```json
 {
-  "content": "Conteúdo do meu post aqui",
-  "image": "https://exemplo.com/imagem.jpg"
+  "content": "Conteúdo do meu post aqui"
 }
 ```
 
 **Campos:**
 - `content` (obrigatório): Texto do post
-- `image` (opcional): URL da imagem
 
 **Resposta de Sucesso (201):**
 ```json
@@ -713,7 +711,6 @@ Content-Type: application/json
     "id": 1,
     "author": {...},
     "content": "Conteúdo do meu post aqui",
-    "image": "https://exemplo.com/imagem.jpg",
     "created_at": "2024-01-01T12:00:00Z",
     "likes_count": 0,
     "comments_count": 0,
@@ -947,10 +944,10 @@ async function getFeed(page = 1) {
   return apiRequest(`/posts/?page=${page}`);
 }
 
-async function createPost(content, image = null) {
+async function createPost(content) {
   return apiRequest('/posts/create/', {
     method: 'POST',
-    body: JSON.stringify({ content, image }),
+    body: JSON.stringify({ content }),
   });
 }
 

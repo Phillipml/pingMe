@@ -73,7 +73,7 @@ class TestPostCreate:
     def test_create_post(self, authenticated_client, user1):
         response = authenticated_client.post(
             "/api/posts/create/",
-            {"content": "New post", "image": "https://example.com/img.jpg"},
+            {"content": "New post"},
         )
         assert response.status_code == status.HTTP_201_CREATED
         assert Post.objects.filter(author=user1).exists()
