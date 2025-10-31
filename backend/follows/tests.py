@@ -89,14 +89,7 @@ class TestUnfollowUser:
 
 
 @pytest.mark.django_db
-class TestFollowersList:
-    def test_get_followers(self, authenticated_client, user1, user2, user3):
-        Follow.objects.create(follower=user2, following=user1)
-        Follow.objects.create(follower=user3, following=user1)
-        response = authenticated_client.get(f"/api/follows/followers/{user1.id}/")
-        assert response.status_code == status.HTTP_200_OK
-        assert len(response.data["results"]) == 2
-
+class TestMyFollowers:
     def test_get_my_followers(self, authenticated_client, user1, user2):
         Follow.objects.create(follower=user2, following=user1)
         response = authenticated_client.get("/api/follows/my-followers/")
@@ -105,14 +98,7 @@ class TestFollowersList:
 
 
 @pytest.mark.django_db
-class TestFollowingList:
-    def test_get_following(self, authenticated_client, user1, user2, user3):
-        Follow.objects.create(follower=user1, following=user2)
-        Follow.objects.create(follower=user1, following=user3)
-        response = authenticated_client.get(f"/api/follows/following/{user1.id}/")
-        assert response.status_code == status.HTTP_200_OK
-        assert len(response.data["results"]) == 2
-
+class TestMyFollowing:
     def test_get_my_following(self, authenticated_client, user1, user2):
         Follow.objects.create(follower=user1, following=user2)
         response = authenticated_client.get("/api/follows/my-following/")

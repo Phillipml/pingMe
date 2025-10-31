@@ -7,6 +7,7 @@ Documentação completa da API REST. Explica como usar todos os endpoints para a
 - [Começando](#começando)
 - [Autenticação](#autenticação)
 - [Perfil do Usuário](#perfil-do-usuário)
+- [Usuários](#usuários)
 - [Seguir Usuários](#seguir-usuários)
 - [Posts](#posts)
 - [Exemplos Práticos](#exemplos-práticos)
@@ -299,6 +300,9 @@ Authorization: Bearer seu-access-token
 - `bio`: Biografia do usuário (opcional)
 - `avatar`: URL da foto de perfil (opcional)
 
+**Erros Possíveis:**
+- `404`: Perfil não encontrado
+
 **Exemplo:**
 ```javascript
 const response = await fetch('http://localhost:8000/api/auth/profile/', {
@@ -415,6 +419,9 @@ Authorization: Bearer seu-access-token
 }
 ```
 
+**Erros Possíveis:**
+- `404`: Usuário ou perfil não encontrado
+
 ---
 
 ### 4. Alterar Senha
@@ -466,6 +473,65 @@ const response = await fetch('http://localhost:8000/api/auth/change-password/', 
   })
 });
 ```
+
+---
+
+### 5. Deletar Conta
+
+Remove permanentemente a conta do usuário autenticado.
+
+**Endpoint:** `DELETE /api/auth/users/me/delete/`
+
+**Headers:**
+```
+Authorization: Bearer seu-access-token
+```
+
+**Resposta de Sucesso (200):**
+```json
+{
+  "message": "Usuário deletado com sucesso"
+}
+```
+
+**IMPORTANTE:** Esta ação é irreversível. Todos os dados do usuário serão removidos.
+
+---
+
+## Usuários
+
+### 1. Listar Todos os Usuários
+
+Lista todos os usuários do sistema. **Apenas administradores podem acessar.**
+
+**Endpoint:** `GET /api/auth/users/?page=1`
+
+**Headers:**
+```
+Authorization: Bearer seu-access-token
+```
+
+**Resposta de Sucesso (200):**
+```json
+{
+  "count": 100,
+  "next": "http://localhost:8000/api/auth/users/?page=2",
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "username": "joaosilva",
+      "email": "joao@email.com",
+      "created_at": "2024-01-01T10:00:00Z"
+    }
+  ]
+}
+```
+
+**Erros Possíveis:**
+- `403`: Acesso negado. Apenas administradores podem acessar esta lista.
+
+**Paginação:** 20 itens por página. Use `?page=2` para próxima página.
 
 ---
 
@@ -543,11 +609,11 @@ Authorization: Bearer seu-access-token
 
 ---
 
-### 3. Listar Seguidores de um Usuário
+### 3. Meus Seguidores
 
-Lista quem está seguindo um usuário específico.
+Lista quem está seguindo você.
 
-**Endpoint:** `GET /api/follows/followers/{user_id}/?page=1`
+**Endpoint:** `GET /api/follows/my-followers/?page=1`
 
 **Headers:**
 ```
@@ -558,7 +624,7 @@ Authorization: Bearer seu-access-token
 ```json
 {
   "count": 25,
-  "next": "http://localhost:8000/api/follows/followers/2/?page=2",
+  "next": "http://localhost:8000/api/follows/my-followers/?page=2",
   "previous": null,
   "results": [
     {
@@ -583,43 +649,7 @@ Authorization: Bearer seu-access-token
 
 ---
 
-### 4. Listar Quem um Usuário Segue
-
-Lista os usuários que um usuário específico está seguindo.
-
-**Endpoint:** `GET /api/follows/following/{user_id}/?page=1`
-
-**Headers:**
-```
-Authorization: Bearer seu-access-token
-```
-
-**Exemplo de Resposta:**
-```json
-{
-  "count": 15,
-  "next": null,
-  "previous": null,
-  "results": [...]
-}
-```
-
----
-
-### 5. Meus Seguidores
-
-Lista quem está seguindo você.
-
-**Endpoint:** `GET /api/follows/my-followers/?page=1`
-
-**Headers:**
-```
-Authorization: Bearer seu-access-token
-```
-
----
-
-### 6. Quem Estou Seguindo
+### 4. Quem Estou Seguindo
 
 Lista os usuários que você está seguindo.
 
@@ -629,6 +659,33 @@ Lista os usuários que você está seguindo.
 ```
 Authorization: Bearer seu-access-token
 ```
+
+**Resposta de Sucesso (200):**
+```json
+{
+  "count": 15,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "follower": {
+        "id": 1,
+        "username": "joaosilva",
+        "email": "joao@email.com"
+      },
+      "following": {
+        "id": 2,
+        "username": "maria",
+        "email": "maria@email.com"
+      },
+      "created_at": "2024-01-01T10:00:00Z"
+    }
+  ]
+}
+```
+
+**Paginação:** 20 itens por página. Use `?page=2` para próxima página.
 
 ---
 
@@ -661,7 +718,6 @@ Authorization: Bearer seu-access-token
         "created_at": "2024-01-01T10:00:00Z"
       },
       "content": "Meu primeiro post!",
-      "image": "https://exemplo.com/imagem.jpg",
       "created_at": "2024-01-01T12:00:00Z",
       "updated_at": "2024-01-01T12:00:00Z",
       "likes_count": 5,
@@ -679,11 +735,13 @@ Authorization: Bearer seu-access-token
 
 **IMPORTANTE:** O feed mostra APENAS posts de quem você segue + seus próprios posts.
 
+**Paginação:** 20 itens por página. Use `?page=2` para próxima página.
+
 ---
 
 ### 2. Criar Post
 
-Cria um novo post.
+Cria um novo post. **Apenas texto é permitido.**
 
 **Endpoint:** `POST /api/posts/create/`
 
@@ -709,15 +767,24 @@ Content-Type: application/json
   "message": "Post criado com sucesso",
   "post": {
     "id": 1,
-    "author": {...},
+    "author": {
+      "id": 1,
+      "username": "joaosilva",
+      "email": "joao@email.com",
+      "created_at": "2024-01-01T10:00:00Z"
+    },
     "content": "Conteúdo do meu post aqui",
     "created_at": "2024-01-01T12:00:00Z",
+    "updated_at": "2024-01-01T12:00:00Z",
     "likes_count": 0,
     "comments_count": 0,
     "is_liked": false
   }
 }
 ```
+
+**Erros Possíveis:**
+- `400`: Campo `content` é obrigatório
 
 ---
 
@@ -732,11 +799,33 @@ Retorna informações completas de um post específico.
 Authorization: Bearer seu-access-token
 ```
 
+**Resposta de Sucesso (200):**
+```json
+{
+  "id": 1,
+  "author": {
+    "id": 2,
+    "username": "maria",
+    "email": "maria@email.com",
+    "created_at": "2024-01-01T10:00:00Z"
+  },
+  "content": "Conteúdo do post",
+  "created_at": "2024-01-01T12:00:00Z",
+  "updated_at": "2024-01-01T12:00:00Z",
+  "likes_count": 5,
+  "comments_count": 3,
+  "is_liked": true
+}
+```
+
+**Erros Possíveis:**
+- `404`: Post não encontrado
+
 ---
 
 ### 4. Editar Post
 
-Atualiza um post que você criou.
+Atualiza um post que você criou. **Apenas texto é permitido.**
 
 **Endpoint:** `PUT /api/posts/{post_id}/update/`
 
@@ -749,8 +838,27 @@ Content-Type: application/json
 **Body:**
 ```json
 {
-  "content": "Conteúdo atualizado",
-  "image": "https://exemplo.com/nova-imagem.jpg"
+  "content": "Conteúdo atualizado"
+}
+```
+
+**Campos:**
+- `content` (obrigatório): Novo texto do post
+
+**Resposta de Sucesso (200):**
+```json
+{
+  "message": "Post atualizado com sucesso",
+  "post": {
+    "id": 1,
+    "author": {...},
+    "content": "Conteúdo atualizado",
+    "created_at": "2024-01-01T12:00:00Z",
+    "updated_at": "2024-01-01T12:30:00Z",
+    "likes_count": 5,
+    "comments_count": 3,
+    "is_liked": true
+  }
 }
 ```
 
@@ -758,6 +866,8 @@ Content-Type: application/json
 
 **Erros Possíveis:**
 - `403`: Você não tem permissão para editar este post
+- `404`: Post não encontrado
+- `400`: Campo `content` é obrigatório
 
 ---
 
@@ -778,6 +888,12 @@ Authorization: Bearer seu-access-token
   "message": "Post deletado com sucesso"
 }
 ```
+
+**IMPORTANTE:** Apenas o autor do post pode deletá-lo.
+
+**Erros Possíveis:**
+- `403`: Você não tem permissão para deletar este post
+- `404`: Post não encontrado
 
 ---
 
@@ -810,6 +926,9 @@ Authorization: Bearer seu-access-token
 }
 ```
 
+**Erros Possíveis:**
+- `404`: Post não encontrado
+
 ---
 
 ### 7. Listar Quem Curtiu
@@ -822,6 +941,33 @@ Lista os usuários que curtiram um post.
 ```
 Authorization: Bearer seu-access-token
 ```
+
+**Resposta de Sucesso (200):**
+```json
+{
+  "count": 25,
+  "next": "http://localhost:8000/api/posts/1/likes/?page=2",
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "user": {
+        "id": 2,
+        "username": "maria",
+        "email": "maria@email.com",
+        "created_at": "2024-01-01T10:00:00Z"
+      },
+      "post": 1,
+      "created_at": "2024-01-01T13:00:00Z"
+    }
+  ]
+}
+```
+
+**Paginação:** 20 itens por página. Use `?page=2` para próxima página.
+
+**Erros Possíveis:**
+- `404`: Post não encontrado
 
 ---
 
@@ -844,6 +990,9 @@ Content-Type: application/json
 }
 ```
 
+**Campos:**
+- `content` (obrigatório): Texto do comentário
+
 **Resposta de Sucesso (201):**
 ```json
 {
@@ -854,7 +1003,8 @@ Content-Type: application/json
     "author": {
       "id": 2,
       "username": "maria",
-      "email": "maria@email.com"
+      "email": "maria@email.com",
+      "created_at": "2024-01-01T10:00:00Z"
     },
     "content": "Ótimo post!",
     "created_at": "2024-01-01T12:30:00Z",
@@ -863,13 +1013,57 @@ Content-Type: application/json
 }
 ```
 
+**Erros Possíveis:**
+- `404`: Post não encontrado
+- `400`: Campo `content` é obrigatório
+
 #### Listar Comentários
 
 **Endpoint:** `GET /api/posts/{post_id}/comments/?page=1`
 
+**Headers:**
+```
+Authorization: Bearer seu-access-token
+```
+
+**Resposta de Sucesso (200):**
+```json
+{
+  "count": 10,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "post": 1,
+      "author": {
+        "id": 2,
+        "username": "maria",
+        "email": "maria@email.com",
+        "created_at": "2024-01-01T10:00:00Z"
+      },
+      "content": "Ótimo post!",
+      "created_at": "2024-01-01T12:30:00Z",
+      "updated_at": "2024-01-01T12:30:00Z"
+    }
+  ]
+}
+```
+
+**Paginação:** 20 itens por página. Use `?page=2` para próxima página.
+
+**Erros Possíveis:**
+- `404`: Post não encontrado
+
 #### Editar Comentário
 
 **Endpoint:** `PUT /api/posts/comments/{comment_id}/update/`
+
+**Headers:**
+```
+Authorization: Bearer seu-access-token
+Content-Type: application/json
+```
 
 **Body:**
 ```json
@@ -878,11 +1072,52 @@ Content-Type: application/json
 }
 ```
 
+**Campos:**
+- `content` (obrigatório): Novo texto do comentário
+
+**Resposta de Sucesso (200):**
+```json
+{
+  "message": "Comentário atualizado com sucesso",
+  "comment": {
+    "id": 1,
+    "post": 1,
+    "author": {...},
+    "content": "Comentário atualizado",
+    "created_at": "2024-01-01T12:30:00Z",
+    "updated_at": "2024-01-01T12:35:00Z"
+  }
+}
+```
+
 **IMPORTANTE:** Apenas o autor pode editar seu comentário.
+
+**Erros Possíveis:**
+- `403`: Você não tem permissão para editar este comentário
+- `404`: Comentário não encontrado
+- `400`: Campo `content` é obrigatório
 
 #### Deletar Comentário
 
 **Endpoint:** `DELETE /api/posts/comments/{comment_id}/delete/`
+
+**Headers:**
+```
+Authorization: Bearer seu-access-token
+```
+
+**Resposta de Sucesso (200):**
+```json
+{
+  "message": "Comentário deletado com sucesso"
+}
+```
+
+**IMPORTANTE:** Apenas o autor pode deletar seu comentário.
+
+**Erros Possíveis:**
+- `403`: Você não tem permissão para deletar este comentário
+- `404`: Comentário não encontrado
 
 ---
 
@@ -897,6 +1132,32 @@ Lista todos os posts de um usuário específico.
 Authorization: Bearer seu-access-token
 ```
 
+**Resposta de Sucesso (200):**
+```json
+{
+  "count": 15,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "author": {...},
+      "content": "Post do usuário",
+      "created_at": "2024-01-01T12:00:00Z",
+      "updated_at": "2024-01-01T12:00:00Z",
+      "likes_count": 5,
+      "comments_count": 3,
+      "is_liked": false
+    }
+  ]
+}
+```
+
+**Paginação:** 20 itens por página. Use `?page=2` para próxima página.
+
+**Erros Possíveis:**
+- `404`: Usuário não encontrado
+
 ---
 
 ### 10. Meus Posts
@@ -909,6 +1170,29 @@ Lista todos os seus posts.
 ```
 Authorization: Bearer seu-access-token
 ```
+
+**Resposta de Sucesso (200):**
+```json
+{
+  "count": 10,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 1,
+      "author": {...},
+      "content": "Meu post",
+      "created_at": "2024-01-01T12:00:00Z",
+      "updated_at": "2024-01-01T12:00:00Z",
+      "likes_count": 5,
+      "comments_count": 3,
+      "is_liked": false
+    }
+  ]
+}
+```
+
+**Paginação:** 20 itens por página. Use `?page=2` para próxima página.
 
 ---
 
@@ -964,6 +1248,7 @@ async function likePost(postId) {
 async function exemploCompleto() {
   const BASE_URL = 'http://localhost:8000/api';
   
+  // Registrar
   const registrar = await fetch(`${BASE_URL}/auth/register/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -974,6 +1259,7 @@ async function exemploCompleto() {
     })
   });
   
+  // Login
   const login = await fetch(`${BASE_URL}/auth/login/`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -986,6 +1272,7 @@ async function exemploCompleto() {
   const loginData = await login.json();
   const token = loginData.tokens.access;
   
+  // Atualizar Perfil
   const atualizarPerfil = await fetch(`${BASE_URL}/auth/profile/update/`, {
     method: 'PUT',
     headers: {
@@ -998,6 +1285,7 @@ async function exemploCompleto() {
     })
   });
   
+  // Seguir Usuário
   const seguirUsuario = await fetch(`${BASE_URL}/follows/follow/`, {
     method: 'POST',
     headers: {
@@ -1007,6 +1295,7 @@ async function exemploCompleto() {
     body: JSON.stringify({ following: 2 })
   });
   
+  // Criar Post
   const criarPost = await fetch(`${BASE_URL}/posts/create/`, {
     method: 'POST',
     headers: {
@@ -1018,6 +1307,7 @@ async function exemploCompleto() {
     })
   });
   
+  // Ver Feed
   const verFeed = await fetch(`${BASE_URL}/posts/`, {
     headers: {
       'Authorization': `Bearer ${token}`
@@ -1048,6 +1338,12 @@ async function exemploCompleto() {
 ```json
 {
   "error": "Senha atual incorreta"
+}
+```
+ou
+```json
+{
+  "content": ["Este campo é obrigatório."]
 }
 ```
 
@@ -1088,7 +1384,7 @@ async function criarPost(content) {
 
     if (!response.ok) {
       const error = await response.json();
-      throw new Error(error.error || 'Erro ao criar post');
+      throw new Error(error.error || error.content || 'Erro ao criar post');
     }
 
     return await response.json();
@@ -1113,8 +1409,10 @@ async function criarPost(content) {
 - Apenas o autor pode editar/deletar seus próprios posts
 - Apenas o autor pode editar/deletar seus próprios comentários
 - Não é possível seguir a si mesmo
+- Apenas administradores podem listar todos os usuários
 
-### Feed
+### Posts
+- **Posts aceitam APENAS texto. Imagens não são suportadas.**
 - O feed mostra apenas posts de usuários que você segue + seus próprios posts
 - Posts são ordenados por data (mais recentes primeiro)
 
@@ -1128,6 +1426,7 @@ async function criarPost(content) {
 - Use `multipart/form-data` ao enviar arquivo
 - Imagens são salvas em `backend/media/avatars/`
 - Acesse via `/media/avatars/nome-arquivo.jpg`
+- **Posts não suportam imagens, apenas texto**
 
 ### Likes
 - Likes funcionam como toggle: mesma chamada curte/descurte
@@ -1137,6 +1436,7 @@ async function criarPost(content) {
 - Senha mínima: 8 caracteres
 - Email deve ser único
 - Username deve ser único
+- Campos obrigatórios devem ser enviados ou retornarão erro 400
 
 ---
 
