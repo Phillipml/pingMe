@@ -1,17 +1,21 @@
 from pathlib import Path
 from datetime import timedelta
 from decouple import config, Csv
+import pymysql
+
+pymysql.install_as_MySQLdb()
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = config(
-    "SECRET_KEY",
-    default="django-insecure-er$+y3!ulnidz8bwe&kx))p1p1y$*xve((!cn^jb+9p9m3u4p-",
-)
+SECRET_KEY = config("SECRET_KEY", default=None)
+if not SECRET_KEY:
+    raise ValueError("SECRET_KEY precisa ser configurada no arquivo .env. Execute: make get_secret_keys")
 
-DEBUG = config("DEBUG", default=True, cast=bool)
+DEBUG = config("DEBUG", default=False, cast=bool)
 
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="*", cast=Csv())
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="", cast=Csv())
+if not ALLOWED_HOSTS and not DEBUG:
+    raise ValueError("ALLOWED_HOSTS precisa ser configurado no arquivo .env para produção")
 
 
 INSTALLED_APPS = [
@@ -61,23 +65,16 @@ TEMPLATES = [
 WSGI_APPLICATION = "backend.wsgi.application"
 
 
-DATABASE_URL = config("DATABASE_URL", default=None)
-
-if DATABASE_URL:
-    import dj_database_url
-
-    DATABASES = {"default": dj_database_url.parse(DATABASE_URL, conn_max_age=600)}
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": config("DB_ENGINE", default="django.db.backends.sqlite3"),
-            "NAME": config("DB_NAME", default=str(BASE_DIR / "db.sqlite3")),
-            "USER": config("DB_USER", default=""),
-            "PASSWORD": config("DB_PASSWORD", default=""),
-            "HOST": config("DB_HOST", default=""),
-            "PORT": config("DB_PORT", default=""),
-        }
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": config("DB_NAME", default=""),
+        "USER": config("DB_USER", default=""),
+        "PASSWORD": config("DB_PASSWORD", default=""),
+        "HOST": config("DB_HOST", default=""),
+        "PORT": config("DB_PORT", default="3306"),
     }
+}
 
 
 AUTH_USER_MODEL = "authentication.User"
@@ -139,3 +136,48 @@ MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+    CSRF_COOKIE_HTTPONLY = True
+    X_FRAME_OPTIONS = "DENY"
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+        "file": {
+            "class": "logging.handlers.RotatingFileHandler",
+            "filename": BASE_DIR / "logs" / "django.log",
+            "maxBytes": 1024 * 1024 * 10,
+            "backupCount": 5,
+        },
+    },
+    "root": {
+        "handlers": ["console", "file"] if not DEBUG else ["console"],
+        "level": "INFO" if DEBUG else "WARNING",
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console", "file"] if not DEBUG else ["console"],
+            "level": "INFO",
+        },
+        "django.security": {
+            "handlers": ["console", "file"] if not DEBUG else ["console"],
+            "level": "WARNING",
+        },
+        "django.request": {
+            "handlers": ["console", "file"] if not DEBUG else ["console"],
+            "level": "ERROR",
+        },
+    },
+}
