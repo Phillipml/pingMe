@@ -23,7 +23,6 @@ dependencies = [
 ]
 
 [tool.poetry]
-packages = [{include = "backend", from = "src"}]
 
 
 [tool.poetry.group.dev.dependencies]
