@@ -23,7 +23,7 @@ authentication - Gerencia usuários
 - Autenticação por email
 
 posts - Gerencia conteúdo
-- Modelo Post (texto e imagem)
+- Modelo Post (apenas texto)
 - Modelo Like (curtidas)
 - Modelo Comment (comentários)
 
@@ -82,7 +82,8 @@ Profile - Perfil do usuário
 
 Post - Postagem
 - Autor: ForeignKey para User
-- Campos: content, image (URL), created_at, updated_at
+- Campos: content (texto), created_at, updated_at
+- Nota: Posts aceitam apenas texto, não suportam imagens
 
 Like - Curtida
 - Usuário: ForeignKey para User
@@ -127,13 +128,22 @@ make quality
 
 ### Testes
 
-```bash
-# Do diretório raiz
-make test
-make test-auth
-make test-coverage
+Execute do diretório raiz:
 
-# Manualmente
+```bash
+# Todos os testes
+make test
+
+# Apenas testes de autenticação
+make test-auth
+
+# Testes com cobertura de código
+make test-coverage
+```
+
+Para executar manualmente:
+
+```bash
 cd backend
 poetry run pytest
 ```
@@ -149,12 +159,41 @@ make quality
 
 ## Docker
 
+O projeto inclui configuração Docker para PostgreSQL e Redis.
+
 ### Iniciar Serviços
+
+```bash
+make docker-up
+```
+
+Ou manualmente:
 
 ```bash
 cd backend
 docker-compose up -d
 ```
+
+### Parar Serviços
+
+```bash
+make docker-down
+```
+
+### Ver Logs
+
+```bash
+make docker-logs
+```
+
+### Serviços Disponíveis
+
+- **PostgreSQL**: Porta 5432
+  - Database: `pingme`
+  - User: `postgres`
+  - Password: `postgres`
+
+- **Redis**: Porta 6379
 
 ### Usando PostgreSQL
 
@@ -177,24 +216,49 @@ DATABASES = {
 
 ### Variáveis de Ambiente
 
-Crie um arquivo .env:
+Crie um arquivo `.env` no diretório `backend/` baseado no `env.example`:
 
 ```env
-SECRET_KEY=sua-chave-secreta
+SECRET_KEY=sua-chave-secreta-aqui
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
+CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+
+# Banco de dados SQLite (padrão)
 DATABASE_URL=sqlite:///db.sqlite3
+
+# Ou configure PostgreSQL diretamente
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME=pingme
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_HOST=localhost
+DB_PORT=5432
+```
+
+**Para gerar uma SECRET_KEY automaticamente:**
+
+```bash
+make get_secret_keys
 ```
 
 ### Configurações Principais
 
-- AUTH_USER_MODEL = 'authentication.User'
-- CORS habilitado para frontend
-- JWT configurado
-- Refresh token: POST /api/auth/token/refresh/
-- Logout: POST /api/auth/logout/
-- Paginação: 20 itens por página
-- Media files configurados
+- **AUTH_USER_MODEL**: `authentication.User` (modelo customizado)
+- **Autenticação**: JWT via Simple JWT
+  - Access token: 60 minutos de validade
+  - Refresh token: 7 dias de validade
+  - Rotação de tokens habilitada
+  - Blacklist de tokens no logout
+- **CORS**: Habilitado para frontend (configurável via `CORS_ALLOWED_ORIGINS`)
+- **Paginação**: 20 itens por página (padrão do DRF)
+- **Media Files**: 
+  - URL: `/media/`
+  - Diretório: `backend/media/`
+  - Avatares: `backend/media/avatars/`
+- **Banco de Dados**: 
+  - SQLite em desenvolvimento (padrão)
+  - PostgreSQL em produção (via Docker ou DATABASE_URL)
 
 ## Segurança
 
@@ -227,15 +291,23 @@ curl -X PUT http://localhost:8000/api/auth/profile/update/ \
 Principais:
 - Django 5.2.7
 - Django REST Framework 3.16.1
-- Simple JWT 5.5.1
-- Pillow 12.0.0
-- Poetry
+- Simple JWT 5.5.1 (autenticação JWT)
+- Pillow 12.0.0 (processamento de imagens para avatares)
+- Celery 5.5.3 (tarefas assíncronas)
+- Redis 7.0.0 (broker para Celery)
+- psycopg2-binary 2.9.11 (driver PostgreSQL)
+- python-decouple 3.8 (variáveis de ambiente)
+- dj-database-url 2.1.0 (configuração de banco)
+- Poetry (gerenciamento de dependências)
 
 Desenvolvimento:
-- pytest
-- black, flake8
-- mypy
-- bandit
+- pytest 8.4.2 + pytest-django 4.11.1 + pytest-cov 7.0.0
+- black 25.9.0 (formatação)
+- flake8 7.3.0 (lint)
+- mypy 1.18.2 + django-stubs 5.2.7 (verificação de tipos)
+- bandit 1.8.6 (análise de segurança)
+- isort 7.0.0 (organização de imports)
+- pre-commit 4.3.0 (hooks)
 
 ## Contribuindo
 

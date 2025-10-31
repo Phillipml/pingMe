@@ -1412,9 +1412,10 @@ async function criarPost(content) {
 - Apenas administradores podem listar todos os usuários
 
 ### Posts
-- **Posts aceitam APENAS texto. Imagens não são suportadas.**
-- O feed mostra apenas posts de usuários que você segue + seus próprios posts
-- Posts são ordenados por data (mais recentes primeiro)
+- **Posts aceitam APENAS texto. Imagens não são suportadas no modelo Post.**
+- O feed (`GET /api/posts/`) mostra apenas posts de usuários que você segue + seus próprios posts
+- Posts são ordenados por data de criação (mais recentes primeiro)
+- Apenas o autor pode editar ou deletar seus próprios posts
 
 ### Paginação
 - Todos os endpoints de listagem retornam 20 itens por página
@@ -1443,5 +1444,22 @@ async function criarPost(content) {
 ## Recursos Adicionais
 
 - **Base URL Local:** `http://localhost:8000/api/`
-- **Documentação Swagger:** (se disponível)
-- **Suporte:** Entre em contato com o time de desenvolvimento
+- **Admin Panel:** `http://localhost:8000/admin/` (requer superusuário)
+- **Media Files:** `http://localhost:8000/media/`
+- **Repositório:** [GitHub](https://github.com/phillipml/pingMe)
+- **Autor:** Phillip Menezes - contato.phillip.menezes@gmail.com
+
+## Tecnologias e Ferramentas
+
+### Backend
+- Django 5.2.7
+- Django REST Framework 3.16.1
+- Simple JWT 5.5.1
+- Celery 5.5.3 (tarefas assíncronas)
+- Redis 7.0.0 (broker para Celery)
+- PostgreSQL (produção) / SQLite (desenvolvimento)
+
+### Configuração
+- Poetry para gerenciamento de dependências
+- Docker Compose para PostgreSQL e Redis
+- Variáveis de ambiente via python-decouple
