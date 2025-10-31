@@ -63,7 +63,12 @@ DEBUG=False
 ALLOWED_HOSTS=seu-usuario.pythonanywhere.com,www.seu-usuario.pythonanywhere.com
 CORS_ALLOWED_ORIGINS=https://seu-frontend.com,http://localhost:3000
 
-DATABASE_URL=sqlite:///db.sqlite3
+DB_ENGINE=django.db.backends.mysql
+DB_NAME=seu-usuario$nome-do-banco
+DB_USER=seu-usuario
+DB_PASSWORD=sua-senha-mysql
+DB_HOST=seu-usuario.mysql.pythonanywhere-services.com
+DB_PORT=3306
 ```
 
 **Gerar SECRET_KEY:**
@@ -71,24 +76,12 @@ DATABASE_URL=sqlite:///db.sqlite3
 python3.10 -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 ```
 
-#### D. Configurar Banco de Dados
-
-**Opção 1: SQLite (Mais simples)**
-- Não precisa configurar nada, já funciona com o .env acima
-
-**Opção 2: MySQL (Python Everywhere Free)**
-1. Acesse a aba "Databases" no Python Everywhere
-2. Crie um novo banco MySQL
-3. Configure no `.env`:
-
-```env
-DB_ENGINE=django.db.backends.mysql
-DB_NAME=seu-usuario$nome-do-db
-DB_USER=seu-usuario
-DB_PASSWORD=sua-senha
-DB_HOST=seu-usuario.mysql.pythonanywhere-services.com
-DB_PORT=3306
-```
+**Obter informações do MySQL:**
+1. Acesse a aba "Databases" no Python Anywhere
+2. Se ainda não criou, crie um novo banco MySQL
+3. Anote o nome do banco (formato: `seu-usuario$nome-do-banco`)
+4. Use seu usuário e senha do Python Anywhere
+5. O host será: `seu-usuario.mysql.pythonanywhere-services.com`
 
 **Opção 3: PostgreSQL (Python Everywhere Paid)**
 ```env
