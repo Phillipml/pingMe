@@ -9,13 +9,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = config("SECRET_KEY", default=None)
 if not SECRET_KEY:
-    raise ValueError("SECRET_KEY precisa ser configurada no arquivo .env. Execute: make get_secret_keys")
+    raise ValueError(
+        "SECRET_KEY precisa ser configurada no arquivo .env. Execute: make get_secret_keys"
+    )
 
 DEBUG = config("DEBUG", default=False, cast=bool)
 
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="", cast=Csv())
 if not ALLOWED_HOSTS and not DEBUG:
-    raise ValueError("ALLOWED_HOSTS precisa ser configurado no arquivo .env para produção")
+    raise ValueError(
+        "ALLOWED_HOSTS precisa ser configurado no arquivo .env para produção"
+    )
 
 
 INSTALLED_APPS = [
@@ -147,6 +151,9 @@ if not DEBUG:
     X_FRAME_OPTIONS = "DENY"
     SECURE_BROWSER_XSS_FILTER = True
     SECURE_CONTENT_TYPE_NOSNIFF = True
+
+LOGS_DIR = BASE_DIR / "logs"
+LOGS_DIR.mkdir(exist_ok=True)
 
 LOGGING = {
     "version": 1,
