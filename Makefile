@@ -9,10 +9,16 @@ check:
 
 migrate:
 	$(POETRY) python manage.py migrate
+migrate-fake-initial:
+	$(POETRY) python manage.py migrate --fake-initial
+
+migrate-reset:
+	$(POETRY) python manage.py migrate contenttypes
+	$(POETRY) python manage.py migrate authentication
+	$(POETRY) python manage.py migrate
 
 makemigrations:
 	$(POETRY) python manage.py makemigrations
-
 migrations: makemigrations migrate
 
 get_secret_keys:
