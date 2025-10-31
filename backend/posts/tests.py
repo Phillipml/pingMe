@@ -41,9 +41,7 @@ def authenticated_client(api_client, user1):
 
 @pytest.fixture
 def post(user1):
-    return Post.objects.create(
-        author=user1, content="Test post content", image="https://example.com/image.jpg"
-    )
+    return Post.objects.create(author=user1, content="Test post content")
 
 
 @pytest.mark.django_db

@@ -163,6 +163,8 @@ def change_password(request):
     request.user.save()
 
     return Response({"message": "Senha alterada com sucesso"})
+
+
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def user_list(request):
@@ -170,21 +172,27 @@ def user_list(request):
 
     if not request.user.is_superuser:
         return Response(
-            {"error": "Acesso negado. Apenas administradores podem acessar esta lista."},
-            status=status.HTTP_403_FORBIDDEN
+            {
+                "error": "Acesso negado. Apenas administradores podem acessar esta lista."
+            },
+            status=status.HTTP_403_FORBIDDEN,
         )
-    
+
     users = User.objects.all().order_by("-created_at")
-    
+
     paginator = PageNumberPagination()
     paginator.page_size = 20
     paginated_users = paginator.paginate_queryset(users, request)
     serializer = UserSerializer(paginated_users, many=True)
-    
+
     return paginator.get_paginated_response(serializer.data)
+
+
 @api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
 def delete_account(request):
     user = request.user
     user.delete()
-    return Response({"message": "Usuário deletado com sucesso"}, status=status.HTTP_200_OK)
+    return Response(
+        {"message": "Usuário deletado com sucesso"}, status=status.HTTP_200_OK
+    )

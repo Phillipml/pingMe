@@ -63,32 +63,6 @@ def unfollow_user(request, user_id):
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
-def followers_list(request, user_id):
-    user = get_object_or_404(User, id=user_id)
-    followers = Follow.objects.filter(following=user).select_related("follower")
-
-    paginator = PageNumberPagination()
-    paginator.page_size = 20
-    paginated_followers = paginator.paginate_queryset(followers, request)
-    serializer = FollowSerializer(paginated_followers, many=True)
-    return paginator.get_paginated_response(serializer.data)
-
-
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def following_list(request, user_id):
-    user = get_object_or_404(User, id=user_id)
-    following = Follow.objects.filter(follower=user).select_related("following")
-
-    paginator = PageNumberPagination()
-    paginator.page_size = 20
-    paginated_following = paginator.paginate_queryset(following, request)
-    serializer = FollowSerializer(paginated_following, many=True)
-    return paginator.get_paginated_response(serializer.data)
-
-
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
 def my_followers(request):
     followers = Follow.objects.filter(following=request.user).select_related("follower")
 
