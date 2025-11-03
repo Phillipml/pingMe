@@ -12,7 +12,8 @@ API backend de rede social feita com Django REST Framework. Permite criar posts,
 - Seguir e deixar de seguir outros usuários
 - API REST completa
 - Suporte CORS para frontend
-- Configuração Docker (PostgreSQL e Redis)
+- Configuração Docker (MySQL 8.0 e Redis 7.2)
+- Configuração flexível de banco de dados (DATABASE_URL > variáveis individuais > SQLite)
 
 ## Estrutura do Projeto
 
@@ -45,7 +46,7 @@ pingMe/
 │   ├── manage.py               # Script de gerenciamento Django
 │   ├── pyproject.toml          # Dependências (Poetry)
 │   ├── requirements.txt        # Dependências (pip)
-│   ├── docker-compose.yml      # Configuração Docker (PostgreSQL + Redis)
+│   ├── docker-compose.yml      # Configuração Docker (MySQL + Redis)
 │   ├── Dockerfile              # Dockerfile do backend
 │   └── env.example             # Exemplo de variáveis de ambiente
 ├── frontend/                   # (A ser implementado)
@@ -63,12 +64,12 @@ Backend:
 - Simple JWT 5.5.1 (autenticação JWT)
 - Pillow 12.0.0 (processamento de imagens)
 - Celery 5.5.3 (tarefas assíncronas)
-- Redis 7.0.0 (broker de mensagens e cache)
-- psycopg2-binary 2.9.11 (driver PostgreSQL)
+- Redis 7.2 (broker de mensagens e cache)
+- PyMySQL 1.1.0 (driver MySQL)
 - python-decouple 3.8 (gerenciamento de variáveis de ambiente)
-- dj-database-url 2.1.0 (configuração de banco via URL)
+- dj-database-url 2.3.0 (configuração flexível de banco via URL)
 - Poetry (gerenciamento de dependências)
-- SQLite (desenvolvimento) / PostgreSQL (produção via Docker)
+- SQLite (fallback) / MySQL 8.0 (via Docker ou produção)
 
 Ferramentas de Desenvolvimento:
 - pytest 8.4.2 + pytest-django 4.11.1 + pytest-cov 7.0.0 (testes)
@@ -129,14 +130,15 @@ Links úteis:
 
 ### Usando Docker (opcional)
 
-Se quiser usar PostgreSQL e Redis com Docker:
+Se quiser usar MySQL e Redis com Docker:
 
 ```bash
-# Inicia PostgreSQL e Redis em containers
+# Inicia MySQL e Redis em containers
 make docker-up
 
 # Configure o DATABASE_URL no .env ou use as variáveis DB_*
-# Exemplo para PostgreSQL: DATABASE_URL=postgresql://postgres:postgres@localhost:5432/pingme
+# Exemplo para MySQL: DATABASE_URL=mysql://postgres:postgres@localhost:3306/pingme
+# Ou configure individualmente com DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT
 
 # Execute as migrações
 make migrations
@@ -146,8 +148,8 @@ make dev-backend
 ```
 
 **Nota**: Por padrão, o Docker configura:
-- PostgreSQL na porta 5432 (database: `pingme`, user: `postgres`, password: `postgres`)
-- Redis na porta 6379
+- MySQL 8.0 na porta 3306 (database: `pingme`, user: `postgres`, password: `postgres`)
+- Redis 7.2 na porta 6379
 
 Para parar os containers:
 
@@ -213,9 +215,23 @@ Importante: não precisa ativar o shell do Poetry manualmente. O Makefile já fa
 ## Configurações
 
 ### Banco de Dados
-- **Desenvolvimento**: SQLite (padrão)
-- **Produção**: PostgreSQL (via Docker ou DATABASE_URL)
-  - Docker: `make docker-up` inicia PostgreSQL e Redis
+O sistema suporta configuração flexível de banco de dados com três níveis de prioridade:
+
+1. **DATABASE_URL** (Recomendado - mais portátil)
+   - Formato: `mysql://usuario:senha@host:porta/banco`
+   - Exemplo: `DATABASE_URL=mysql://postgres:postgres@localhost:3306/pingme`
+
+2. **Variáveis Individuais** (Alternativa)
+   - Configure `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT`
+   - Usado quando `DATABASE_URL` não está definido
+
+3. **SQLite** (Fallback automático)
+   - Usado quando nenhuma configuração está presente
+   - Ideal para desenvolvimento rápido
+
+- **Desenvolvimento**: SQLite (fallback) ou MySQL via Docker
+- **Produção**: MySQL (via Docker ou DATABASE_URL)
+  - Docker: `make docker-up` inicia MySQL 8.0 e Redis 7.2
   - Configure via `.env` usando `DATABASE_URL` ou variáveis `DB_*`
 
 ### Autenticação JWT
@@ -249,30 +265,43 @@ Importante: não precisa ativar o shell do Poetry manualmente. O Makefile já fa
 Crie um arquivo `.env` no diretório `backend/` baseado no `backend/env.example`:
 
 ```env
-# Segurança
+# ============================================================================
+# Configurações Essenciais
+# ============================================================================
 SECRET_KEY=sua-chave-secreta-aqui
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
 
-# CORS
+# ============================================================================
+# Configuração de Banco de Dados
+# Prioridade: DATABASE_URL > Variáveis Individuais > SQLite (fallback)
+# ============================================================================
+
+# Opção 1: DATABASE_URL (RECOMENDADO - mais fácil e portátil)
+# Desenvolvimento local (Docker MySQL):
+DATABASE_URL=mysql://usuario:senha@localhost:3306/pingme
+
+# Produção (PythonAnywhere - substitua pelos valores reais):
+# DATABASE_URL=mysql://seu-usuario:sua-senha@seu-usuario.mysql.pythonanywhere-services.com:3306/seu-usuario$nome-do-banco
+
+# Opção 2: Variáveis Individuais (use apenas se não usar DATABASE_URL)
+# Descomente as linhas abaixo caso prefira essa abordagem
+# DB_NAME=pingme
+# DB_USER=usuario
+# DB_PASSWORD=senha
+# DB_HOST=localhost
+# DB_PORT=3306
+
+# ============================================================================
+# Configurações de CORS
+# ============================================================================
 CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
-
-# Banco de dados (SQLite - padrão)
-DATABASE_URL=sqlite:///db.sqlite3
-
-# Ou configure PostgreSQL diretamente
-DB_ENGINE=django.db.backends.postgresql
-DB_NAME=pingme
-DB_USER=postgres
-DB_PASSWORD=postgres
-DB_HOST=localhost
-DB_PORT=5432
 ```
 
 **Gerar SECRET_KEY automaticamente:**
 
 ```bash
-make get_secret_keys
+make get_secret_key
 ```
 
 **Nota**: O arquivo `.env` deve estar em `backend/.env` (não na raiz do projeto). O projeto usa `python-decouple` para ler variáveis de ambiente.

@@ -148,6 +148,8 @@ cd backend
 poetry run pytest
 ```
 
+**Nota**: Execute os comandos `make` sempre do diretório raiz do projeto, não de dentro de `backend/`. O Makefile já gerencia o caminho corretamente.
+
 ### Qualidade de Código
 
 ```bash
@@ -159,7 +161,7 @@ make quality
 
 ## Docker
 
-O projeto inclui configuração Docker para PostgreSQL e Redis.
+O projeto inclui configuração Docker para MySQL e Redis.
 
 ### Iniciar Serviços
 
@@ -188,29 +190,13 @@ make docker-logs
 
 ### Serviços Disponíveis
 
-- **PostgreSQL**: Porta 5432
+- **MySQL 8.0**: Porta 3306
   - Database: `pingme`
   - User: `postgres`
   - Password: `postgres`
+  - Root Password: `rootpassword`
 
-- **Redis**: Porta 6379
-
-### Usando PostgreSQL
-
-Edite backend/backend/settings.py:
-
-```python
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'pingme',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
-```
+- **Redis 7.2**: Porta 6379
 
 ## Configuração
 
@@ -219,27 +205,43 @@ DATABASES = {
 Crie um arquivo `.env` no diretório `backend/` baseado no `env.example`:
 
 ```env
+# ============================================================================
+# Configurações Essenciais
+# ============================================================================
 SECRET_KEY=sua-chave-secreta-aqui
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
+
+# ============================================================================
+# Configuração de Banco de Dados
+# Prioridade: DATABASE_URL > Variáveis Individuais > SQLite (fallback)
+# ============================================================================
+
+# Opção 1: DATABASE_URL (RECOMENDADO - mais fácil e portátil)
+# Desenvolvimento local (Docker MySQL):
+DATABASE_URL=mysql://usuario:senha@localhost:3306/pingme
+
+# Produção (PythonAnywhere - substitua pelos valores reais):
+# DATABASE_URL=mysql://seu-usuario:sua-senha@seu-usuario.mysql.pythonanywhere-services.com:3306/seu-usuario$nome-do-banco
+
+# Opção 2: Variáveis Individuais (use apenas se não usar DATABASE_URL)
+# Descomente as linhas abaixo caso prefira essa abordagem
+# DB_NAME=pingme
+# DB_USER=usuario
+# DB_PASSWORD=senha
+# DB_HOST=localhost
+# DB_PORT=3306
+
+# ============================================================================
+# Configurações de CORS
+# ============================================================================
 CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
-
-# Banco de dados SQLite (padrão)
-DATABASE_URL=sqlite:///db.sqlite3
-
-# Ou configure PostgreSQL diretamente
-DB_ENGINE=django.db.backends.postgresql
-DB_NAME=pingme
-DB_USER=postgres
-DB_PASSWORD=postgres
-DB_HOST=localhost
-DB_PORT=5432
 ```
 
 **Para gerar uma SECRET_KEY automaticamente:**
 
 ```bash
-make get_secret_keys
+make get_secret_key
 ```
 
 ### Configurações Principais
@@ -256,9 +258,11 @@ make get_secret_keys
   - URL: `/media/`
   - Diretório: `backend/media/`
   - Avatares: `backend/media/avatars/`
-- **Banco de Dados**: 
-  - SQLite em desenvolvimento (padrão)
-  - PostgreSQL em produção (via Docker ou DATABASE_URL)
+- **Banco de Dados**: Configuração flexível com três níveis de prioridade:
+  1. **DATABASE_URL** (recomendado): formato `mysql://usuario:senha@host:porta/banco`
+  2. **Variáveis Individuais**: `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT`
+  3. **SQLite** (fallback automático): usado quando nenhuma configuração está presente
+- **Logging**: Sistema de logs configurado em `backend/logs/django.log` com rotação automática
 
 ## Segurança
 
@@ -295,9 +299,9 @@ Principais:
 - Pillow 12.0.0 (processamento de imagens para avatares)
 - Celery 5.5.3 (tarefas assíncronas)
 - Redis 7.0.0 (broker para Celery)
-- psycopg2-binary 2.9.11 (driver PostgreSQL)
+- PyMySQL 1.1.0 (driver MySQL)
 - python-decouple 3.8 (variáveis de ambiente)
-- dj-database-url 2.1.0 (configuração de banco)
+- dj-database-url 2.3.0 (configuração flexível de banco)
 - Poetry (gerenciamento de dependências)
 
 Desenvolvimento:
