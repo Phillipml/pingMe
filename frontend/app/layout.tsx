@@ -1,0 +1,31 @@
+import type { Metadata } from "next";
+import { Montserrat } from "next/font/google";
+import "./globals.css";
+
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  title: "PingMe",
+  description:
+    "A social media platform for sharing your thoughts and connecting with others",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="pt-br">
+      <body
+        className={`${montserrat.variable} font-sans antialiased bg-gray-950 text-white`}
+        suppressHydrationWarning
+      >
+        {children}
+      </body>
+    </html>
+  );
+}
