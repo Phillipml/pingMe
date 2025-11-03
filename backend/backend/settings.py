@@ -2,6 +2,7 @@ from pathlib import Path
 from datetime import timedelta
 from decouple import config, Csv
 import pymysql
+import dj_database_url
 
 pymysql.install_as_MySQLdb()
 
@@ -69,20 +70,45 @@ TEMPLATES = [
 WSGI_APPLICATION = "backend.wsgi.application"
 
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.mysql",
-        "NAME": config("DB_NAME", default=""),
-        "USER": config("DB_USER", default=""),
-        "PASSWORD": config("DB_PASSWORD", default=""),
-        "HOST": config("DB_HOST", default=""),
-        "PORT": config("DB_PORT", default="3306"),
-        "OPTIONS": {
-            "charset": "utf8mb4",
-            "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
-    }
-}
+DATABASE_URL = config("DATABASE_URL", default=None)
+
+if DATABASE_URL:
+    # Opção 1: Usar DATABASE_URL (recomendado)
+    # Exemplo MySQL Docker: mysql://usuario:senha@localhost:3306/pingme
+    # Exemplo MySQL PythonAnywhere: mysql://usuario:senha@host:3306/nome_db
+    DATABASES = {"default": dj_database_url.parse(DATABASE_URL)}
+else:
+    # Opção 2: Configuração manual via variáveis (alternativa)
+    DB_NAME = config("DB_NAME", default="")
+    DB_USER = config("DB_USER", default="")
+    DB_PASSWORD = config("DB_PASSWORD", default="")
+    DB_HOST = config("DB_HOST", default="")
+    DB_PORT = config("DB_PORT", default="3306")
+
+    if all([DB_NAME, DB_USER, DB_PASSWORD, DB_HOST]):
+        # MySQL configurado manualmente
+        DATABASES = {
+            "default": {
+                "ENGINE": "django.db.backends.mysql",
+                "NAME": DB_NAME,
+                "USER": DB_USER,
+                "PASSWORD": DB_PASSWORD,
+                "HOST": DB_HOST,
+                "PORT": DB_PORT,
+                "OPTIONS": {
+                    "charset": "utf8mb4",
+                    "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+                },
+            }
+        }
+    else:
+        # Opção 3: SQLite como fallback (desenvolvimento rápido)
+        DATABASES = {
+            "default": {
+                "ENGINE": "django.db.backends.sqlite3",
+                "NAME": BASE_DIR / "db.sqlite3",
+            }
+        }
 
 
 AUTH_USER_MODEL = "authentication.User"

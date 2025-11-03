@@ -13,10 +13,12 @@ Este guia explica como fazer deploy do backend PingMe no Python Everywhere.
 
 O projeto já está configurado com:
 - ✅ Variáveis de ambiente usando `python-decouple`
-- ✅ Configuração flexível de banco de dados
-- ✅ Suporte a MySQL/PostgreSQL ou SQLite
+- ✅ Configuração flexível de banco de dados (DATABASE_URL > variáveis individuais > SQLite)
+- ✅ Suporte a MySQL (via DATABASE_URL ou variáveis individuais)
+- ✅ SQLite como fallback para desenvolvimento
 - ✅ STATIC_ROOT configurado
 - ✅ MEDIA_ROOT configurado
+- ✅ Sistema de logging com rotação automática
 
 ### 2. No Python Everywhere
 
@@ -58,17 +60,33 @@ nano ~/pingMe/backend/.env
 Cole:
 
 ```env
+# ============================================================================
+# Configurações Essenciais
+# ============================================================================
 SECRET_KEY=sua-chave-secreta-gerada-aqui
 DEBUG=False
 ALLOWED_HOSTS=seu-usuario.pythonanywhere.com,www.seu-usuario.pythonanywhere.com
-CORS_ALLOWED_ORIGINS=https://seu-frontend.com,http://localhost:3000
 
-DB_ENGINE=django.db.backends.mysql
-DB_NAME=seu-usuario$nome-do-banco
-DB_USER=seu-usuario
-DB_PASSWORD=sua-senha-mysql
-DB_HOST=seu-usuario.mysql.pythonanywhere-services.com
-DB_PORT=3306
+# ============================================================================
+# Configuração de Banco de Dados
+# Prioridade: DATABASE_URL > Variáveis Individuais > SQLite (fallback)
+# ============================================================================
+
+# Opção 1: DATABASE_URL (RECOMENDADO - mais fácil e portátil)
+DATABASE_URL=mysql://seu-usuario:sua-senha-mysql@seu-usuario.mysql.pythonanywhere-services.com:3306/seu-usuario$nome-do-banco
+
+# Opção 2: Variáveis Individuais (alternativa)
+# Use apenas se não quiser usar DATABASE_URL
+# DB_NAME=seu-usuario$nome-do-banco
+# DB_USER=seu-usuario
+# DB_PASSWORD=sua-senha-mysql
+# DB_HOST=seu-usuario.mysql.pythonanywhere-services.com
+# DB_PORT=3306
+
+# ============================================================================
+# Configurações de CORS
+# ============================================================================
+CORS_ALLOWED_ORIGINS=https://seu-frontend.com,http://localhost:3000
 ```
 
 **Gerar SECRET_KEY:**
@@ -83,10 +101,8 @@ python3.10 -c "from django.core.management.utils import get_random_secret_key; p
 4. Use seu usuário e senha do Python Anywhere
 5. O host será: `seu-usuario.mysql.pythonanywhere-services.com`
 
-**Opção 3: PostgreSQL (Python Everywhere Paid)**
-```env
-DATABASE_URL=postgresql://usuario:senha@host:porta/nome-do-db
-```
+**Importante:** O projeto usa `dj-database-url` para interpretar o `DATABASE_URL`. O formato é:
+- MySQL: `mysql://usuario:senha@host:porta/nome-do-banco`
 
 #### E. Executar Migrações
 
