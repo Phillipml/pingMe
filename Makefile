@@ -1,5 +1,13 @@
 
 POETRY=cd backend && poetry run
+NPM=cd frontend && npm run
+
+dev-frontend:
+
+	$(NPM) dev
+	
+front-lint:
+	$(NPM) lint
 
 dev-backend:
 	$(POETRY) python manage.py runserver
@@ -34,7 +42,7 @@ test-coverage:
 format:
 	$(POETRY) black .
 
-lint:
+back-lint:
 	$(POETRY) flake8
 
 type-check:
