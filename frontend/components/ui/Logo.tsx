@@ -6,12 +6,12 @@ interface LogoProps extends React.HTMLAttributes<HTMLDivElement> {
   showText?: boolean;
 }
 
-export const Logo = ({ 
+export const Logo = ({
   iconClassName = "text-white",
   textClassName = "text-white ml-2",
   showText = true,
   className = "",
-  ...props 
+  ...props
 }: LogoProps) => {
   return (
     <div className={`flex items-center ${className}`} {...props}>

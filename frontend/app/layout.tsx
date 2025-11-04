@@ -21,7 +21,8 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <body
-        className={`${montserrat.variable} font-sans antialiased bg-gray-950 text-white`}
+        className={`${montserrat.variable} font-sans antialiased bg-gray-950 text-white h-screen w-screen overflow-hidden ">
+`}
         suppressHydrationWarning
       >
         {children}
