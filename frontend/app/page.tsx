@@ -1,19 +1,25 @@
+import Container from "@/components/layout/Container";
+import { Logo } from "../components/ui/Logo";
+import Input from "@/components/ui/Input";
+import Button from "@/components/ui/Button";
 export default function Home() {
   return (
-    <div className="w-full h-screen flex justify-center items-center ">
-      <div className="grid justify-center w-1/2 h-50 border-2 border-violet-800 text-center rounded p-4">
-        <h2 className="pb-4">Login</h2>
-        <input
+    <Container>
+      <div className="flex flex-col justify-center items-center fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4 w-full lg:w-1/2">
+        <Logo className="text-2xl m-auto border-b-2 border-violet-600 pb-2 mb-8 mt-2" />
+        <h2 className="mb-8 text-center">Login</h2>
+        <Input
           type="text"
-          className="border-2 border-violet-600 rounded p-2 w-lg mb-2"
+          className="w-5/6 text-center lg:w-1/2"
           placeholder="Email"
         />
-        <input
-          type="text"
-          className="border-2 border-violet-600 rounded p-2 w-lg"
+        <Input
+          type="password"
+          className="w-5/6 text-center lg:w-1/2"
           placeholder="Senha"
         />
+        <Button className="w-5/6 lg:w-1/2">Entrar</Button>
       </div>
-    </div>
+    </Container>
   );
 }
