@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import { useGetProfileQuery } from "@/lib/slice";
 
 export function useAuth() {
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const hasToken =
     typeof window !== "undefined" && !!localStorage.getItem("accessToken");
@@ -16,23 +15,29 @@ export function useAuth() {
     error,
   } = useGetProfileQuery(undefined, { skip: !hasToken });
 
+  const isLoading = hasToken ? queryLoading : false;
+
   useEffect(() => {
-    if (hasToken) {
-      if (user) {
-        setIsAuthenticated(true);
-        setIsAuthenticated(false);
-        if (typeof window !== "undefined") {
-          localStorage.removeItem("accessToken");
-          localStorage.removeItem("refreshToken");
-          localStorage.removeItem("user");
-        }
-      }
-    } else {
+    if (!hasToken) {
       setIsAuthenticated(false);
+      return;
     }
 
-    setIsLoading(queryLoading);
-  }, [user, error, hasToken, queryLoading]);
+    if (error) {
+      setIsAuthenticated(false);
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("refreshToken");
+        localStorage.removeItem("user");
+      }
+      return;
+    }
+
+    if (user) {
+      setIsAuthenticated(true);
+      return;
+    }
+  }, [user, error, hasToken]);
 
   return {
     isAuthenticated,
