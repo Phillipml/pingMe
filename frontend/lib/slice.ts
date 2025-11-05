@@ -1,12 +1,12 @@
 import { API_BASE_URL } from "@/utils/api-utils";
-import { LoginRequest, LoginResponse } from "@/utils/api-interfaces";
+import { LoginRequest, LoginResponse, User } from "@/utils/api-interfaces";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
     baseUrl: API_BASE_URL,
-    prepareHeaders: (headers, { getState }) => {
+    prepareHeaders: (headers) => {
       if (typeof window !== "undefined") {
         const accessToken = localStorage.getItem("accessToken");
         if (accessToken) {
@@ -16,7 +16,7 @@ export const apiSlice = createApi({
       return headers;
     },
   }),
-  tagTypes: ['User', 'Post'],
+  tagTypes: ["User", "Post"],
   endpoints: (builder) => ({
     login: builder.mutation<LoginResponse, LoginRequest>({
       query: (credentials) => ({
@@ -43,7 +43,10 @@ export const apiSlice = createApi({
         }
       },
     }),
+    getProfile: builder.query<User, void>({
+      query: () => "/auth/profile/",
+    }),
   }),
 });
 
-export const { useLoginMutation } = apiSlice;
+export const { useLoginMutation, useGetProfileQuery } = apiSlice;
