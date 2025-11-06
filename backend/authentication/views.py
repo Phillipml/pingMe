@@ -39,16 +39,35 @@ def login(request):
         user = User.objects.filter(email=email).first()
         if user and user.check_password(password):
             refresh = RefreshToken.for_user(user)
-            return Response(
+            
+            response = Response(
                 {
                     "message": "Login realizado com sucesso",
                     "user": UserSerializer(user).data,
-                    "tokens": {
-                        "refresh": str(refresh),
-                        "access": str(refresh.access_token),
-                    },
                 }
             )
+            
+            response.set_cookie(
+                key="accessToken",
+                value=str(refresh.access_token),
+                max_age=60 * 60,
+                httponly=True,
+                secure=not settings.DEBUG,
+                samesite="Lax",
+                path="/",
+            )
+            
+            response.set_cookie(
+                key="refreshToken",
+                value=str(refresh),
+                max_age=7 * 24 * 60 * 60,
+                httponly=True,
+                secure=not settings.DEBUG,
+                samesite="Lax",
+                path="/",
+            )
+            
+            return response
 
     return Response(
         {"error": "Credenciais inválidas"}, status=status.HTTP_401_UNAUTHORIZED

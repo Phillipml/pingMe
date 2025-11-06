@@ -18,5 +18,4 @@ export interface Tokens {
 export interface LoginResponse {
   message: string;
   user: User;
-  tokens: Tokens;
 }

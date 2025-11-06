@@ -6,15 +6,7 @@ export const apiSlice = createApi({
   reducerPath: "api",
   baseQuery: fetchBaseQuery({
     baseUrl: API_BASE_URL,
-    prepareHeaders: (headers) => {
-      if (typeof window !== "undefined") {
-        const accessToken = localStorage.getItem("accessToken");
-        if (accessToken) {
-          headers.set("Authorization", `Bearer ${accessToken}`);
-        }
-      }
-      return headers;
-    },
+    credentials: "include",
   }),
   tagTypes: ["User", "Post"],
   endpoints: (builder) => ({
@@ -24,24 +16,6 @@ export const apiSlice = createApi({
         method: "POST",
         body: credentials,
       }),
-      async onQueryStarted(credentials, { queryFulfilled }) {
-        try {
-          const { data } = await queryFulfilled;
-
-          if (typeof window !== "undefined") {
-            localStorage.setItem("accessToken", data.tokens.access);
-            localStorage.setItem("refreshToken", data.tokens.refresh);
-            localStorage.setItem("user", JSON.stringify(data.user));
-          }
-        } catch (error) {
-          console.error("Erro ao salvar tokens:", error);
-          if (typeof window !== "undefined") {
-            localStorage.removeItem("accessToken");
-            localStorage.removeItem("refreshToken");
-            localStorage.removeItem("user");
-          }
-        }
-      },
     }),
     getProfile: builder.query<User, void>({
       query: () => "/auth/profile/",
