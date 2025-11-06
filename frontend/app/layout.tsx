@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat } from "next/font/google";
 import "./globals.css";
+import AppProvider from "@/providers/AppProvider";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -25,7 +26,7 @@ export default function RootLayout({
 `}
         suppressHydrationWarning
       >
-        {children}
+        <AppProvider>{children}</AppProvider>
       </body>
     </html>
   );
