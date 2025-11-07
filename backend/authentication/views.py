@@ -39,14 +39,14 @@ def login(request):
         user = User.objects.filter(email=email).first()
         if user and user.check_password(password):
             refresh = RefreshToken.for_user(user)
-            
+
             response = Response(
                 {
                     "message": "Login realizado com sucesso",
                     "user": UserSerializer(user).data,
                 }
             )
-            
+
             response.set_cookie(
                 key="accessToken",
                 value=str(refresh.access_token),
@@ -56,7 +56,7 @@ def login(request):
                 samesite="Lax",
                 path="/",
             )
-            
+
             response.set_cookie(
                 key="refreshToken",
                 value=str(refresh),
@@ -66,7 +66,7 @@ def login(request):
                 samesite="Lax",
                 path="/",
             )
-            
+
             return response
 
     return Response(
@@ -107,17 +107,15 @@ def profile_update(request):
 @permission_classes([AllowAny])
 def token_refresh(request):
     refresh_token = request.COOKIES.get("refreshToken") or request.data.get("refresh")
-    
+
     if not refresh_token:
         return Response(
-            {"error": "Refresh token é obrigatório"}, 
-            status=status.HTTP_400_BAD_REQUEST
+            {"error": "Refresh token é obrigatório"}, status=status.HTTP_400_BAD_REQUEST
         )
-    
+
     try:
         refresh = RefreshToken(refresh_token)
         access_token = refresh.access_token
-        
 
         response = Response({"access": str(access_token)})
 
@@ -130,45 +128,43 @@ def token_refresh(request):
             samesite="Lax",
             path="/",
         )
-        
+
         return response
     except Exception:
         return Response(
-            {"error": "Token inválido ou expirado"}, 
-            status=status.HTTP_401_UNAUTHORIZED
+            {"error": "Token inválido ou expirado"}, status=status.HTTP_401_UNAUTHORIZED
         )
+
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def logout(request):
     refresh_token = request.COOKIES.get("refreshToken") or request.data.get("refresh")
-    
+
     if not refresh_token:
         return Response(
-            {"error": "Refresh token é obrigatório"}, 
-            status=status.HTTP_400_BAD_REQUEST
+            {"error": "Refresh token é obrigatório"}, status=status.HTTP_400_BAD_REQUEST
         )
-    
+
     try:
         refresh = RefreshToken(refresh_token)
         refresh.blacklist()
-        
-      
+
         response = Response({"message": "Logout realizado com sucesso"})
-        
+
         response.delete_cookie("accessToken", path="/")
         response.delete_cookie("refreshToken", path="/")
-        
+
         return response
     except Exception:
-      
+
         response = Response(
-            {"error": "Token inválido"}, 
-            status=status.HTTP_400_BAD_REQUEST
+            {"error": "Token inválido"}, status=status.HTTP_400_BAD_REQUEST
         )
         response.delete_cookie("accessToken", path="/")
         response.delete_cookie("refreshToken", path="/")
         return response
+
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
