@@ -1,9 +1,29 @@
+"use client"
 import Container from "@/components/layout/Container";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { Logo } from "@/components/ui/Logo";
+import { useLoginMutation } from "@/lib/slice";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function Login() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error,setError] = useState("");
+  const [login, {isLoading}]= useLoginMutation();
+  const handleSubmit = async (e:React.FormEvent) => {
+    e.preventDefault();
+    setError("")
+    try {
+      await login({email, password}).unwrap();
+      router.push('/feed')
+
+    } catch (err: any) {
+      setError(err?.data?.error || err?.data?.message || "Erro ao fazer login, favor. Verifique suas credenciais")
+    }
+  }
   return (
     <Container>
       <div className="flex flex-col justify-center items-center fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4 w-full lg:w-1/2">
@@ -19,7 +39,7 @@ export default function Login() {
           className="w-5/6 text-center lg:w-1/2"
           placeholder="Senha"
         />
-        <Button className="w-5/6 lg:w-1/2">Entrar</Button>
+        <Button type="submit" onClick={handleSubmit} className="w-5/6 lg:w-1/2" disabled={isLoading}>Entrar</Button>
       </div>
     </Container>
   );
