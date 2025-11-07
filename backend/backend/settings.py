@@ -73,12 +73,8 @@ WSGI_APPLICATION = "backend.wsgi.application"
 DATABASE_URL = config("DATABASE_URL", default=None)
 
 if DATABASE_URL:
-    # Opção 1: Usar DATABASE_URL (recomendado)
-    # Exemplo MySQL Docker: mysql://usuario:senha@localhost:3306/pingme
-    # Exemplo MySQL PythonAnywhere: mysql://usuario:senha@host:3306/nome_db
     DATABASES = {"default": dj_database_url.parse(DATABASE_URL)}
 else:
-    # Opção 2: Configuração manual via variáveis (alternativa)
     DB_NAME = config("DB_NAME", default="")
     DB_USER = config("DB_USER", default="")
     DB_PASSWORD = config("DB_PASSWORD", default="")
@@ -86,7 +82,6 @@ else:
     DB_PORT = config("DB_PORT", default="3306")
 
     if all([DB_NAME, DB_USER, DB_PASSWORD, DB_HOST]):
-        # MySQL configurado manualmente
         DATABASES = {
             "default": {
                 "ENGINE": "django.db.backends.mysql",
@@ -102,7 +97,6 @@ else:
             }
         }
     else:
-        # Opção 3: SQLite como fallback (desenvolvimento rápido)
         DATABASES = {
             "default": {
                 "ENGINE": "django.db.backends.sqlite3",
@@ -152,7 +146,7 @@ CORS_ALLOWED_ORIGINS = config(
     default="http://localhost:3000,http://127.0.0.1:3000",
     cast=Csv(),
 )
-
+CORS_ALLOW_CREDENTIALS = True
 
 LANGUAGE_CODE = "en-us"
 
