@@ -20,8 +20,9 @@ export default function Login() {
       await login({email, password}).unwrap();
       router.push('/feed')
 
-    } catch (err: any) {
-      setError(err?.data?.error || err?.data?.message || "Erro ao fazer login, favor. Verifique suas credenciais")
+    } catch (err: unknown) {
+      const error = err as { data?: { error?: string; message?: string } };
+      setError(error?.data?.error || error?.data?.message || "Erro ao fazer login, favor. Verifique suas credenciais");
     }
   }
   return (
