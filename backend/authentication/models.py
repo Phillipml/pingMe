@@ -38,6 +38,7 @@ class Profile(models.Model):
     last_name = models.CharField(max_length=50, blank=True)
     bio = models.TextField(blank=True)
     avatar = models.ImageField(upload_to="avatars/", blank=True, null=True)
+    status = models.IntegerField(default=0, help_text="0 = first login, 1 = profile updated")
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
