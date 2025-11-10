@@ -25,11 +25,13 @@ http://localhost:8000/api/
 
 ### Como Funciona a Autenticação
 
-A API usa JWT (JSON Web Tokens). Para usar endpoints protegidos, você precisa enviar o token no header:
+A API usa JWT (JSON Web Tokens) com suporte a **cookies HttpOnly** e **tokens no body**. Para usar endpoints protegidos, você precisa enviar o token no header:
 
 ```
 Authorization: Bearer seu-token-aqui
 ```
+
+**Nota:** Os tokens também são salvos automaticamente em cookies HttpOnly (`accessToken` e `refreshToken`) para uso em navegadores. Para uso em ferramentas como Postman, você pode usar o token diretamente do body da resposta.
 
 ### Passo a Passo
 
@@ -150,14 +152,15 @@ Content-Type: application/json
     "email": "joao@email.com",
     "created_at": "2024-01-01T10:00:00Z"
   },
-  "tokens": {
-    "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
-    "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
-  }
+  "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
+  "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
 }
 ```
 
-**IMPORTANTE:** Guarde os tokens em local seguro! O `access` é usado nas requisições e o `refresh` para renovar o access quando expirar.
+**IMPORTANTE:** 
+- Os tokens são retornados diretamente no body da resposta (`access` e `refresh`)
+- Os tokens também são salvos automaticamente em cookies HttpOnly (`accessToken` e `refreshToken`) para uso em navegadores
+- Guarde os tokens em local seguro! O `access` é usado nas requisições e o `refresh` para renovar o access quando expirar
 
 **Erros Possíveis:**
 - `401`: Email ou senha incorretos
@@ -169,6 +172,7 @@ const response = await fetch('http://localhost:8000/api/auth/login/', {
   headers: {
     'Content-Type': 'application/json',
   },
+  credentials: 'include', // Importante para receber cookies
   body: JSON.stringify({
     email: 'joao@email.com',
     password: 'senhaSegura123'
@@ -178,11 +182,19 @@ const response = await fetch('http://localhost:8000/api/auth/login/', {
 const data = await response.json();
 
 if (response.ok) {
-  localStorage.setItem('accessToken', data.tokens.access);
-  localStorage.setItem('refreshToken', data.tokens.refresh);
+  // Tokens também estão disponíveis no body
+  localStorage.setItem('accessToken', data.access);
+  localStorage.setItem('refreshToken', data.refresh);
   localStorage.setItem('user', JSON.stringify(data.user));
+  // Cookies são salvos automaticamente pelo navegador
 }
 ```
+
+**Exemplo com Postman:**
+1. Faça a requisição POST para `/api/auth/login/` com email e password
+2. Na resposta, você verá os tokens `access` e `refresh` no body JSON
+3. Copie o token `access` e use no header `Authorization: Bearer <token>` nas próximas requisições
+4. Os cookies também são salvos automaticamente (visíveis na aba Cookies do Postman)
 
 ---
 
@@ -197,12 +209,14 @@ Quando o access token expira (após 60 minutos), use este endpoint para obter um
 Content-Type: application/json
 ```
 
-**Body:**
+**Body (opcional se usar cookie):**
 ```json
 {
   "refresh": "seu-refresh-token-aqui"
 }
 ```
+
+**Nota:** O refresh token pode ser enviado no body ou será lido automaticamente do cookie `refreshToken` se disponível.
 
 **Resposta de Sucesso (200):**
 ```json
@@ -253,12 +267,14 @@ Invalida o refresh token, impedindo que seja usado novamente.
 Content-Type: application/json
 ```
 
-**Body:**
+**Body (opcional se usar cookie):**
 ```json
 {
   "refresh": "seu-refresh-token-aqui"
 }
 ```
+
+**Nota:** O refresh token pode ser enviado no body ou será lido automaticamente do cookie `refreshToken` se disponível. Os cookies também são removidos automaticamente.
 
 **Resposta de Sucesso (200):**
 ```json
@@ -271,11 +287,48 @@ Content-Type: application/json
 
 ---
 
+### 5. Usando a API no Postman
+
+**Passo a Passo:**
+
+1. **Fazer Login:**
+   - Método: `POST`
+   - URL: `http://localhost:8000/api/auth/login/`
+   - Body (raw JSON):
+   ```json
+   {
+     "email": "seu@email.com",
+     "password": "suasenha"
+   }
+   ```
+   - Envie a requisição
+
+2. **Copiar o Token:**
+   - Na resposta JSON, copie o valor do campo `access`
+   - Exemplo: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`
+
+3. **Configurar Header de Autenticação:**
+   - Crie uma nova requisição (ex: `GET /api/auth/profile/`)
+   - Vá na aba **Headers**
+   - Adicione:
+     - **Key:** `Authorization`
+     - **Value:** `Bearer <cole_o_token_aqui>`
+   - Envie a requisição
+
+4. **Gerenciar Cookies (Opcional):**
+   - O Postman salva cookies automaticamente após o login
+   - Para ver: Clique no ícone de cookies (canto inferior direito)
+   - Para usar cookies automaticamente: Settings → General → Cookies → "Automatically manage cookies"
+
+**Dica:** Crie uma variável de ambiente no Postman para o `accessToken` e use `Bearer {{accessToken}}` no header Authorization.
+
+---
+
 ## Perfil do Usuário
 
 ### 1. Ver Meu Perfil
 
-Retorna as informações do perfil do usuário autenticado.
+Retorna as informações do perfil do usuário autenticado. **O perfil é criado automaticamente se não existir.**
 
 **Endpoint:** `GET /api/auth/profile/`
 
@@ -290,18 +343,19 @@ Authorization: Bearer seu-access-token
   "first_name": "João",
   "last_name": "Silva",
   "bio": "Desenvolvedor apaixonado por tecnologia",
-  "avatar": "/media/avatars/joaosilva_avatar.jpg"
+  "avatar": "/media/avatars/joaosilva_avatar.jpg",
+  "status": 1
 }
 ```
 
 **Campos:**
-- `first_name`: Primeiro nome (opcional)
-- `last_name`: Sobrenome (opcional)
-- `bio`: Biografia do usuário (opcional)
-- `avatar`: URL da foto de perfil (opcional)
+- `first_name`: Primeiro nome (opcional, string)
+- `last_name`: Sobrenome (opcional, string)
+- `bio`: Biografia do usuário (opcional, string)
+- `avatar`: URL da foto de perfil (opcional, string ou null)
+- `status`: Status do perfil (integer, 0 = primeiro login, 1 = perfil atualizado)
 
-**Erros Possíveis:**
-- `404`: Perfil não encontrado
+**Nota:** Se o perfil não existir, ele será criado automaticamente com valores padrão (campos vazios e status = 0).
 
 **Exemplo:**
 ```javascript
@@ -318,7 +372,7 @@ const profile = await response.json();
 
 ### 2. Atualizar Perfil
 
-Permite atualizar foto de perfil, nome e bio. Todos os campos são opcionais - você pode atualizar apenas o que desejar.
+Permite atualizar foto de perfil, nome e bio. Todos os campos são opcionais - você pode atualizar apenas o que desejar. **O perfil é criado automaticamente se não existir.**
 
 **Endpoint:** `PUT /api/auth/profile/update/`
 
@@ -352,9 +406,12 @@ avatar: [arquivo de imagem]
   "first_name": "João",
   "last_name": "Silva",
   "bio": "Nova biografia",
-  "avatar": "/media/avatars/joaosilva_avatar.jpg"
+  "avatar": "/media/avatars/joaosilva_avatar.jpg",
+  "status": 1
 }
 ```
+
+**Nota:** O campo `status` é atualizado automaticamente para `1` quando o perfil é atualizado pela primeira vez.
 
 **Exemplo com FormData (com imagem):**
 ```javascript
@@ -415,7 +472,8 @@ Authorization: Bearer seu-access-token
   "first_name": "Maria",
   "last_name": "Santos",
   "bio": "Outra desenvolvedora",
-  "avatar": "/media/avatars/maria_avatar.jpg"
+  "avatar": "/media/avatars/maria_avatar.jpg",
+  "status": 1
 }
 ```
 
@@ -1270,7 +1328,7 @@ async function exemploCompleto() {
   });
   
   const loginData = await login.json();
-  const token = loginData.tokens.access;
+  const token = loginData.access; // Token agora vem diretamente no body
   
   // Atualizar Perfil
   const atualizarPerfil = await fetch(`${BASE_URL}/auth/profile/update/`, {
@@ -1404,6 +1462,9 @@ async function criarPost(content) {
 - O access token expira em 60 minutos
 - Use o refresh token para obter um novo access token antes que expire
 - Após logout, o refresh token não pode mais ser usado
+- **Tokens são retornados no body da resposta** (`access` e `refresh`) e também salvos em cookies HttpOnly
+- Para uso no Postman: copie o token `access` do body e use no header `Authorization: Bearer <token>`
+- Para uso em navegadores: os cookies são gerenciados automaticamente, mas você também pode usar os tokens do body
 
 ### Permissões
 - Apenas o autor pode editar/deletar seus próprios posts

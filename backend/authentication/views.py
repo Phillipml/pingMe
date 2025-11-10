@@ -44,6 +44,8 @@ def login(request):
                 {
                     "message": "Login realizado com sucesso",
                     "user": UserSerializer(user).data,
+                    "access": str(refresh.access_token),
+                    "refresh": str(refresh),
                 }
             )
 
@@ -77,30 +79,20 @@ def login(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def profile(request):
-    try:
-        profile = Profile.objects.get(user=request.user)
-        serializer = ProfileSerializer(profile)
-        return Response(serializer.data)
-    except Profile.DoesNotExist:
-        return Response(
-            {"error": "Perfil não encontrado"}, status=status.HTTP_404_NOT_FOUND
-        )
+    profile, created = Profile.objects.get_or_create(user=request.user)
+    serializer = ProfileSerializer(profile)
+    return Response(serializer.data)
 
 
 @api_view(["PUT"])
 @permission_classes([IsAuthenticated])
 def profile_update(request):
-    try:
-        profile = Profile.objects.get(user=request.user)
-        serializer = ProfileSerializer(profile, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    except Profile.DoesNotExist:
-        return Response(
-            {"error": "Perfil não encontrado"}, status=status.HTTP_404_NOT_FOUND
-        )
+    profile, created = Profile.objects.get_or_create(user=request.user)
+    serializer = ProfileSerializer(profile, data=request.data, partial=True)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["POST"])
