@@ -24,17 +24,20 @@ pingMe/
 │   │   ├── models.py           # User e Profile
 │   │   ├── views.py            # Endpoints de autenticação
 │   │   ├── serializers.py      # Serializers de usuário e perfil
-│   │   └── urls.py             # Rotas de autenticação
+│   │   ├── urls.py             # Rotas de autenticação
+│   │   └── tests.py             # Testes de autenticação
 │   ├── posts/                  # App de posts, curtidas e comentários
 │   │   ├── models.py           # Post, Like, Comment
 │   │   ├── views.py            # Endpoints de posts
 │   │   ├── serializers.py      # Serializers de posts
-│   │   └── urls.py             # Rotas de posts
+│   │   ├── urls.py             # Rotas de posts
+│   │   └── tests.py            # Testes de posts
 │   ├── follows/                # App de relacionamentos
 │   │   ├── models.py           # Follow
 │   │   ├── views.py            # Endpoints de seguir/deixar de seguir
 │   │   ├── serializers.py      # Serializers de follow
-│   │   └── urls.py             # Rotas de follows
+│   │   ├── urls.py             # Rotas de follows
+│   │   └── tests.py            # Testes de follows
 │   ├── backend/                # Configurações do Django
 │   │   ├── settings.py         # Configurações principais
 │   │   ├── urls.py             # URLs raiz
@@ -165,6 +168,9 @@ authentication - Gerencia usuários e autenticação
 - Cadastro e login
 - Perfil com bio e avatar
 - Upload de foto de perfil
+- Alterar senha
+- Deletar conta
+- Listar usuários (apenas admin)
 
 posts - Gerencia o conteúdo
 - Criar, editar e deletar posts
@@ -239,11 +245,18 @@ O sistema suporta configuração flexível de banco de dados com três níveis d
 - **Refresh Token**: 7 dias de validade
 - **Rotação de Tokens**: Habilitada (novo refresh token a cada renovação)
 - **Blacklist**: Tokens invalidados no logout
+- **Cookies HttpOnly**: Tokens também salvos em cookies para uso em navegadores
 - **Endpoints**:
+  - Register: `POST /api/auth/register/`
   - Login: `POST /api/auth/login/`
   - Refresh: `POST /api/auth/token/refresh/`
   - Logout: `POST /api/auth/logout/`
-  - Register: `POST /api/auth/register/`
+  - Profile: `GET /api/auth/profile/`
+  - Update Profile: `PUT /api/auth/profile/update/`
+  - Profile Detail: `GET /api/auth/profile/{user_id}/`
+  - Change Password: `PUT /api/auth/change-password/`
+  - User List: `GET /api/auth/users/` (apenas admin)
+  - Delete Account: `DELETE /api/auth/users/me/delete/`
 
 ### CORS e Segurança
 - CORS configurado para `http://localhost:3000` e `http://127.0.0.1:3000` (configurável via `CORS_ALLOWED_ORIGINS`)
