@@ -36,6 +36,22 @@ def authenticated_client(api_client, user):
     return api_client
 
 
+@pytest.fixture
+def admin_user():
+    user = User.objects.create_user(
+        username="admin", email="admin@example.com", password="admin123", is_superuser=True
+    )
+    Profile.objects.create(user=user)
+    return user
+
+
+@pytest.fixture
+def authenticated_admin_client(api_client, admin_user):
+    refresh = RefreshToken.for_user(admin_user)
+    api_client.credentials(HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}")
+    return api_client
+
+
 @pytest.mark.django_db
 class TestUserRegistration:
     def test_register_user_success(self, api_client, user_data):
@@ -66,9 +82,9 @@ class TestUserLogin:
             "/api/auth/login/", {"email": user.email, "password": "testpass123"}
         )
         assert response.status_code == status.HTTP_200_OK
-        assert "tokens" in response.data
-        assert "access" in response.data["tokens"]
-        assert "refresh" in response.data["tokens"]
+        assert "access" in response.data
+        assert "refresh" in response.data
+        assert "user" in response.data
 
     def test_login_invalid_credentials(self, api_client):
         response = api_client.post(
@@ -154,3 +170,69 @@ class TestProfile:
     def test_get_profile_detail_not_found(self, authenticated_client):
         response = authenticated_client.get("/api/auth/profile/999/")
         assert response.status_code == status.HTTP_404_NOT_FOUND
+
+
+@pytest.mark.django_db
+class TestChangePassword:
+    def test_change_password_success(self, authenticated_client, user):
+        response = authenticated_client.put(
+            "/api/auth/change-password/",
+            {"old_password": "testpass123", "new_password": "newpass123"},
+        )
+        assert response.status_code == status.HTTP_200_OK
+        user.refresh_from_db()
+        assert user.check_password("newpass123")
+
+    def test_change_password_wrong_old_password(self, authenticated_client):
+        response = authenticated_client.put(
+            "/api/auth/change-password/",
+            {"old_password": "wrong", "new_password": "newpass123"},
+        )
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+    def test_change_password_short_new_password(self, authenticated_client):
+        response = authenticated_client.put(
+            "/api/auth/change-password/",
+            {"old_password": "testpass123", "new_password": "short"},
+        )
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+    def test_change_password_missing_fields(self, authenticated_client):
+        response = authenticated_client.put("/api/auth/change-password/", {})
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+    def test_change_password_unauthorized(self, api_client):
+        response = api_client.put(
+            "/api/auth/change-password/",
+            {"old_password": "testpass123", "new_password": "newpass123"},
+        )
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+@pytest.mark.django_db
+class TestUserList:
+    def test_get_user_list_as_admin(self, authenticated_admin_client):
+        response = authenticated_admin_client.get("/api/auth/users/")
+        assert response.status_code == status.HTTP_200_OK
+        assert "results" in response.data
+
+    def test_get_user_list_as_regular_user(self, authenticated_client):
+        response = authenticated_client.get("/api/auth/users/")
+        assert response.status_code == status.HTTP_403_FORBIDDEN
+
+    def test_get_user_list_unauthorized(self, api_client):
+        response = api_client.get("/api/auth/users/")
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+@pytest.mark.django_db
+class TestDeleteAccount:
+    def test_delete_account_success(self, authenticated_client, user):
+        user_id = user.id
+        response = authenticated_client.delete("/api/auth/users/me/delete/")
+        assert response.status_code == status.HTTP_200_OK
+        assert not User.objects.filter(id=user_id).exists()
+
+    def test_delete_account_unauthorized(self, api_client):
+        response = api_client.delete("/api/auth/users/me/delete/")
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED

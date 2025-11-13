@@ -23,10 +23,24 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 class ProfileSerializer(serializers.ModelSerializer):
     avatar = serializers.ImageField(required=False, allow_null=True)
+    username = serializers.CharField(source="user.username", required=False)
 
     class Meta:
         model = Profile
-        fields = ["first_name", "last_name", "bio", "avatar", "status"]
+        fields = ["username", "first_name", "last_name", "bio", "avatar", "status"]
+
+    def update(self, instance, validated_data):
+        user_data = validated_data.pop('user', {})
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+        instance.save()
+        if 'username' in user_data:
+            user = instance.user
+            user.username = user_data['username']
+            user.save()
+
+        return instance
 
 
 class ProfileDetailSerializer(serializers.ModelSerializer):
