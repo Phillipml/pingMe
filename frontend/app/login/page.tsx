@@ -1,5 +1,6 @@
 "use client"
 import Container from "@/components/layout/Container";
+import Form from "@/components/layout/Form";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { Logo } from "@/components/ui/Logo";
@@ -30,7 +31,7 @@ export default function Login() {
        <div className="flex flex-col justify-center items-center fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 p-4 w-full lg:w-1/2">
         <Logo className="text-2xl m-auto border-b-2 border-violet-600 pb-2 mb-8 mt-2" />
         <h2 className="mb-8 text-center">Login</h2>
-        <form onSubmit={handleSubmit} className="flex flex-col items-center w-full">
+        <Form onSubmit={handleSubmit}>
           {error && ( <div>{error}</div> )}
         <Input
           type="text"
@@ -49,7 +50,7 @@ export default function Login() {
           placeholder="Senha"
         />
         <Button type="submit" className="w-5/6 lg:w-1/2" disabled={isLoading}>Entrar</Button>
-        </form>
+        </Form>
       </div>
     </Container>
   );

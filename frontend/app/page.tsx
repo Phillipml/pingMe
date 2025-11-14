@@ -1,6 +1,7 @@
 //import { cookies } from "next/headers";
 //import { redirect } from "next/navigation";
 import CompleteProfile from "./complete-profile/page";
+import Register from "./register/page";
 
 export default async function Home() {
   // const cookieStore = await cookies()
@@ -11,5 +12,5 @@ export default async function Home() {
   // } else {
   //   redirect("/feed")
   // }
-  return (<CompleteProfile/>)
+  return (<Register/>)
 }
