@@ -1,7 +1,8 @@
+import CenterContainer from "@/components/layout/CenterContainer"
 
 export default function Register() {
   return (
-    <div>Register</div>
+    <CenterContainer>Register</CenterContainer>
   )
 }
 

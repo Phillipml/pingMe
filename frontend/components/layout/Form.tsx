@@ -5,12 +5,10 @@ interface FormProps extends FormHTMLAttributes<HTMLFormElement> {
   className?: string
 }
 
-function Form({ children,className, ...props }: FormProps) {
+export default function Form({ children,className, ...props }: FormProps) {
   return (
     <form className={`flex flex-col w-1/2 m-auto p-2 ${className}`} {...props}>
       {children}
     </form>
   );
 }
- 
-export default Form;
