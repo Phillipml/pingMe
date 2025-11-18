@@ -1,16 +1,16 @@
-//import { cookies } from "next/headers";
-//import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 import Register from "./register/page";
 
 export default async function Home() {
-  // const cookieStore = await cookies()
-  // const accessToken = cookieStore.get("accessToken")
-  // const refreshToken = cookieStore.get("refreshToken")
-  // if(!accessToken || !refreshToken) {
-  //    redirect("/login")
-  // } else {
-  //   redirect("/feed")
-  // }
-  return (<Register/>)
+  const cookieStore = await cookies()
+  const accessToken = cookieStore.get("accessToken")
+  const refreshToken = cookieStore.get("refreshToken")
+  if(!accessToken || !refreshToken) {
+     redirect("/login")
+  } else {
+    redirect("/feed")
+  }
+
 }
