@@ -48,7 +48,7 @@ back-lint:
 type-check:
 	$(POETRY) mypy
 
-quality: format lint type-check
+quality: format back-lint type-check
 
 docker-up:
 	cd backend && docker-compose up -d
