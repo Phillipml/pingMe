@@ -1,5 +1,5 @@
 import { API_BASE_URL } from "@/utils/api-utils";
-import { LoginRequest, LoginResponse, RegisterRequest, RegisterResponse, User } from "@/utils/api-interfaces";
+import { LoginRegisterResponse, LoginRequest, RegisterRequest, User } from "@/utils/api-interfaces";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const apiSlice = createApi({
@@ -10,14 +10,14 @@ export const apiSlice = createApi({
   }),
   tagTypes: ["User", "Post"],
   endpoints: (builder) => ({
-    login: builder.mutation<LoginResponse, LoginRequest>({
+    login: builder.mutation<LoginRegisterResponse, LoginRequest>({
       query: (credentials) => ({
         url: "/auth/login/",
         method: "POST",
         body: credentials,
       }),
     }),
-    register: builder.mutation<RegisterResponse,RegisterRequest>({
+    register: builder.mutation<LoginRegisterResponse,RegisterRequest>({
       query: (userData)=>({
         url:"/auth/register/",
         method:"POST",

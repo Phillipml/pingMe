@@ -15,7 +15,7 @@ export interface Tokens {
   access: string;
 }
 
-export interface LoginResponse {
+export interface LoginRegisterResponse {
   message: string;
   user: User;
 }
@@ -24,4 +24,3 @@ export interface RegisterRequest {
   email:string,
   password:string
 }
-export interface RegisterResponse extends LoginResponse{}

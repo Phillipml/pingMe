@@ -33,7 +33,7 @@ export default function Login() {
         <Form onSubmit={handleSubmit}>
           {error && ( <div>{error}</div> )}
         <Input
-          type="text"
+          type="email"
           className="w-5/6 text-center lg:w-1/2"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
