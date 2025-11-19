@@ -1,34 +1,33 @@
-
 POETRY=cd backend && poetry run
 NPM=cd frontend && npm run
 
-dev-frontend:
+poetry-install:
+	cd backend && poetry install
 
-	$(NPM) dev
-	
-front-lint:
-	$(NPM) lint
-
-dev-backend:
-	$(POETRY) python manage.py runserver
-
-check:
-	$(POETRY) python manage.py check
-
-migrate:
-	$(POETRY) python manage.py migrate
-
-
-makemigrations:
-	$(POETRY) python manage.py makemigrations
-
-migrations: makemigrations migrate
+poetry-setup: poetry-install
 
 get_secret_key:
 	$(POETRY) python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 
+makemigrations:
+	$(POETRY) python manage.py makemigrations
+
+migrate:
+	$(POETRY) python manage.py migrate
+
+migrations: makemigrations migrate
+
 createsuperuser:
 	$(POETRY) python manage.py createsuperuser
+
+check:
+	$(POETRY) python manage.py check
+
+dev-backend:
+	$(POETRY) python manage.py runserver
+
+dev-frontend:
+	$(NPM) dev
 
 test:
 	$(POETRY) pytest
@@ -48,7 +47,10 @@ back-lint:
 type-check:
 	$(POETRY) mypy
 
-quality: format lint type-check
+quality: format back-lint type-check
+
+front-lint:
+	$(NPM) lint
 
 docker-up:
 	cd backend && docker-compose up -d

@@ -4,6 +4,7 @@ API backend de rede social feita com Django REST Framework. Permite criar posts,
 
 ## O que tem nesse projeto
 
+### Backend
 - Autenticação de usuários com JWT
 - Perfil de usuário com bio e avatar (upload de imagem)
 - Criar posts com texto (apenas texto, sem imagens)
@@ -14,6 +15,14 @@ API backend de rede social feita com Django REST Framework. Permite criar posts,
 - Suporte CORS para frontend
 - Configuração Docker (MySQL 8.0 e Redis 7.2)
 - Configuração flexível de banco de dados (DATABASE_URL > variáveis individuais > SQLite)
+
+### Frontend
+- Interface moderna com Next.js 16 e React 19
+- Autenticação completa (login e registro)
+- Gerenciamento de estado com Redux Toolkit
+- Proteção de rotas baseada em autenticação
+- Design responsivo com Tailwind CSS
+- Integração com API backend via Axios
 
 ## Estrutura do Projeto
 
@@ -52,7 +61,21 @@ pingMe/
 │   ├── docker-compose.yml      # Configuração Docker (MySQL + Redis)
 │   ├── Dockerfile              # Dockerfile do backend
 │   └── env.example             # Exemplo de variáveis de ambiente
-├── frontend/                   # (A ser implementado)
+├── frontend/                   # Frontend Next.js
+│   ├── app/                    # Rotas e páginas (App Router)
+│   │   ├── page.tsx            # Página inicial (redireciona para login/feed)
+│   │   ├── login/              # Página de login
+│   │   ├── register/           # Página de registro
+│   │   ├── feed/               # Feed principal
+│   │   ├── complete-profile/   # Completar perfil
+│   │   └── user-created/       # Confirmação de criação de conta
+│   ├── components/             # Componentes reutilizáveis
+│   │   ├── layout/             # Componentes de layout
+│   │   └── ui/                 # Componentes de UI
+│   ├── lib/                    # Configurações (Redux, Axios)
+│   ├── hooks/                  # Custom hooks
+│   ├── providers/              # Providers React
+│   └── utils/                  # Utilitários e interfaces
 ├── Makefile                    # Comandos de automação
 ├── LICENSE                     # Licença MIT
 ├── README.md                   # Documentação principal
@@ -73,6 +96,15 @@ Backend:
 - dj-database-url 2.3.0 (configuração flexível de banco via URL)
 - Poetry (gerenciamento de dependências)
 - SQLite (fallback) / MySQL 8.0 (via Docker ou produção)
+
+Frontend:
+- Next.js 16.0.1 (React framework)
+- React 19.2.0
+- TypeScript 5
+- Redux Toolkit 2.10.1 (gerenciamento de estado)
+- Axios 1.13.2 (requisições HTTP)
+- Tailwind CSS 4 (estilização)
+- React Icons 5.5.0 (ícones)
 
 Ferramentas de Desenvolvimento:
 - pytest 8.4.2 + pytest-django 4.11.1 + pytest-cov 7.0.0 (testes)
@@ -119,14 +151,22 @@ Ferramentas de Desenvolvimento:
    make createsuperuser
    ```
 
-5. Inicie o servidor
+5. Inicie o servidor backend
    ```bash
    make dev-backend
    ```
 
-Pronto! A API estará rodando em http://127.0.0.1:8000
+6. Em outro terminal, inicie o frontend
+   ```bash
+   make dev-frontend
+   ```
+
+Pronto! 
+- API estará rodando em http://127.0.0.1:8000
+- Frontend estará rodando em http://localhost:3000
 
 Links úteis:
+- Frontend: http://localhost:3000
 - API: http://127.0.0.1:8000/
 - Admin: http://127.0.0.1:8000/admin/
 - Media: http://127.0.0.1:8000/media/
@@ -194,7 +234,8 @@ make test-coverage  # Com cobertura
 
 ```bash
 # Desenvolvimento
-make dev-backend       # Inicia servidor
+make dev-backend       # Inicia servidor backend
+make dev-frontend      # Inicia servidor frontend
 
 # Banco de dados
 make check             # Verifica configuração
@@ -207,9 +248,10 @@ make test-auth         # Só autenticação
 make test-coverage     # Com cobertura
 
 # Qualidade de código
-make format            # Formata (black)
-make lint              # Verifica erros (flake8)
-make quality           # Roda tudo
+make format            # Formata backend (black)
+make back-lint         # Verifica erros backend (flake8)
+make front-lint        # Verifica erros frontend (eslint)
+make quality           # Roda tudo (backend)
 
 # Docker
 make docker-up         # Inicia containers
