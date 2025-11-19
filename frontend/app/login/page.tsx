@@ -51,7 +51,7 @@ export default function Login() {
           placeholder="Senha"
         />
         <Button type="submit" className="w-full" disabled={isLoading}>Entrar</Button>
-        <p className="text-end">Não tem conta? <Link href="/register">Registre-se</Link></p>
+        <p className="text-end">Não tem conta? <Link href="/register" className="underline">Registre-se</Link></p>
         </Form></div>
         </CenterContainer>
   );

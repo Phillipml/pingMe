@@ -1,8 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import Register from "./register/page";
-
 export default async function Home() {
   const cookieStore = await cookies()
   const accessToken = cookieStore.get("accessToken")
