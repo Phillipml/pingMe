@@ -32,16 +32,18 @@ export default function Register() {
 
   return (
     
-    <CenterContainer>
-      <Logo className="text-2xl m-auto border-b-2 border-violet-600 pb-2 mb-8 mt-2" />
-      Register
+      <CenterContainer>
+      <div className="w-full max-w-md border-2 border-violet-600 rounded-md p-4 text-center">
+      <Logo className="text-2xl mx-auto justify-center border-b-2 border-violet-600 pb-2 mb-8 mt-2" />
+      <h2 className="mb-8 text-center">Seja bem vindo ao PingMe!<br/>Crie sua conta para fazer o seu primeiro ping .</h2>
       <Form onSubmit={handleSubmit}>
       {error && ( <div>{error}</div> )}
       <Input placeholder="*Username" value={username} onChange={e => setUsername(e.target.value)} required/>
       <Input type="email" placeholder="*Email " value={email} onChange={e=> setEmail(e.target.value)} required/>
       <Input type="password" value={password} placeholder="*Password" onChange={e => setPassword(e.target.value)} required/>
-      <Button type="submit" className="w-5/6 lg:w-1/2" disabled={isLoading}>Criar</Button>
+      <Button type="submit" className="w-full" disabled={isLoading}>Criar</Button>
       </Form>
+    </div>
     </CenterContainer>
   )
 }

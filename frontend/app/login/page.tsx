@@ -5,6 +5,7 @@ import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { Logo } from "@/components/ui/Logo";
 import { useLoginMutation } from "@/lib/slice";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -28,13 +29,14 @@ export default function Login() {
   }
   return (
     <CenterContainer>
-        <Logo className="text-2xl m-auto border-b-2 border-violet-600 pb-2 mb-8 mt-2" />
+      <div className="w-full max-w-md border-2 border-violet-600 rounded-md p-4"> 
+        <Logo className="text-2xl mx-auto justify-center border-b-2 border-violet-600 pb-2 mb-8 mt-2" />
         <h2 className="mb-8 text-center">Login</h2>
         <Form onSubmit={handleSubmit}>
           {error && ( <div>{error}</div> )}
         <Input
           type="email"
-          className="w-5/6 text-center lg:w-1/2"
+          className="w-full text-center"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -42,14 +44,15 @@ export default function Login() {
         />
         <Input
           type="password"
-          className="w-5/6 text-center lg:w-1/2"
+          className="w-full text-center"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
           placeholder="Senha"
         />
-        <Button type="submit" className="w-5/6 lg:w-1/2" disabled={isLoading}>Entrar</Button>
-        </Form>
+        <Button type="submit" className="w-full" disabled={isLoading}>Entrar</Button>
+        <p className="text-end">Não tem conta? <Link href="/register">Registre-se</Link></p>
+        </Form></div>
         </CenterContainer>
   );
 }

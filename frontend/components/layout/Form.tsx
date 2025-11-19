@@ -7,7 +7,7 @@ interface FormProps extends FormHTMLAttributes<HTMLFormElement> {
 
 export default function Form({ children,className, ...props }: FormProps) {
   return (
-    <form className={`flex flex-col w-1/2 m-auto p-2 ${className}`} {...props}>
+    <form className={`flex flex-col w-full p-2 ${className}`} {...props}>
       {children}
     </form>
   );
