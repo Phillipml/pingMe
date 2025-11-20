@@ -26,7 +26,7 @@ export const apiSlice = createApi({
     }),
     getProfile: builder.query<User, void>({
       query: () => "/auth/profile/",
-    }),
+    })
   }),
 });
 
