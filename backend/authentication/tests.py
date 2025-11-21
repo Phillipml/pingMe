@@ -43,6 +43,12 @@ class TestUserRegistration:
         assert response.status_code == status.HTTP_201_CREATED
         assert "user" in response.data
         assert response.data["user"]["email"] == user_data["email"]
+        assert "info" in response.data["user"]
+        assert "first_name" in response.data["user"]["info"]
+        assert "last_name" in response.data["user"]["info"]
+        assert "bio" in response.data["user"]["info"]
+        assert "avatar" in response.data["user"]["info"]
+        assert "status" in response.data["user"]["info"]
 
     def test_register_user_creates_profile(self, api_client, user_data):
         response = api_client.post("/api/auth/register/", user_data)
@@ -66,9 +72,15 @@ class TestUserLogin:
             "/api/auth/login/", {"email": user.email, "password": "testpass123"}
         )
         assert response.status_code == status.HTTP_200_OK
-        assert "tokens" in response.data
-        assert "access" in response.data["tokens"]
-        assert "refresh" in response.data["tokens"]
+        assert "user" in response.data
+        assert "access" in response.data
+        assert "refresh" in response.data
+        assert "info" in response.data["user"]
+        assert "first_name" in response.data["user"]["info"]
+        assert "last_name" in response.data["user"]["info"]
+        assert "bio" in response.data["user"]["info"]
+        assert "avatar" in response.data["user"]["info"]
+        assert "status" in response.data["user"]["info"]
 
     def test_login_invalid_credentials(self, api_client):
         response = api_client.post(
@@ -123,7 +135,16 @@ class TestProfile:
     def test_get_profile(self, authenticated_client, user):
         response = authenticated_client.get("/api/auth/profile/")
         assert response.status_code == status.HTTP_200_OK
-        assert "first_name" in response.data
+        assert "id" in response.data
+        assert "username" in response.data
+        assert "email" in response.data
+        assert "created_at" in response.data
+        assert "info" in response.data
+        assert "first_name" in response.data["info"]
+        assert "last_name" in response.data["info"]
+        assert "bio" in response.data["info"]
+        assert "avatar" in response.data["info"]
+        assert "status" in response.data["info"]
 
     def test_get_profile_unauthorized(self, api_client):
         response = api_client.get("/api/auth/profile/")

@@ -10,6 +10,7 @@ from .serializers import (
     UserRegistrationSerializer,
     ProfileSerializer,
     ProfileDetailSerializer,
+    UserWithProfileSerializer,
 )
 
 
@@ -22,7 +23,7 @@ def register(request):
         return Response(
             {
                 "message": "Usuário criado com sucesso",
-                "user": UserSerializer(user).data,
+                "user": UserWithProfileSerializer(user).data,
             },
             status=status.HTTP_201_CREATED,
         )
@@ -43,7 +44,7 @@ def login(request):
             response = Response(
                 {
                     "message": "Login realizado com sucesso",
-                    "user": UserSerializer(user).data,
+                    "user": UserWithProfileSerializer(user).data,
                     "access": str(refresh.access_token),
                     "refresh": str(refresh),
                 }
@@ -79,8 +80,8 @@ def login(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def profile(request):
-    profile, created = Profile.objects.get_or_create(user=request.user)
-    serializer = ProfileSerializer(profile)
+    Profile.objects.get_or_create(user=request.user)
+    serializer = UserWithProfileSerializer(request.user)
     return Response(serializer.data)
 
 

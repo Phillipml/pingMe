@@ -29,6 +29,24 @@ class ProfileSerializer(serializers.ModelSerializer):
         fields = ["first_name", "last_name", "bio", "avatar", "status"]
 
 
+class UserWithProfileSerializer(serializers.ModelSerializer):
+    info = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ["id", "username", "email", "created_at", "info"]
+
+    def get_info(self, obj):
+        profile = obj.profile
+        return {
+            "first_name": profile.first_name,
+            "last_name": profile.last_name,
+            "bio": profile.bio,
+            "avatar": profile.avatar.url if profile.avatar else None,
+            "status": profile.status,
+        }
+
+
 class ProfileDetailSerializer(serializers.ModelSerializer):
     avatar = serializers.ImageField(required=False, allow_null=True)
     user = UserSerializer(read_only=True)

@@ -83,7 +83,14 @@ Content-Type: application/json
     "id": 1,
     "username": "joaosilva",
     "email": "joao@email.com",
-    "created_at": "2024-01-01T10:00:00Z"
+    "created_at": "2024-01-01T10:00:00Z",
+    "info": {
+      "first_name": "",
+      "last_name": "",
+      "bio": "",
+      "avatar": null,
+      "status": 0
+    }
   }
 }
 ```
@@ -150,7 +157,14 @@ Content-Type: application/json
     "id": 1,
     "username": "joaosilva",
     "email": "joao@email.com",
-    "created_at": "2024-01-01T10:00:00Z"
+    "created_at": "2024-01-01T10:00:00Z",
+    "info": {
+      "first_name": "João",
+      "last_name": "Silva",
+      "bio": "Desenvolvedor apaixonado por tecnologia",
+      "avatar": "/media/avatars/joaosilva_avatar.jpg",
+      "status": 1
+    }
   },
   "access": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9...",
   "refresh": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9..."
@@ -340,20 +354,31 @@ Authorization: Bearer seu-access-token
 **Resposta de Sucesso (200):**
 ```json
 {
-  "first_name": "João",
-  "last_name": "Silva",
-  "bio": "Desenvolvedor apaixonado por tecnologia",
-  "avatar": "/media/avatars/joaosilva_avatar.jpg",
-  "status": 1
+  "id": 1,
+  "username": "joaosilva",
+  "email": "joao@email.com",
+  "created_at": "2024-01-01T10:00:00Z",
+  "info": {
+    "first_name": "João",
+    "last_name": "Silva",
+    "bio": "Desenvolvedor apaixonado por tecnologia",
+    "avatar": "/media/avatars/joaosilva_avatar.jpg",
+    "status": 1
+  }
 }
 ```
 
 **Campos:**
-- `first_name`: Primeiro nome (opcional, string)
-- `last_name`: Sobrenome (opcional, string)
-- `bio`: Biografia do usuário (opcional, string)
-- `avatar`: URL da foto de perfil (opcional, string ou null)
-- `status`: Status do perfil (integer, 0 = primeiro login, 1 = perfil atualizado)
+- `id`: ID do usuário (integer)
+- `username`: Nome de usuário (string)
+- `email`: Email do usuário (string)
+- `created_at`: Data de criação (string, formato ISO 8601)
+- `info`: Objeto com informações do perfil
+  - `first_name`: Primeiro nome (opcional, string)
+  - `last_name`: Sobrenome (opcional, string)
+  - `bio`: Biografia do usuário (opcional, string)
+  - `avatar`: URL da foto de perfil (opcional, string ou null)
+  - `status`: Status do perfil (integer, 0 = primeiro login, 1 = perfil atualizado)
 
 **Nota:** Se o perfil não existir, ele será criado automaticamente com valores padrão (campos vazios e status = 0).
 
@@ -1456,6 +1481,38 @@ async function criarPost(content) {
 ---
 
 ## Notas Importantes
+
+### Estrutura de Resposta dos Endpoints de Autenticação
+
+Os endpoints `register`, `login` e `GET /auth/profile/` retornam a estrutura do usuário com informações do perfil aninhadas no objeto `info`:
+
+```json
+{
+  "id": 1,
+  "username": "joaosilva",
+  "email": "joao@email.com",
+  "created_at": "2024-01-01T10:00:00Z",
+  "info": {
+    "first_name": "João",
+    "last_name": "Silva",
+    "bio": "Bio do usuário",
+    "avatar": "/media/avatars/foto.jpg",
+    "status": 1
+  }
+}
+```
+
+O endpoint `PUT /auth/profile/update/` retorna apenas os campos do perfil (sem o objeto `info`):
+
+```json
+{
+  "first_name": "João",
+  "last_name": "Silva",
+  "bio": "Nova biografia",
+  "avatar": "/media/avatars/foto.jpg",
+  "status": 1
+}
+```
 
 ### Autenticação
 - Todos os endpoints exceto `register`, `login`, `token/refresh` e `logout` requerem autenticação
