@@ -37,8 +37,9 @@ test-auth:
 
 test-coverage:
 	$(POETRY) pytest --cov=. --cov-report=html
-
-format:
+front-format:
+	$(NPM) format
+back-format:
 	$(POETRY) black .
 
 back-lint:

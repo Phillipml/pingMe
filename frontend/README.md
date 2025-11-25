@@ -60,6 +60,7 @@ frontend/
 ## Funcionalidades
 
 ### Autenticação
+
 - **Login**: Autenticação com email e senha
 - **Registro**: Criação de nova conta
 - **Gerenciamento de Tokens**: Tokens JWT armazenados em cookies HttpOnly
@@ -68,7 +69,7 @@ frontend/
 
 ### Páginas
 
-1. **Página Inicial (`/`)**: 
+1. **Página Inicial (`/`)**:
    - Verifica autenticação via cookies
    - Redireciona para `/login` se não autenticado
    - Redireciona para `/feed` se autenticado
@@ -99,12 +100,13 @@ frontend/
 
 ### Pré-requisitos
 
-- Node.js 18+ 
+- Node.js 18+
 - npm ou yarn
 
 ### Instalação
 
 1. Instale as dependências:
+
    ```bash
    cd frontend
    npm install
@@ -115,10 +117,11 @@ frontend/
    - Por padrão: `http://localhost:8000/api`
 
 3. Inicie o servidor de desenvolvimento:
+
    ```bash
    # Do diretório raiz do projeto
    make dev-frontend
-   
+
    # Ou diretamente do diretório frontend
    cd frontend
    npm run dev
@@ -156,14 +159,15 @@ NEXT_PUBLIC_API_URL=http://localhost:8000/api
 A URL base da API está configurada em `frontend/utils/api-utils.ts`:
 
 ```typescript
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+export const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
 ```
 
 ## Autenticação
 
 ### Fluxo de Autenticação
 
-1. **Login/Registro**: 
+1. **Login/Registro**:
    - Usuário faz login ou cria conta
    - Tokens JWT são recebidos no body da resposta
    - Tokens são automaticamente salvos em cookies HttpOnly pelo backend
@@ -283,5 +287,6 @@ MIT
 ## Autor
 
 Phillip Menezes
+
 - Email: contato.phillip.menezes@gmail.com
 - GitHub: [@Phillipml](https://github.com/phillipml)

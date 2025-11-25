@@ -1,25 +1,25 @@
 export interface LoginRequest {
-  email: string;
-  password: string;
+  email: string
+  password: string
 }
 export interface User {
-  id: number;
-  username: string;
-  email: string;
-  created_at: string;
+  id: number
+  username: string
+  email: string
+  created_at: string
 }
 export interface Tokens {
-  refresh: string;
-  access: string;
+  refresh: string
+  access: string
 }
 export interface LoginRegisterResponse {
-  message: string;
-  user: User;
+  message: string
+  user: User
 }
 export interface RegisterRequest {
-  username: string;
-  email:string,
-  password:string
+  username: string
+  email: string
+  password: string
 }
 export interface UpdateProfileRequest {
   first_name?: string
@@ -31,9 +31,9 @@ export interface Profile extends UpdateProfileRequest {
   status: number
 }
 export interface LogoutResponse {
-  message:string
+  message: string
 }
 
-export interface LogoutRequest{
-  refresh?:string
+export interface LogoutRequest {
+  refresh?: string
 }

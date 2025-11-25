@@ -1,41 +1,50 @@
-import { API_BASE_URL } from "@/utils/api-utils";
-import { LoginRegisterResponse, LoginRequest, RegisterRequest, User, LogoutResponse, LogoutRequest } from "@/utils/api-interfaces";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { API_BASE_URL } from '@/utils/api-utils'
+import {
+  LoginRegisterResponse,
+  LoginRequest,
+  RegisterRequest,
+  User,
+  LogoutResponse
+} from '@/utils/api-interfaces'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export const apiSlice = createApi({
-  reducerPath: "api",
+  reducerPath: 'api',
   baseQuery: fetchBaseQuery({
     baseUrl: API_BASE_URL,
-    credentials: "include",
+    credentials: 'include'
   }),
-  tagTypes: ["User", "Post"],
+  tagTypes: ['User', 'Post'],
   endpoints: (builder) => ({
     login: builder.mutation<LoginRegisterResponse, LoginRequest>({
       query: (credentials) => ({
-        url: "/auth/login/",
-        method: "POST",
-        body: credentials,
-      }),
+        url: '/auth/login/',
+        method: 'POST',
+        body: credentials
+      })
     }),
-    register: builder.mutation<LoginRegisterResponse,RegisterRequest>({
-      query: (userData)=>({
-        url:"/auth/register/",
-        method:"POST",
-        body:userData
+    register: builder.mutation<LoginRegisterResponse, RegisterRequest>({
+      query: (userData) => ({
+        url: '/auth/register/',
+        method: 'POST',
+        body: userData
       })
     }),
     getProfile: builder.query<User, void>({
-      query: () => "/auth/profile/",
+      query: () => '/auth/profile/'
     }),
-    logout: builder.mutation<LogoutResponse,void>({
-    query: () => ({
-      url:"/auth/logout/",
-      method: "POST",
-
+    logout: builder.mutation<LogoutResponse, void>({
+      query: () => ({
+        url: '/auth/logout/',
+        method: 'POST'
+      })
     })
-    })
-  }),
- 
-});
+  })
+})
 
-export const { useLoginMutation,useRegisterMutation, useGetProfileQuery, useLogoutMutation } = apiSlice;
+export const {
+  useLoginMutation,
+  useRegisterMutation,
+  useGetProfileQuery,
+  useLogoutMutation
+} = apiSlice

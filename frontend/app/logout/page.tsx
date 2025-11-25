@@ -1,5 +1,1 @@
-
-import { useLogoutMutation } from "@/lib/slice";
-
-export default async function Logout (){
-}
+export default async function Logout() {}
