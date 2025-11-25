@@ -4,8 +4,13 @@ import Form from '@/components/layout/Form'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import { Logo } from '@/components/ui/Logo'
+import { useState } from 'react'
 
 export default function CompleteProfile() {
+  const [username, setUsername] = useState('')
+  const [name, setName] = useState('')
+  const [lastname, setLastname] = useState('')
+  const [bio, setBio] = useState('')
   return (
     <CenterContainer>
       <h2 className="text-center">Complete your Profile</h2>
