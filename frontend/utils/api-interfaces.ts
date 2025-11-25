@@ -30,3 +30,10 @@ export interface UpdateProfileRequest {
 export interface Profile extends UpdateProfileRequest {
   status: number
 }
+export interface LogoutResponse {
+  message:string
+}
+
+export interface LogoutRequest{
+  refresh?:string
+}

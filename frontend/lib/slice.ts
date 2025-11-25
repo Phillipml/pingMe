@@ -1,5 +1,5 @@
 import { API_BASE_URL } from "@/utils/api-utils";
-import { LoginRegisterResponse, LoginRequest, RegisterRequest, User } from "@/utils/api-interfaces";
+import { LoginRegisterResponse, LoginRequest, RegisterRequest, User, LogoutResponse, LogoutRequest } from "@/utils/api-interfaces";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const apiSlice = createApi({
@@ -26,8 +26,16 @@ export const apiSlice = createApi({
     }),
     getProfile: builder.query<User, void>({
       query: () => "/auth/profile/",
+    }),
+    logout: builder.mutation<LogoutResponse,void>({
+    query: () => ({
+      url:"/auth/logout/",
+      method: "POST",
+
+    })
     })
   }),
+ 
 });
 
-export const { useLoginMutation,useRegisterMutation, useGetProfileQuery } = apiSlice;
+export const { useLoginMutation,useRegisterMutation, useGetProfileQuery, useLogoutMutation } = apiSlice;
