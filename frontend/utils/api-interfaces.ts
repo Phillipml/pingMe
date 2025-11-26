@@ -1,3 +1,10 @@
+export interface Info {
+  first_name: string
+  last_name: string
+  bio: string
+  avatar: string
+  status: number
+}
 export interface LoginRequest {
   email: string
   password: string
@@ -7,6 +14,7 @@ export interface User {
   username: string
   email: string
   created_at: string
+  info:Info
 }
 export interface Tokens {
   refresh: string

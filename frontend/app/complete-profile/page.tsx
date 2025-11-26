@@ -16,7 +16,7 @@ export default function CompleteProfile() {
       <h2 className="text-center">Complete your Profile</h2>
       <Logo className="text-2xl border-b-2 border-violet-600 pb-2 mb-8 mt-2" />
       <Form>
-        <Input placeholder="Username" />
+        <Input placeholder="Username" val />
         <Input placeholder="Nome" />
         <Input placeholder="Sobrenome" />
         <Input placeholder="Bio" />
