@@ -16,10 +16,26 @@ export default function CompleteProfile() {
       <h2 className="text-center">Complete your Profile</h2>
       <Logo className="text-2xl border-b-2 border-violet-600 pb-2 mb-8 mt-2" />
       <Form>
-        <Input placeholder="Username" val />
-        <Input placeholder="Nome" />
-        <Input placeholder="Sobrenome" />
-        <Input placeholder="Bio" />
+        <Input
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <Input
+          placeholder="Nome"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <Input
+          placeholder="Sobrenome"
+          value={lastname}
+          onChange={(e) => setLastname(e.target.value)}
+        />
+        <Input
+          placeholder="Bio"
+          value={bio}
+          onChange={(e) => setBio(e.target.value)}
+        />
         <Button>Foto perfil</Button>
       </Form>
     </CenterContainer>
