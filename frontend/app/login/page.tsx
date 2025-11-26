@@ -15,12 +15,23 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [login, { isLoading }] = useLoginMutation()
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
     try {
-      await login({ email, password }).unwrap()
-      router.push('/feed')
+      const response = await login({ email, password }).unwrap()
+
+      if (response.access && typeof window !== 'undefined') {
+        localStorage.setItem('accessToken', response.access)
+      }
+
+      const userStatus = response.user.info.status
+      if (userStatus == 0) {
+        router.push('/complete-profile')
+      } else {
+        router.push('/feed')
+      }
     } catch (err: unknown) {
       const error = err as { data?: { error?: string; message?: string } }
       setError(
@@ -30,6 +41,7 @@ export default function Login() {
       )
     }
   }
+
   return (
     <CenterContainer>
       <div className="w-full max-w-md border-2 border-violet-600 rounded-md p-4">

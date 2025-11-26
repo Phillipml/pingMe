@@ -14,7 +14,7 @@ export interface User {
   username: string
   email: string
   created_at: string
-  info:Info
+  info: Info
 }
 export interface Tokens {
   refresh: string
@@ -23,6 +23,8 @@ export interface Tokens {
 export interface LoginRegisterResponse {
   message: string
   user: User
+  access?: string
+  refresh?: string
 }
 export interface RegisterRequest {
   username: string
