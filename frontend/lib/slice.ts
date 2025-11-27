@@ -38,14 +38,13 @@ export const apiSlice = createApi({
       query: () => ({
         url: '/auth/logout/',
         method: 'POST'
-      }),
-      
+      })
     }),
-    updateProfile: builder.mutation<Profile,Profile>({
-      query:(profileData) => ({
-        url:'/auth/profile/update/',
-        method:'PUT',
-        body:profileData
+    updateProfile: builder.mutation<Profile, Profile | FormData>({
+      query: (profileData) => ({
+        url: '/auth/profile/update/',
+        method: 'PUT',
+        body: profileData
       })
     })
   })
