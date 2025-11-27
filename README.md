@@ -19,10 +19,13 @@ API backend de rede social feita com Django REST Framework. Permite criar posts,
 ### Frontend
 - Interface moderna com Next.js 16 e React 19
 - Autenticação completa (login e registro)
-- Gerenciamento de estado com Redux Toolkit
-- Proteção de rotas baseada em autenticação
+- Gerenciamento de estado e requisições com Redux Toolkit Query (RTK Query)
+- Proteção de rotas baseada em autenticação e status do perfil
+- Fluxo de completar perfil com upload de avatar
 - Design responsivo com Tailwind CSS
-- Integração com API backend via Axios
+- Integração com API backend via Axios com interceptors
+- Renovação automática de tokens JWT
+- Armazenamento de tokens em localStorage e cookies HttpOnly
 
 ## Estrutura do Projeto
 
@@ -60,19 +63,27 @@ pingMe/
 │   └── env.example             # Exemplo de variáveis de ambiente
 ├── frontend/                   # Frontend Next.js
 │   ├── app/                    # Rotas e páginas (App Router)
-│   │   ├── page.tsx            # Página inicial (redireciona para login/feed)
+│   │   ├── page.tsx            # Página inicial (verifica auth e redireciona)
 │   │   ├── login/              # Página de login
 │   │   ├── register/           # Página de registro
 │   │   ├── feed/               # Feed principal
-│   │   ├── complete-profile/   # Completar perfil
-│   │   └── user-created/       # Confirmação de criação de conta
+│   │   ├── complete-profile/   # Completar perfil (upload avatar)
+│   │   ├── user-created/       # Confirmação de criação de conta
+│   │   └── logout/             # Página de logout
 │   ├── components/             # Componentes reutilizáveis
 │   │   ├── layout/             # Componentes de layout
 │   │   └── ui/                 # Componentes de UI
 │   ├── lib/                    # Configurações (Redux, Axios)
+│   │   ├── slice.ts            # RTK Query API slice
+│   │   ├── store.ts            # Store Redux
+│   │   └── axios.ts            # Instâncias Axios com interceptors
 │   ├── hooks/                  # Custom hooks
+│   │   └── useAuth.ts          # Hook de autenticação
 │   ├── providers/              # Providers React
+│   │   └── AppProvider.tsx     # Provider Redux
 │   └── utils/                  # Utilitários e interfaces
+│       ├── api-interfaces.ts   # Interfaces TypeScript
+│       └── api-utils.ts        # Constantes da API
 ├── Makefile                    # Comandos de automação
 ├── LICENSE                     # Licença MIT
 ├── README.md                   # Documentação principal
@@ -95,11 +106,12 @@ Backend:
 - SQLite (fallback) / MySQL 8.0 (via Docker ou produção)
 
 Frontend:
-- Next.js 16.0.1 (React framework)
+- Next.js 16.0.1 (React framework com App Router)
 - React 19.2.0
 - TypeScript 5
-- Redux Toolkit 2.10.1 (gerenciamento de estado)
-- Axios 1.13.2 (requisições HTTP)
+- Redux Toolkit 2.10.1 + RTK Query (gerenciamento de estado e requisições)
+- React Redux 9.2.0 (bindings Redux)
+- Axios 1.13.2 (requisições HTTP com interceptors)
 - Tailwind CSS 4 (estilização)
 - React Icons 5.5.0 (ícones)
 
