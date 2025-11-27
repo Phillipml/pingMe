@@ -13,7 +13,18 @@ export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
     baseUrl: API_BASE_URL,
-    credentials: 'include'
+    credentials: 'include',
+    prepareHeaders: (headers, { getState }) => {
+      const token = typeof window !== 'undefined' 
+        ? localStorage.getItem('accessToken') 
+        : null
+      
+      if (token) {
+        headers.set('Authorization', `Bearer ${token}`)
+      }
+      
+      return headers
+    }
   }),
   tagTypes: ['User', 'Post'],
   endpoints: (builder) => ({
