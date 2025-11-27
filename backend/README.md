@@ -21,6 +21,7 @@ authentication - Gerencia usuários
 - Modelo User personalizado
 - Modelo Profile com avatar (upload de imagem)
 - Autenticação por email
+- Endpoints: register, login, logout, token refresh, profile, change password, user list, delete account
 
 posts - Gerencia conteúdo
 - Modelo Post (apenas texto)
@@ -76,9 +77,10 @@ User - Modelo de usuário
 
 Profile - Perfil do usuário
 - Um usuário tem um perfil (OneToOne)
-- Campos: first_name, last_name, bio, avatar
+- Campos: first_name, last_name, bio, avatar, status
 - Avatar suporta upload de imagem (JPG, PNG, etc.)
 - Imagens salvam em backend/media/avatars/
+- Status: 0 = primeiro login, 1 = perfil atualizado
 
 Post - Postagem
 - Autor: ForeignKey para User
@@ -147,6 +149,11 @@ Para executar manualmente:
 cd backend
 poetry run pytest
 ```
+
+**Estrutura de Testes:**
+- `authentication/tests.py`: Testes de registro, login, logout, refresh token, perfil, alterar senha, listar usuários, deletar conta
+- `posts/tests.py`: Testes de posts, curtidas, comentários
+- `follows/tests.py`: Testes de seguir/deixar de seguir
 
 **Nota**: Execute os comandos `make` sempre do diretório raiz do projeto, não de dentro de `backend/`. O Makefile já gerencia o caminho corretamente.
 
@@ -252,6 +259,7 @@ make get_secret_key
   - Refresh token: 7 dias de validade
   - Rotação de tokens habilitada
   - Blacklist de tokens no logout
+  - Cookies HttpOnly: Tokens também salvos em cookies para uso em navegadores
 - **CORS**: Habilitado para frontend (configurável via `CORS_ALLOWED_ORIGINS`)
 - **Paginação**: 20 itens por página (padrão do DRF)
 - **Media Files**: 
@@ -263,6 +271,17 @@ make get_secret_key
   2. **Variáveis Individuais**: `DB_NAME`, `DB_USER`, `DB_PASSWORD`, `DB_HOST`, `DB_PORT`
   3. **SQLite** (fallback automático): usado quando nenhuma configuração está presente
 - **Logging**: Sistema de logs configurado em `backend/logs/django.log` com rotação automática
+- **Endpoints de Autenticação**:
+  - `POST /api/auth/register/` - Registrar usuário
+  - `POST /api/auth/login/` - Login (retorna access e refresh tokens)
+  - `POST /api/auth/logout/` - Logout (invalida refresh token)
+  - `POST /api/auth/token/refresh/` - Renovar access token
+  - `GET /api/auth/profile/` - Ver perfil do usuário autenticado
+  - `PUT /api/auth/profile/update/` - Atualizar perfil (suporta upload de avatar)
+  - `GET /api/auth/profile/{user_id}/` - Ver perfil de outro usuário
+  - `PUT /api/auth/change-password/` - Alterar senha
+  - `GET /api/auth/users/` - Listar usuários (apenas admin)
+  - `DELETE /api/auth/users/me/delete/` - Deletar conta
 
 ## Segurança
 
