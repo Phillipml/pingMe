@@ -88,7 +88,25 @@ class TestUserLogin:
             "/api/auth/login/", {"email": user.email, "password": "testpass123"}
         )
         assert response.status_code == status.HTTP_200_OK
+<<<<<<< fix/authentication
+<<<<<<< HEAD
+        assert "user" in response.data
+        assert "access" in response.data
+        assert "refresh" in response.data
+        assert "info" in response.data["user"]
+        assert "first_name" in response.data["user"]["info"]
+        assert "last_name" in response.data["user"]["info"]
+        assert "bio" in response.data["user"]["info"]
+        assert "avatar" in response.data["user"]["info"]
+        assert "status" in response.data["user"]["info"]
+=======
+        assert "access" in response.data
+        assert "refresh" in response.data
+        assert "user" in response.data
+>>>>>>> main
+=======
 
+>>>>>>> main
 
     def test_login_invalid_credentials(self, api_client):
         response = api_client.post(
