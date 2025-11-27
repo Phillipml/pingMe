@@ -1,23 +1,23 @@
-import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
-import "./globals.css";
-import AppProvider from "@/providers/AppProvider";
+import type { Metadata } from 'next'
+import { Montserrat } from 'next/font/google'
+import './globals.css'
+import AppProvider from '@/providers/AppProvider'
 
 const montserrat = Montserrat({
-  variable: "--font-montserrat",
-  subsets: ["latin"],
-});
+  variable: '--font-montserrat',
+  subsets: ['latin']
+})
 
 export const metadata: Metadata = {
-  title: "PingMe",
+  title: 'PingMe',
   description:
-    "A social media platform for sharing your thoughts and connecting with others",
-};
+    'A social media platform for sharing your thoughts and connecting with others'
+}
 
 export default function RootLayout({
-  children,
+  children
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="pt-br">
@@ -29,5 +29,5 @@ export default function RootLayout({
         <AppProvider>{children}</AppProvider>
       </body>
     </html>
-  );
+  )
 }

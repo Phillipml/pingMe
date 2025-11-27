@@ -60,51 +60,67 @@ frontend/
 ## Funcionalidades
 
 ### Autenticação
+
 - **Login**: Autenticação com email e senha
 - **Registro**: Criação de nova conta
-- **Gerenciamento de Tokens**: Tokens JWT armazenados em cookies HttpOnly
-- **Refresh Automático**: Interceptor Axios renova tokens automaticamente
-- **Proteção de Rotas**: Redirecionamento automático baseado em autenticação
+- **Gerenciamento de Tokens**: Tokens JWT armazenados em localStorage e cookies HttpOnly
+- **Refresh Automático**: Interceptor Axios renova tokens automaticamente quando expiram
+- **Proteção de Rotas**: Redirecionamento automático baseado em autenticação e status do perfil
+- **Fluxo Inteligente**: Verifica status do perfil (0 = primeiro login, 1 = perfil completo) e redireciona adequadamente
 
 ### Páginas
 
-1. **Página Inicial (`/`)**: 
-   - Verifica autenticação via cookies
+1. **Página Inicial (`/`)**:
+   - Verifica autenticação via token no localStorage
+   - Busca perfil do usuário na API
    - Redireciona para `/login` se não autenticado
-   - Redireciona para `/feed` se autenticado
+   - Redireciona para `/complete-profile` se status = 0 (primeiro login)
+   - Redireciona para `/feed` se status = 1 (perfil completo)
 
 2. **Login (`/login`)**:
    - Formulário de login com email e senha
    - Validação de erros
-   - Redirecionamento para feed após login bem-sucedido
+   - Armazena accessToken no localStorage após login bem-sucedido
+   - Verifica status do perfil e redireciona:
+     - `/complete-profile` se status = 0
+     - `/feed` se status = 1
    - Link para página de registro
 
 3. **Registro (`/register`)**:
    - Formulário de criação de conta
    - Campos: username, email, password
    - Validação de erros
-   - Redirecionamento para confirmação após registro
+   - Redirecionamento para `/user-created` após registro bem-sucedido
 
 4. **Feed (`/feed`)**:
    - Feed principal com posts (em desenvolvimento)
 
 5. **Completar Perfil (`/complete-profile`)**:
-   - Formulário para completar informações do perfil (em desenvolvimento)
+   - Formulário completo para atualizar informações do perfil
+   - Campos: first_name (obrigatório), last_name, bio, avatar (obrigatório)
+   - Upload de imagem de perfil (avatar)
+   - Atualiza status do perfil para 1 após conclusão
+   - Redireciona para `/feed` após atualização bem-sucedida
 
 6. **Usuário Criado (`/user-created`)**:
    - Página de confirmação após registro
+   - Mensagem de boas-vindas
    - Link para página de login
+
+7. **Logout (`/logout`)**:
+   - Página de logout (em desenvolvimento)
 
 ## Como Começar
 
 ### Pré-requisitos
 
-- Node.js 18+ 
+- Node.js 18+
 - npm ou yarn
 
 ### Instalação
 
 1. Instale as dependências:
+
    ```bash
    cd frontend
    npm install
@@ -115,10 +131,11 @@ frontend/
    - Por padrão: `http://localhost:8000/api`
 
 3. Inicie o servidor de desenvolvimento:
+
    ```bash
    # Do diretório raiz do projeto
    make dev-frontend
-   
+
    # Ou diretamente do diretório frontend
    cd frontend
    npm run dev
@@ -156,34 +173,63 @@ NEXT_PUBLIC_API_URL=http://localhost:8000/api
 A URL base da API está configurada em `frontend/utils/api-utils.ts`:
 
 ```typescript
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api";
+export const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
 ```
 
 ## Autenticação
 
 ### Fluxo de Autenticação
 
-1. **Login/Registro**: 
-   - Usuário faz login ou cria conta
-   - Tokens JWT são recebidos no body da resposta
-   - Tokens são automaticamente salvos em cookies HttpOnly pelo backend
+1. **Login/Registro**:
+   - Usuário faz login ou cria conta via RTK Query mutations
+   - Tokens JWT são recebidos no body da resposta (`access` e `refresh`)
+   - Access token é salvo no localStorage para uso imediato
+   - Tokens também são automaticamente salvos em cookies HttpOnly pelo backend
+   - Sistema verifica o status do perfil (`user.info.status`):
+     - `0`: Primeiro login, redireciona para `/complete-profile`
+     - `1`: Perfil completo, redireciona para `/feed`
 
 2. **Requisições Autenticadas**:
+   - RTK Query usa `prepareHeaders` para adicionar token do localStorage
    - Axios envia cookies automaticamente (`withCredentials: true`)
-   - Interceptor renova tokens quando necessário (401)
+   - Interceptor Axios renova tokens quando necessário (401)
    - Redireciona para login se refresh falhar
 
 3. **Proteção de Rotas**:
-   - Página inicial verifica cookies no servidor
-   - Redireciona baseado na presença de tokens
+   - Página inicial (`/`) verifica token no localStorage
+   - Busca perfil na API para verificar autenticação e status
+   - Redireciona baseado no estado:
+     - Sem token ou erro 401 → `/login`
+     - Status 0 → `/complete-profile`
+     - Status 1 → `/feed`
 
-### Redux Toolkit
+4. **Completar Perfil**:
+   - Usuário preenche informações (nome, sobrenome, bio, avatar)
+   - Upload de avatar via FormData
+   - Atualização via `useUpdateProfileMutation`
+   - Após sucesso, redireciona para `/feed`
 
-O projeto usa Redux Toolkit Query (RTK Query) para gerenciar estado e requisições:
+### Redux Toolkit Query (RTK Query)
 
-- **API Slice** (`lib/slice.ts`): Define endpoints da API
-- **Mutations**: `useLoginMutation`, `useRegisterMutation`
-- **Queries**: `useGetProfileQuery`
+O projeto usa Redux Toolkit Query (RTK Query) para gerenciar estado e requisições à API:
+
+- **API Slice** (`lib/slice.ts`): Define todos os endpoints da API
+- **Store** (`lib/store.ts`): Configuração da store Redux com middleware RTK Query
+- **Mutations** (operações que modificam dados):
+  - `useLoginMutation`: Login de usuário
+  - `useRegisterMutation`: Registro de novo usuário
+  - `useLogoutMutation`: Logout de usuário
+  - `useUpdateProfileMutation`: Atualização de perfil (suporta FormData para upload)
+- **Queries** (operações de leitura):
+  - `useGetProfileQuery`: Buscar perfil do usuário autenticado
+
+**Características:**
+- Cache automático de requisições
+- Invalidação de cache quando necessário
+- Tags para controle de cache (`User`, `Post`)
+- Credentials incluídos automaticamente (`credentials: 'include'`)
+- Headers de autenticação configurados automaticamente via `prepareHeaders`
 
 ## Componentes Principais
 
@@ -211,48 +257,104 @@ O projeto usa **Tailwind CSS 4** para estilização:
 
 ### Endpoints Utilizados
 
-- `POST /api/auth/login/` - Login
-- `POST /api/auth/register/` - Registro
-- `GET /api/auth/profile/` - Obter perfil
-- `POST /api/auth/token/refresh/` - Renovar token (automático)
+- `POST /api/auth/login/` - Login (via `useLoginMutation`)
+- `POST /api/auth/register/` - Registro (via `useRegisterMutation`)
+- `GET /api/auth/profile/` - Obter perfil (via `useGetProfileQuery`)
+- `PUT /api/auth/profile/update/` - Atualizar perfil (via `useUpdateProfileMutation`)
+- `POST /api/auth/logout/` - Logout (via `useLogoutMutation`)
+- `POST /api/auth/token/refresh/` - Renovar token (automático via interceptor Axios)
 
-### Cookies
+### Armazenamento de Tokens
 
-- `accessToken`: Token de acesso (HttpOnly)
-- `refreshToken`: Token de refresh (HttpOnly)
+O projeto usa uma estratégia híbrida para armazenamento de tokens:
 
-Os cookies são gerenciados automaticamente pelo navegador e enviados em todas as requisições.
+- **localStorage**: Access token armazenado para uso imediato em headers
+  - Chave: `accessToken`
+  - Usado por RTK Query via `prepareHeaders`
+  - Verificado na página inicial para redirecionamento
+
+- **Cookies HttpOnly**: Tokens gerenciados automaticamente pelo backend
+  - `accessToken`: Token de acesso (HttpOnly)
+  - `refreshToken`: Token de refresh (HttpOnly)
+  - Enviados automaticamente em todas as requisições (`withCredentials: true`)
+  - Usados pelo interceptor Axios para renovação automática
+
+**Vantagens:**
+- localStorage permite acesso rápido ao token para headers
+- Cookies HttpOnly são mais seguros e gerenciados pelo backend
+- Interceptor Axios usa cookies para renovação automática
+- Sistema funciona mesmo se localStorage for limpo (usa cookies)
 
 ## Desenvolvimento
 
 ### Estrutura de Pastas
 
 - **app/**: Rotas e páginas (App Router do Next.js)
+  - `page.tsx`: Página inicial com lógica de redirecionamento
+  - `login/`: Página de login
+  - `register/`: Página de registro
+  - `feed/`: Feed principal (em desenvolvimento)
+  - `complete-profile/`: Página para completar perfil
+  - `user-created/`: Confirmação de criação de conta
+  - `logout/`: Página de logout (em desenvolvimento)
 - **components/**: Componentes React reutilizáveis
-- **lib/**: Configurações (Redux, Axios)
+  - `layout/`: Componentes de layout (CenterContainer, Container, Form)
+  - `ui/`: Componentes de UI (Button, Input, Logo)
+- **lib/**: Configurações e utilitários
+  - `slice.ts`: RTK Query API slice com todos os endpoints
+  - `store.ts`: Configuração da store Redux
+  - `axios.ts`: Instâncias do Axios com interceptors
 - **hooks/**: Custom hooks React
+  - `useAuth.ts`: Hook para verificar autenticação via RTK Query
 - **providers/**: Context providers
+  - `AppProvider.tsx`: Provider do Redux store
 - **utils/**: Funções utilitárias e interfaces TypeScript
+  - `api-interfaces.ts`: Interfaces TypeScript para requisições e respostas
+  - `api-utils.ts`: Constantes e utilitários da API
 
 ### Boas Práticas
 
-- Use TypeScript para tipagem forte
-- Componentes funcionais com hooks
-- RTK Query para requisições à API
-- Tailwind CSS para estilização
-- Server Components quando possível (Next.js 16)
+- **TypeScript**: Tipagem forte em todas as interfaces e componentes
+- **RTK Query**: Use mutations e queries do RTK Query ao invés de fetch direto
+- **Componentes Funcionais**: Use hooks React (useState, useEffect, etc.)
+- **Client Components**: Use `'use client'` quando necessário (interatividade, hooks)
+- **Tailwind CSS**: Estilização via classes utilitárias
+- **Error Handling**: Trate erros adequadamente com try/catch e mensagens amigáveis
+- **Loading States**: Mostre estados de carregamento durante requisições
+- **Form Validation**: Validação básica com HTML5 (required) e validação de erros da API
+
+## Funcionalidades Implementadas
+
+✅ **Autenticação Completa**
+- Login e registro funcionais
+- Gerenciamento de tokens (localStorage + cookies)
+- Renovação automática de tokens
+- Proteção de rotas baseada em autenticação
+
+✅ **Fluxo de Perfil**
+- Verificação de status do perfil
+- Página de completar perfil com upload de avatar
+- Redirecionamento inteligente baseado em status
+
+✅ **Arquitetura**
+- RTK Query para gerenciamento de estado e requisições
+- TypeScript com interfaces bem definidas
+- Componentes reutilizáveis
+- Interceptors Axios configurados
 
 ## Próximos Passos
 
 - [ ] Implementar página de feed completa
-- [ ] Implementar página de completar perfil
-- [ ] Adicionar funcionalidade de posts
+- [ ] Adicionar funcionalidade de posts (criar, editar, deletar)
 - [ ] Adicionar funcionalidade de seguir usuários
 - [ ] Adicionar funcionalidade de curtidas e comentários
 - [ ] Implementar busca de usuários
+- [ ] Implementar página de logout funcional
 - [ ] Adicionar notificações
 - [ ] Melhorar tratamento de erros
-- [ ] Adicionar testes
+- [ ] Adicionar testes unitários e de integração
+- [ ] Implementar loading states mais elaborados
+- [ ] Adicionar validação de formulários mais robusta
 
 ## Troubleshooting
 
@@ -283,5 +385,6 @@ MIT
 ## Autor
 
 Phillip Menezes
+
 - Email: contato.phillip.menezes@gmail.com
 - GitHub: [@Phillipml](https://github.com/phillipml)
