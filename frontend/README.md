@@ -314,6 +314,7 @@ export default function Layout() {
 ```
 
 **Características:**
+
 - Busca dados do perfil via `useGetProfileQuery()` automaticamente
 - Exibe avatar com fallback para imagem padrão se não houver
 - Mostra username do usuário (oculto durante loading)
@@ -330,10 +331,11 @@ Função para construir URLs de mídia (imagens, avatares) com fallback:
 import { getMediaUrl } from '@/utils/api-utils'
 
 // Em um componente
-<img src={getMediaUrl(user.info.avatar)} alt="Avatar" />
+;<img src={getMediaUrl(user.info.avatar)} alt="Avatar" />
 ```
 
 **Comportamento:**
+
 - Se `path` for `null` ou `undefined`: retorna avatar padrão
 - Se `path` já for uma URL completa (começa com 'http'): retorna como está
 - Caso contrário: concatena com `BACKEND_BASE_URL`
