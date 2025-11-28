@@ -225,6 +225,7 @@ O projeto usa Redux Toolkit Query (RTK Query) para gerenciar estado e requisiç�
   - `useGetProfileQuery`: Buscar perfil do usuário autenticado
 
 **Características:**
+
 - Cache automático de requisições
 - Invalidação de cache quando necessário
 - Tags para controle de cache (`User`, `Post`)
@@ -280,6 +281,7 @@ O projeto usa uma estratégia híbrida para armazenamento de tokens:
   - Usados pelo interceptor Axios para renovação automática
 
 **Vantagens:**
+
 - localStorage permite acesso rápido ao token para headers
 - Cookies HttpOnly são mais seguros e gerenciados pelo backend
 - Interceptor Axios usa cookies para renovação automática
@@ -326,17 +328,20 @@ O projeto usa uma estratégia híbrida para armazenamento de tokens:
 ## Funcionalidades Implementadas
 
 ✅ **Autenticação Completa**
+
 - Login e registro funcionais
 - Gerenciamento de tokens (localStorage + cookies)
 - Renovação automática de tokens
 - Proteção de rotas baseada em autenticação
 
 ✅ **Fluxo de Perfil**
+
 - Verificação de status do perfil
 - Página de completar perfil com upload de avatar
 - Redirecionamento inteligente baseado em status
 
 ✅ **Arquitetura**
+
 - RTK Query para gerenciamento de estado e requisições
 - TypeScript com interfaces bem definidas
 - Componentes reutilizáveis

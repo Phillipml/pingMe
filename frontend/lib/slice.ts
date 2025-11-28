@@ -15,14 +15,15 @@ export const apiSlice = createApi({
     baseUrl: API_BASE_URL,
     credentials: 'include',
     prepareHeaders: (headers, { getState }) => {
-      const token = typeof window !== 'undefined' 
-        ? localStorage.getItem('accessToken') 
-        : null
-      
+      const token =
+        typeof window !== 'undefined'
+          ? localStorage.getItem('accessToken')
+          : null
+
       if (token) {
         headers.set('Authorization', `Bearer ${token}`)
       }
-      
+
       return headers
     }
   }),
