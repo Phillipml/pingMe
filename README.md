@@ -22,6 +22,7 @@ API backend de rede social feita com Django REST Framework. Permite criar posts,
 - Gerenciamento de estado e requisições com Redux Toolkit Query (RTK Query)
 - Proteção de rotas baseada em autenticação e status do perfil
 - Fluxo de completar perfil com upload de avatar
+- Header com navegação, avatar do usuário e campo de busca
 - Design responsivo com Tailwind CSS
 - Integração com API backend via Axios com interceptors
 - Renovação automática de tokens JWT
@@ -75,7 +76,14 @@ pingMe/
 │   │   └── logout/             # Página de logout
 │   ├── components/             # Componentes reutilizáveis
 │   │   ├── layout/             # Componentes de layout
+│   │   │   ├── Header.tsx      # Barra de navegação superior
+│   │   │   ├── Container.tsx   # Container responsivo
+│   │   │   ├── CenterContainer.tsx # Container centralizado
+│   │   │   └── Form.tsx        # Wrapper de formulário
 │   │   └── ui/                 # Componentes de UI
+│   │       ├── Button.tsx      # Botão reutilizável
+│   │       ├── Input.tsx       # Campo de entrada
+│   │       └── Logo.tsx        # Logo da aplicação
 │   ├── lib/                    # Configurações (Redux, Axios)
 │   │   ├── slice.ts            # RTK Query API slice
 │   │   ├── store.ts            # Store Redux
