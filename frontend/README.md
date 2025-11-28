@@ -32,6 +32,7 @@ frontend/
 │       └── page.tsx
 ├── components/              # Componentes reutilizáveis
 │   ├── layout/              # Componentes de layout
+│   │   ├── Header.tsx       # Barra de navegação superior
 │   │   ├── CenterContainer.tsx
 │   │   ├── Container.tsx
 │   │   └── Form.tsx
@@ -236,15 +237,54 @@ O projeto usa Redux Toolkit Query (RTK Query) para gerenciar estado e requisiç�
 
 ### Layout Components
 
-- **CenterContainer**: Container centralizado para páginas
-- **Container**: Container genérico
-- **Form**: Wrapper de formulário
+- **Header**: Barra de navegação superior da aplicação
+  - Localização: `components/layout/Header.tsx`
+  - Funcionalidades:
+    - Exibe avatar e username do usuário autenticado (lado esquerdo)
+    - Mostra logo da aplicação no centro (link para home)
+    - Campo de busca no lado direito
+  - Características técnicas:
+    - Usa `useGetProfileQuery()` do RTK Query para buscar dados do perfil
+    - Utiliza `getMediaUrl()` para construir URL do avatar com fallback
+    - Mostra estado de loading enquanto busca dados
+    - Layout responsivo em 3 colunas (flex com justify-around)
+    - Background violeta (bg-violet-600) seguindo o tema da aplicação
+  - Dependências:
+    - `Container`: Container responsivo
+    - `Logo`: Componente de logo
+    - `Input`: Campo de busca
+    - `useGetProfileQuery`: Hook RTK Query para buscar perfil
+    - `getMediaUrl`: Função utilitária para URLs de mídia
+
+- **CenterContainer**: Container centralizado vertical e horizontalmente
+  - Usado para páginas de login, registro e formulários
+  - Altura mínima de 100vh com flexbox para centralização
+
+- **Container**: Container responsivo com largura máxima
+  - Largura máxima de 1400px
+  - Centralizado horizontalmente
+  - Padding padrão de 1rem
+
+- **Form**: Wrapper de formulário com layout flexível
+  - Layout em coluna (flex-col)
+  - Suporta todas as props padrão de form HTML
 
 ### UI Components
 
-- **Button**: Botão reutilizável com variantes
-- **Input**: Campo de entrada de texto
+- **Button**: Botão reutilizável com estilo padrão
+  - Background violeta (bg-violet-800) com hover (bg-violet-600)
+  - Transição suave
+  - Suporta todas as props padrão de button HTML
+
+- **Input**: Campo de entrada de texto reutilizável
+  - Estilização padrão com borda violeta (border-violet-600)
+  - Suporta todas as props padrão de input HTML
+  - Customizável via className
+
 - **Logo**: Componente de logo da aplicação
+  - Ícone GiEyestalk do react-icons
+  - Texto "PingMe" opcional (controlado via prop `showText`)
+  - Props customizáveis: `iconClassName`, `textClassName`, `showText`
 
 ## Estilização
 
@@ -253,6 +293,50 @@ O projeto usa **Tailwind CSS 4** para estilização:
 - Classes utilitárias para layout e design
 - Tema customizado com cores violeta (border-violet-600)
 - Design responsivo e moderno
+
+## Uso dos Componentes
+
+### Header
+
+O componente Header é usado para exibir a barra de navegação superior. Ele busca automaticamente os dados do perfil do usuário autenticado:
+
+```tsx
+import Header from '@/components/layout/Header'
+
+export default function Layout() {
+  return (
+    <>
+      <Header />
+      {/* Resto do conteúdo */}
+    </>
+  )
+}
+```
+
+**Características:**
+- Busca dados do perfil via `useGetProfileQuery()` automaticamente
+- Exibe avatar com fallback para imagem padrão se não houver
+- Mostra username do usuário (oculto durante loading)
+- Logo centralizado que redireciona para home
+- Campo de busca no lado direito (funcionalidade a ser implementada)
+
+### Utilitários
+
+#### getMediaUrl()
+
+Função para construir URLs de mídia (imagens, avatares) com fallback:
+
+```tsx
+import { getMediaUrl } from '@/utils/api-utils'
+
+// Em um componente
+<img src={getMediaUrl(user.info.avatar)} alt="Avatar" />
+```
+
+**Comportamento:**
+- Se `path` for `null` ou `undefined`: retorna avatar padrão
+- Se `path` já for uma URL completa (começa com 'http'): retorna como está
+- Caso contrário: concatena com `BACKEND_BASE_URL`
 
 ## Integração com Backend
 
@@ -313,6 +397,9 @@ O projeto usa uma estratégia híbrida para armazenamento de tokens:
 - **utils/**: Funções utilitárias e interfaces TypeScript
   - `api-interfaces.ts`: Interfaces TypeScript para requisições e respostas
   - `api-utils.ts`: Constantes e utilitários da API
+    - `API_BASE_URL`: URL base da API (configurável via `NEXT_PUBLIC_API_URL`)
+    - `BACKEND_BASE_URL`: URL base do backend (configurável via `NEXT_PUBLIC_BACKEND_URL`)
+    - `getMediaUrl()`: Função para construir URLs de mídia (imagens, avatares) com fallback para avatar padrão
 
 ### Boas Práticas
 
@@ -346,6 +433,12 @@ O projeto usa uma estratégia híbrida para armazenamento de tokens:
 - TypeScript com interfaces bem definidas
 - Componentes reutilizáveis
 - Interceptors Axios configurados
+
+✅ **Componentes de Layout**
+
+- Header implementado com integração RTK Query
+- Sistema de containers responsivos
+- Formulários reutilizáveis
 
 ## Próximos Passos
 
