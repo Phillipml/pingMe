@@ -1,4 +1,4 @@
-"use client"
+'use client'
 import Container from '@/components/layout/Container'
 import Header from '@/components/layout/Header'
 import Form from '@/components/layout/Form'
@@ -14,7 +14,7 @@ export default function Profile() {
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation()
   const [isEditing, setIsEditing] = useState(false)
   const [error, setError] = useState('')
-  
+
   const [username, setUsername] = useState('')
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
@@ -44,7 +44,7 @@ export default function Profile() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    
+
     try {
       const formData = new FormData()
       if (username) formData.append('username', username)
@@ -52,7 +52,7 @@ export default function Profile() {
       if (lastName) formData.append('last_name', lastName)
       if (bio) formData.append('bio', bio)
       if (avatar) formData.append('avatar', avatar)
-      
+
       await updateProfile(formData).unwrap()
       await refetch()
       setIsEditing(false)
@@ -83,7 +83,7 @@ export default function Profile() {
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null
     setAvatar(file)
-    
+
     if (file) {
       const reader = new FileReader()
       reader.onloadend = () => {
@@ -136,21 +136,21 @@ export default function Profile() {
                 <span className="text-gray-400 text-sm">Username:</span>
                 <h2 className="text-2xl font-bold">{data?.username}</h2>
               </div>
-              
+
               {data?.info.first_name && (
                 <div>
                   <span className="text-gray-400 text-sm">Nome:</span>
                   <p className="text-lg">{data.info.first_name}</p>
                 </div>
               )}
-              
+
               {data?.info.last_name && (
                 <div>
                   <span className="text-gray-400 text-sm">Sobrenome:</span>
                   <p className="text-lg">{data.info.last_name}</p>
                 </div>
               )}
-              
+
               {data?.info.bio && (
                 <div>
                   <span className="text-gray-400 text-sm">Bio:</span>
@@ -158,7 +158,7 @@ export default function Profile() {
                 </div>
               )}
 
-              <Button 
+              <Button
                 onClick={() => {
                   if (data) {
                     setUsername(data.username || '')
@@ -168,7 +168,7 @@ export default function Profile() {
                     setAvatarPreview(getMediaUrl(data.info?.avatar))
                   }
                   setIsEditing(true)
-                }} 
+                }}
                 className="mt-6 w-full max-w-md"
               >
                 Editar Perfil
@@ -250,11 +250,7 @@ export default function Profile() {
                 >
                   Cancelar
                 </Button>
-                <Button
-                  type="submit"
-                  disabled={isUpdating}
-                  className="flex-1"
-                >
+                <Button type="submit" disabled={isUpdating} className="flex-1">
                   {isUpdating ? 'Salvando...' : 'Salvar'}
                 </Button>
               </div>
