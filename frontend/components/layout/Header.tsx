@@ -12,7 +12,10 @@ export default function Header() {
   return (
     <header className="w-full bg-violet-600">
       <Container className="flex items-center justify-around p-2">
-        <Link href={'/'} className="flex items-center justify-center flex-1">
+        <Link
+          href={'/profile'}
+          className="flex items-center justify-center flex-1"
+        >
           <img
             src={getMediaUrl(`${data?.info.avatar}`)}
             className="rounded-full w-12 h-12 object-cover"

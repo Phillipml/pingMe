@@ -26,6 +26,8 @@ frontend/
 │   │   └── page.tsx
 │   ├── feed/                # Feed principal
 │   │   └── page.tsx
+│   ├── profile/             # Página de perfil do usuário
+│   │   └── page.tsx
 │   ├── complete-profile/    # Completar perfil
 │   │   └── page.tsx
 │   └── user-created/        # Confirmação de criação de conta
@@ -96,19 +98,28 @@ frontend/
 4. **Feed (`/feed`)**:
    - Feed principal com posts (em desenvolvimento)
 
-5. **Completar Perfil (`/complete-profile`)**:
+5. **Perfil (`/profile`)**:
+   - Visualização e edição do perfil do usuário autenticado
+   - Exibe: username, nome, sobrenome, bio e avatar
+   - Modo de edição com formulário completo
+   - Campos editáveis: username, first_name, last_name, bio e avatar
+   - Upload de nova foto de perfil com preview
+   - Botão de editar que alterna entre visualização e edição
+   - Ícone de câmera (TbPhotoEdit) para alterar avatar no modo de edição
+
+6. **Completar Perfil (`/complete-profile`)**:
    - Formulário completo para atualizar informações do perfil
    - Campos: first_name (obrigatório), last_name, bio, avatar (obrigatório)
    - Upload de imagem de perfil (avatar)
    - Atualiza status do perfil para 1 após conclusão
    - Redireciona para `/feed` após atualização bem-sucedida
 
-6. **Usuário Criado (`/user-created`)**:
+7. **Usuário Criado (`/user-created`)**:
    - Página de confirmação após registro
    - Mensagem de boas-vindas
    - Link para página de login
 
-7. **Logout (`/logout`)**:
+8. **Logout (`/logout`)**:
    - Página de logout (em desenvolvimento)
 
 ## Como Começar
@@ -274,7 +285,8 @@ O projeto usa Redux Toolkit Query (RTK Query) para gerenciar estado e requisiç�
 - **Button**: Botão reutilizável com estilo padrão
   - Background violeta (bg-violet-800) com hover (bg-violet-600)
   - Transição suave
-  - Suporta todas as props padrão de button HTML
+  - Suporta todas as props padrão de button HTML (onClick, type, disabled, etc.)
+  - Props são passadas corretamente via spread operator
 
 - **Input**: Campo de entrada de texto reutilizável
   - Estilização padrão com borda violeta (border-violet-600)
@@ -314,6 +326,7 @@ export default function Layout() {
 ```
 
 **Características:**
+
 - Busca dados do perfil via `useGetProfileQuery()` automaticamente
 - Exibe avatar com fallback para imagem padrão se não houver
 - Mostra username do usuário (oculto durante loading)
@@ -330,10 +343,11 @@ Função para construir URLs de mídia (imagens, avatares) com fallback:
 import { getMediaUrl } from '@/utils/api-utils'
 
 // Em um componente
-<img src={getMediaUrl(user.info.avatar)} alt="Avatar" />
+;<img src={getMediaUrl(user.info.avatar)} alt="Avatar" />
 ```
 
 **Comportamento:**
+
 - Se `path` for `null` ou `undefined`: retorna avatar padrão
 - Se `path` já for uma URL completa (começa com 'http'): retorna como está
 - Caso contrário: concatena com `BACKEND_BASE_URL`
@@ -425,6 +439,9 @@ O projeto usa uma estratégia híbrida para armazenamento de tokens:
 
 - Verificação de status do perfil
 - Página de completar perfil com upload de avatar
+- Página de perfil com visualização e edição completa
+- Edição de username, nome, sobrenome, bio e avatar
+- Preview de avatar ao selecionar nova imagem
 - Redirecionamento inteligente baseado em status
 
 ✅ **Arquitetura**
@@ -453,6 +470,7 @@ O projeto usa uma estratégia híbrida para armazenamento de tokens:
 - [ ] Adicionar testes unitários e de integração
 - [ ] Implementar loading states mais elaborados
 - [ ] Adicionar validação de formulários mais robusta
+- [ ] Adicionar validação de username único na edição de perfil
 
 ## Troubleshooting
 
