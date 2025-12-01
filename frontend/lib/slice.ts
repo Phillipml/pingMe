@@ -51,7 +51,7 @@ export const apiSlice = createApi({
       query: () => ({
         url: '/auth/logout/',
         method: 'POST',
-        body:{}
+        body: {}
       })
     }),
     updateProfile: builder.mutation<Profile, Profile | FormData>({

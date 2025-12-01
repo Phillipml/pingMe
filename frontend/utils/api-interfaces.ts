@@ -23,8 +23,8 @@ export interface Profile {
 export interface LogoutResponse {
   message: string
 }
-export interface Logout{
-  refresh:string
+export interface Logout {
+  refresh?: string
 }
 
 export interface LogoutRequest {
