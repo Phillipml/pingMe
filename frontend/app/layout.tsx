@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <body
-        className={`${montserrat.variable} font-sans antialiased bg-gray-950 text-white h-screen w-screen overflow-hidden ">
+        className={`${montserrat.variable} font-sans antialiased bg-gray-950 text-white min-h-screen w-full overflow-y-auto">
 `}
         suppressHydrationWarning
       >

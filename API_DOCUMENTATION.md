@@ -397,7 +397,7 @@ const profile = await response.json();
 
 ### 2. Atualizar Perfil
 
-Permite atualizar foto de perfil, nome e bio. Todos os campos são opcionais - você pode atualizar apenas o que desejar. **O perfil é criado automaticamente se não existir.**
+Permite atualizar username, foto de perfil, nome e bio. Todos os campos são opcionais - você pode atualizar apenas o que desejar. **O perfil é criado automaticamente se não existir.**
 
 **Endpoint:** `PUT /api/auth/profile/update/`
 
@@ -409,6 +409,7 @@ Content-Type: multipart/form-data
 
 **Body (Form Data):**
 ```
+username: novo_username
 first_name: João
 last_name: Silva
 bio: Minha nova biografia
@@ -420,6 +421,7 @@ avatar: [arquivo de imagem]
 - Use `application/json` se for apenas texto:
 ```json
 {
+  "username": "novo_username",
   "first_name": "João",
   "bio": "Nova biografia"
 }
@@ -428,6 +430,7 @@ avatar: [arquivo de imagem]
 **Resposta de Sucesso (200):**
 ```json
 {
+  "username": "novo_username",
   "first_name": "João",
   "last_name": "Silva",
   "bio": "Nova biografia",
@@ -441,6 +444,7 @@ avatar: [arquivo de imagem]
 **Exemplo com FormData (com imagem):**
 ```javascript
 const formData = new FormData();
+formData.append('username', 'novo_username');
 formData.append('first_name', 'João');
 formData.append('last_name', 'Silva');
 formData.append('bio', 'Minha bio');
