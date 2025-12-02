@@ -249,7 +249,8 @@ class TestUserList:
 
     def test_get_user_list_as_regular_user(self, authenticated_client):
         response = authenticated_client.get("/api/auth/users/")
-        assert response.status_code == status.HTTP_403_FORBIDDEN
+        assert response.status_code == status.HTTP_200_OK
+        assert "results" in response.data
 
     def test_get_user_list_unauthorized(self, api_client):
         response = api_client.get("/api/auth/users/")

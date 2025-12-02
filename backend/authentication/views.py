@@ -211,21 +211,23 @@ def change_password(request):
 @permission_classes([IsAuthenticated])
 def user_list(request):
     from rest_framework.pagination import PageNumberPagination
+    from django.db.models import Q
 
-    if not request.user.is_superuser:
-        return Response(
-            {
-                "error": "Acesso negado. Apenas administradores podem acessar esta lista."
-            },
-            status=status.HTTP_403_FORBIDDEN,
+    search_query = request.GET.get("q", "").strip()
+
+    users = User.objects.exclude(id=request.user.id)
+
+    if search_query:
+        users = users.filter(
+            Q(username__icontains=search_query) | Q(email__icontains=search_query)
         )
 
-    users = User.objects.all().order_by("-created_at")
+    users = users.order_by("-created_at")
 
     paginator = PageNumberPagination()
     paginator.page_size = 20
     paginated_users = paginator.paginate_queryset(users, request)
-    serializer = UserSerializer(paginated_users, many=True)
+    serializer = UserSerializer(paginated_users, many=True, context={'request': request})
 
     return paginator.get_paginated_response(serializer.data)
 
