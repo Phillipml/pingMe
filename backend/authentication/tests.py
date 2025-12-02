@@ -266,11 +266,29 @@ class TestUserList:
 
     def test_get_user_list_as_regular_user(self, authenticated_client):
         response = authenticated_client.get("/api/auth/users/")
-        assert response.status_code == status.HTTP_403_FORBIDDEN
+        assert response.status_code == status.HTTP_200_OK
+        assert "results" in response.data
 
     def test_get_user_list_unauthorized(self, api_client):
         response = api_client.get("/api/auth/users/")
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+    def test_search_users_by_username(self, authenticated_client, user):
+        other_user = User.objects.create_user(
+            username="joaosilva", email="joao@example.com", password="testpass123"
+        )
+        Profile.objects.create(user=other_user)
+
+        response = authenticated_client.get("/api/auth/users/?q=joao")
+        assert response.status_code == status.HTTP_200_OK
+        assert len(response.data["results"]) >= 1
+        assert any(u["username"] == "joaosilva" for u in response.data["results"])
+
+    def test_search_users_excludes_current_user(self, authenticated_client, user):
+        response = authenticated_client.get("/api/auth/users/")
+        assert response.status_code == status.HTTP_200_OK
+        user_ids = [u["id"] for u in response.data["results"]]
+        assert user.id not in user_ids
 
 
 @pytest.mark.django_db
