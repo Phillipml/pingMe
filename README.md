@@ -6,6 +6,7 @@ API backend de rede social feita com Django REST Framework. Permite criar posts,
 
 ### Backend
 - Autenticação de usuários com JWT
+- Validação de username único (não permite usernames duplicados)
 - Perfil de usuário com bio e avatar (upload de imagem)
 - Criar posts com texto (apenas texto, sem imagens)
 - Curtir e descurtir posts
@@ -228,6 +229,7 @@ A API está dividida em 3 apps principais:
 
 authentication - Gerencia usuários e autenticação
 - Cadastro e login
+- Validação de username único (não permite duplicatas)
 - Perfil com bio e avatar
 - Upload de foto de perfil
 - Alterar senha
@@ -326,6 +328,7 @@ O sistema suporta configuração flexível de banco de dados com três níveis d
 - CORS configurado para `http://localhost:3000` e `http://127.0.0.1:3000` (configurável via `CORS_ALLOWED_ORIGINS`)
 - Endpoints protegidos requerem autenticação (exceto: register, login, token/refresh, logout)
 - Validação de senhas do Django (mínimo 8 caracteres)
+- Validação de username único (não permite usernames duplicados no registro e atualização de perfil)
 - Upload de imagens apenas para avatares (JPG, PNG, GIF, WebP)
 
 ### Outros
@@ -389,6 +392,7 @@ make get_secret_key
 - **Blacklist de Tokens**: Tokens invalidados no logout não podem ser reutilizados
 - **CORS**: Configurado para origens específicas (configurável via `CORS_ALLOWED_ORIGINS`)
 - **Validação de Senhas**: Validações padrão do Django (mínimo 8 caracteres)
+- **Validação de Username**: Usernames devem ser únicos (validação no registro e atualização de perfil)
 - **Upload Seguro**: Upload de imagens apenas para usuários autenticados
 - **Permissões**: Apenas autores podem editar/deletar seus próprios posts e comentários
 

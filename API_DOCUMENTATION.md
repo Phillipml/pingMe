@@ -71,7 +71,7 @@ Content-Type: application/json
 ```
 
 **Campos necessários:**
-- username: Nome de usuário (único, obrigatório)
+- username: Nome de usuário (único, obrigatório, não permite duplicatas)
 - email: Email do usuário (único, obrigatório)
 - password: Senha (mínimo 8 caracteres, obrigatório)
 
@@ -97,6 +97,8 @@ Content-Type: application/json
 
 **Erros que podem acontecer:**
 - 400: Email ou username já existem, ou algum campo está inválido
+  - Se o username já existe: `{"username": ["Este username já está em uso. Por favor, escolha outro."]}`
+  - Se o email já existe: erro de validação do Django
 - Campos obrigatórios faltando
 
 **Exemplo com cURL:**
@@ -427,6 +429,10 @@ avatar: [arquivo de imagem]
 }
 ```
 
+**Validações:**
+- `username`: Deve ser único (não pode ser igual ao username de outro usuário)
+- Todos os campos são opcionais - você pode atualizar apenas o que desejar
+
 **Resposta de Sucesso (200):**
 ```json
 {
@@ -475,6 +481,11 @@ const response = await fetch('http://localhost:8000/api/auth/profile/update/', {
 ```
 
 **Formatos de Imagem Aceitos:** JPG, PNG, GIF, WebP
+
+**Erros que podem acontecer:**
+- `400`: Dados inválidos ou username já em uso
+  - Se o username já existe: `{"username": ["Este username já está em uso. Por favor, escolha outro."]}`
+  - Campos inválidos ou formato de imagem não suportado
 
 ---
 

@@ -39,7 +39,10 @@ def authenticated_client(api_client, user):
 @pytest.fixture
 def admin_user():
     user = User.objects.create_user(
-        username="admin", email="admin@example.com", password="admin123", is_superuser=True
+        username="admin",
+        email="admin@example.com",
+        password="admin123",
+        is_superuser=True,
     )
     Profile.objects.create(user=user)
     return user
@@ -76,6 +79,17 @@ class TestUserRegistration:
         response = api_client.post("/api/auth/register/", user_data)
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
+    def test_register_duplicate_username(self, api_client, user):
+        duplicate_data = {
+            "username": user.username,
+            "email": "different@example.com",
+            "password": "testpass123",
+        }
+        response = api_client.post("/api/auth/register/", duplicate_data)
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert "username" in response.data
+        assert "já está em uso" in str(response.data["username"][0]).lower()
+
     def test_register_missing_fields(self, api_client):
         response = api_client.post("/api/auth/register/", {})
         assert response.status_code == status.HTTP_400_BAD_REQUEST
@@ -88,8 +102,6 @@ class TestUserLogin:
             "/api/auth/login/", {"email": user.email, "password": "testpass123"}
         )
         assert response.status_code == status.HTTP_200_OK
-<<<<<<< fix/authentication
-<<<<<<< HEAD
         assert "user" in response.data
         assert "access" in response.data
         assert "refresh" in response.data
@@ -99,14 +111,6 @@ class TestUserLogin:
         assert "bio" in response.data["user"]["info"]
         assert "avatar" in response.data["user"]["info"]
         assert "status" in response.data["user"]["info"]
-=======
-        assert "access" in response.data
-        assert "refresh" in response.data
-        assert "user" in response.data
->>>>>>> main
-=======
-
->>>>>>> main
 
     def test_login_invalid_credentials(self, api_client):
         response = api_client.post(
@@ -192,6 +196,19 @@ class TestProfile:
         )
         assert response.status_code == status.HTTP_200_OK
         assert response.data["first_name"] == "Maria"
+
+    def test_update_profile_duplicate_username(self, authenticated_client, user):
+        other_user = User.objects.create_user(
+            username="otheruser", email="other@example.com", password="testpass123"
+        )
+        Profile.objects.create(user=other_user)
+
+        response = authenticated_client.put(
+            "/api/auth/profile/update/", {"username": "otheruser"}
+        )
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert "username" in response.data
+        assert "já está em uso" in str(response.data["username"][0]).lower()
 
     def test_get_profile_detail(self, authenticated_client, user):
         response = authenticated_client.get(f"/api/auth/profile/{user.id}/")

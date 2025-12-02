@@ -21,6 +21,7 @@ authentication - Gerencia usuários
 - Modelo User personalizado
 - Modelo Profile com avatar (upload de imagem)
 - Autenticação por email
+- Validação de username único (não permite duplicatas)
 - Endpoints: register, login, logout, token refresh, profile, change password, user list, delete account
 
 posts - Gerencia conteúdo
@@ -74,6 +75,7 @@ User - Modelo de usuário
 - Estende AbstractUser do Django
 - Autenticação por email
 - Campos: email, username, created_at, updated_at
+- Validação: username deve ser único (verificado no serializer)
 
 Profile - Perfil do usuário
 - Um usuário tem um perfil (OneToOne)
@@ -288,6 +290,7 @@ make get_secret_key
 - Autenticação JWT
 - CORS configurado
 - Validação de senhas
+- Validação de username único (não permite duplicatas no registro e atualização)
 - Upload seguro (apenas autenticados)
 
 ## Upload de Imagens
