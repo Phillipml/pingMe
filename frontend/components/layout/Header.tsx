@@ -76,9 +76,12 @@ export default function Header() {
             onSubmit={handleSearch}
             className="flex bg-gray-950 rounded-full p-0 w-64 mb-0 overflow-hidden"
           >
-            <div className="flex items-center justify-center bg-gray-900 px-4 py-2">
+            <button
+              type="submit"
+              className="flex items-center justify-center bg-gray-900 px-4 py-2"
+            >
               <CiSearch className="text-gray-400" />
-            </div>
+            </button>
             <Input
               placeholder="Buscar usuários"
               className="border-none focus:outline-none bg-transparent flex-1"

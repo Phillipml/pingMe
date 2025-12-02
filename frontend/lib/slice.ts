@@ -62,17 +62,17 @@ export const apiSlice = createApi({
         body: profileData
       })
     }),
-    searchUsers: builder.query<SearchUsersResponse, string | void>({
+    searchUsers: builder.query<SearchUsersResponse, string>({
       query: (searchQuery) => ({
         url: '/auth/users/',
         params: searchQuery ? { q: searchQuery } : {}
       })
     }),
-   getPublicProfile: builder.query<User, string>({
-    query:(id) => ({
-      url: `/auth/profile/${id}/`
+    getPublicProfile: builder.query<User, string | void>({
+      query: (id) => ({
+        url: `/auth/profile/${id}/`
+      })
     })
-   })
   })
 })
 
