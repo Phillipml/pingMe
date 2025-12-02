@@ -97,11 +97,18 @@ class UserWithProfileSerializer(serializers.ModelSerializer):
 
     def get_info(self, obj):
         profile = obj.profile
+        request = self.context.get('request')
+        avatar_url = None
+        if profile.avatar:
+            if request:
+                avatar_url = request.build_absolute_uri(profile.avatar.url)
+            else:
+                avatar_url = profile.avatar.url
         return {
             "first_name": profile.first_name,
             "last_name": profile.last_name,
             "bio": profile.bio,
-            "avatar": profile.avatar.url if profile.avatar else None,
+            "avatar": avatar_url,
             "status": profile.status,
         }
 

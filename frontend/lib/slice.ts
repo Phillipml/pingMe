@@ -67,7 +67,12 @@ export const apiSlice = createApi({
         url: '/auth/users/',
         params: searchQuery ? { q: searchQuery } : {}
       })
+    }),
+   getPublicProfile: builder.query<User, string>({
+    query:(id) => ({
+      url: `/auth/profile/${id}/`
     })
+   })
   })
 })
 
@@ -77,5 +82,6 @@ export const {
   useGetProfileQuery,
   useLogoutMutation,
   useUpdateProfileMutation,
-  useSearchUsersQuery
+  useSearchUsersQuery,
+  useGetPublicProfileQuery
 } = apiSlice

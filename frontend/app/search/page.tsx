@@ -39,7 +39,7 @@ export default function Search() {
               <Link href="/">
                 {users.avatar ? (
                   <img
-                    src={users.avatar || ' '}
+                    src={users.avatar}
                     alt={`${users.username} profile avatar`}
                     className="rounded-full w-14 h-14 object-cover"
                   />
