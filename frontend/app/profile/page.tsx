@@ -1,6 +1,5 @@
 'use client'
 import Container from '@/components/layout/Container'
-import Header from '@/components/layout/Header'
 import Form from '@/components/layout/Form'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
@@ -98,7 +97,6 @@ export default function Profile() {
   if (isLoading) {
     return (
       <>
-        <Header />
         <Container className="flex justify-center items-center min-h-[60vh]">
           <p>Carregando...</p>
         </Container>
@@ -108,7 +106,6 @@ export default function Profile() {
 
   return (
     <>
-      <Header />
       <Container className="max-w-2xl mx-auto pb-8">
         <div className="flex flex-col items-center gap-6 py-6">
           <div className="relative">

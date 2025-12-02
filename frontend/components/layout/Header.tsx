@@ -6,7 +6,7 @@ import { getMediaUrl } from '@/utils/api-utils'
 import Input from '../ui/Input'
 import { CiLogout, CiSearch } from 'react-icons/ci'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 export default function Header() {
   const router = useRouter()
@@ -25,7 +25,12 @@ export default function Header() {
       alert(err?.data?.error || err?.data?.message || 'Erro ao fazer logout')
     }
   }
-  return (
+  const HIDDEN_HEADER_ROUTES = ['/login', '/register', '/user-created'] as const
+  const pathname = usePathname()
+  const hideHeader = HIDDEN_HEADER_ROUTES.some(
+    (route) => pathname === route || pathname.startsWith(route + '/')
+  )
+  return hideHeader ? null : (
     <header className="w-full bg-violet-600">
       <Container className="flex items-center justify-around p-2">
         <div className="flex items-center justify-center flex-1">
