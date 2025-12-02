@@ -1,5 +1,9 @@
 'use client'
-import { useGetProfileQuery, useLogoutMutation } from '@/lib/slice'
+import {
+  useGetProfileQuery,
+  useLogoutMutation,
+  useSearchUsersQuery
+} from '@/lib/slice'
 import Container from './Container'
 import { Logo } from '../ui/Logo'
 import { getMediaUrl } from '@/utils/api-utils'
@@ -7,11 +11,14 @@ import Input from '../ui/Input'
 import { CiLogout, CiSearch } from 'react-icons/ci'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
+import { FormEvent, useState } from 'react'
 
 export default function Header() {
   const router = useRouter()
+  const pathname = usePathname()
   const { data, isLoading } = useGetProfileQuery()
-  const [logout, error] = useLogoutMutation()
+  const [logout] = useLogoutMutation()
+  const [searchUser, setSearchUser] = useState('')
   const handleLogout = async () => {
     try {
       const response = await logout({}).unwrap()
@@ -26,10 +33,17 @@ export default function Header() {
     }
   }
   const HIDDEN_HEADER_ROUTES = ['/login', '/register', '/user-created'] as const
-  const pathname = usePathname()
   const hideHeader = HIDDEN_HEADER_ROUTES.some(
     (route) => pathname === route || pathname.startsWith(route + '/')
   )
+  const handleSearch = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const query = searchUser.trim()
+    if (query) {
+      router.push(`/search?q=${encodeURIComponent(query)}`)
+      setSearchUser('')
+    }
+  }
   return hideHeader ? null : (
     <header className="w-full bg-violet-600">
       <Container className="flex items-center justify-around p-2">
@@ -58,15 +72,20 @@ export default function Header() {
           </Link>
         </div>
         <div className="flex items-center justify-center flex-1">
-          <div className="flex bg-gray-950 rounded-full p-0 w-64 mb-0 overflow-hidden">
+          <form
+            onSubmit={handleSearch}
+            className="flex bg-gray-950 rounded-full p-0 w-64 mb-0 overflow-hidden"
+          >
             <div className="flex items-center justify-center bg-gray-900 px-4 py-2">
               <CiSearch className="text-gray-400" />
             </div>
             <Input
-              placeholder="Search"
+              placeholder="Buscar usuários"
               className="border-none focus:outline-none bg-transparent flex-1"
+              value={searchUser}
+              onChange={(e) => setSearchUser(e.target.value)}
             />
-          </div>
+          </form>
         </div>
       </Container>
     </header>
