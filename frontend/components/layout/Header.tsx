@@ -41,6 +41,8 @@ export default function Header() {
     const query = searchUser.trim()
     if (query.length <= 2) {
       alert('Digite ao menos 3 caracteres para pesquisar')
+      router.push('/feed')
+      return
     }
 
     if (query) {
