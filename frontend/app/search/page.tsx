@@ -1,8 +1,11 @@
 'use client'
 import Container from '@/components/layout/Container'
 import { useSearchUsersQuery } from '@/lib/slice'
+import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
+import DefaultAvatar from '../../public/user.png'
+import { FaRegUserCircle } from 'react-icons/fa'
 
 export default function Search() {
   const searchParams = useSearchParams()
@@ -23,13 +26,34 @@ export default function Search() {
   }
   return (
     <Container>
-      <h2 className="text-center text-xl">Resultado da busca por: {query}</h2>
-      <ul>
-
-      {data?.results.map((users) => (
-          <li>{users.username}</li>
-        ))}
+      <h2 className="text-center text-xl mb-8">
+        Resultado da busca por: {query}
+      </h2>
+      {data?.results && data.results.length > 0 ? (
+        <ul>
+          {data?.results.map((users) => (
+            <li
+              className="flex m-auto  p-2 mb-8 w-1/2 shadow-2xl rounded-2xl hover:shadow-violet-600 transition-shadow cursor-pointer"
+              key={users.id}
+            >
+              <Link href="/">
+                {users.avatar ? (
+                  <img
+                    src={users.avatar || ' '}
+                    alt={`${users.username} profile avatar`}
+                    className="rounded-full w-14 h-14 object-cover"
+                  />
+                ) : (
+                  <FaRegUserCircle className="rounded-full w-14 h-14 object-cover" />
+                )}
+              </Link>
+              {users.username}
+            </li>
+          ))}
         </ul>
+      ) : (
+        <h2 className="text-center">Nenhum usuário encontrado</h2>
+      )}
     </Container>
   )
 }

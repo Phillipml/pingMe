@@ -35,8 +35,13 @@ export interface SearchUserResult {
   username: string
   email: string
   created_at: string
+  avatar: string | null
 }
-export interface User extends SearchUserResult {
+export interface User {
+  id: number
+  username: string
+  email: string
+  created_at: string
   info: Profile
 }
 export interface LoginRegisterResponse {

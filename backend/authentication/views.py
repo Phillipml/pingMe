@@ -227,7 +227,7 @@ def user_list(request):
     paginator = PageNumberPagination()
     paginator.page_size = 20
     paginated_users = paginator.paginate_queryset(users, request)
-    serializer = UserSerializer(paginated_users, many=True)
+    serializer = UserSerializer(paginated_users, many=True, context={'request': request})
 
     return paginator.get_paginated_response(serializer.data)
 

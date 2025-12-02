@@ -3,9 +3,18 @@ from .models import User, Profile
 
 
 class UserSerializer(serializers.ModelSerializer):
+    avatar = serializers.SerializerMethodField()
     class Meta:
         model = User
-        fields = ["id", "username", "email", "created_at"]
+        fields = ["id", "username", "email", "created_at", "avatar"]
+
+    def get_avatar(self, obj):
+        if hasattr(obj, 'profile') and obj.profile.avatar:
+            request = self.context.get('request')
+            if request:
+                return request.build_absolute_uri(obj.profile.avatar.url)
+            return obj.profile.avatar.url
+        return None
 
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
