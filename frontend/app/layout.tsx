@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Montserrat } from 'next/font/google'
 import './globals.css'
 import AppProvider from '@/providers/AppProvider'
+import Header from '@/components/layout/Header'
 
 const montserrat = Montserrat({
   variable: '--font-montserrat',
@@ -26,7 +27,10 @@ export default function RootLayout({
 `}
         suppressHydrationWarning
       >
-        <AppProvider>{children}</AppProvider>
+        <AppProvider>
+          <Header />
+          {children}
+        </AppProvider>
       </body>
     </html>
   )
