@@ -6,7 +6,8 @@ import {
   User,
   LogoutResponse,
   Profile,
-  Logout
+  Logout,
+  SearchUsersResponse
 } from '@/utils/api-interfaces'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
@@ -60,6 +61,12 @@ export const apiSlice = createApi({
         method: 'PUT',
         body: profileData
       })
+    }),
+    searchUsers: builder.query<SearchUsersResponse, string | void>({
+      query: (searchQuery) => ({
+        url: '/auth/users/',
+        params: searchQuery ? { q: searchQuery } : {}
+      })
     })
   })
 })
@@ -69,5 +76,6 @@ export const {
   useRegisterMutation,
   useGetProfileQuery,
   useLogoutMutation,
-  useUpdateProfileMutation
+  useUpdateProfileMutation,
+  useSearchUsersQuery
 } = apiSlice

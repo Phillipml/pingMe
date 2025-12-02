@@ -30,11 +30,13 @@ export interface Logout {
 export interface LogoutRequest {
   refresh?: string
 }
-export interface User {
+export interface SearchUserResult {
   id: number
   username: string
   email: string
   created_at: string
+}
+export interface User extends SearchUserResult {
   info: Profile
 }
 export interface LoginRegisterResponse {
@@ -42,4 +44,10 @@ export interface LoginRegisterResponse {
   user: User
   access?: string
   refresh?: string
+}
+export interface SearchUsersResponse {
+  count: number
+  next: string | null
+  previous: string | null
+  results: SearchUserResult[]
 }
