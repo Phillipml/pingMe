@@ -4,7 +4,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
 from .models import Follow
-from .serializers import FollowSerializer, FollowCreateSerializer
+from .serializers import FollowSerializer, FollowCreateSerializer, FollowerFollowingSerializer
 from authentication.models import User
 
 
@@ -68,22 +68,50 @@ def unfollow_user(request):
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def my_followers(request):
-    followers = Follow.objects.filter(following=request.user).select_related("follower")
+    follows = Follow.objects.filter(following=request.user).select_related("follower", "follower__profile")
 
     paginator = PageNumberPagination()
     paginator.page_size = 20
-    paginated_followers = paginator.paginate_queryset(followers, request)
-    serializer = FollowSerializer(paginated_followers, many=True)
+    paginated_follows = paginator.paginate_queryset(follows, request)
+    
+    users_data = []
+    for follow in paginated_follows:
+        user = follow.follower
+        user_data = {
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "created_at": user.created_at,
+            "since": follow.created_at,
+            "profile": user.profile if hasattr(user, 'profile') else None,
+        }
+        users_data.append(user_data)
+    
+    serializer = FollowerFollowingSerializer(users_data, many=True, context={"request": request})
     return paginator.get_paginated_response(serializer.data)
 
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def my_following(request):
-    following = Follow.objects.filter(follower=request.user).select_related("following")
+    follows = Follow.objects.filter(follower=request.user).select_related("following", "following__profile")
 
     paginator = PageNumberPagination()
     paginator.page_size = 20
-    paginated_following = paginator.paginate_queryset(following, request)
-    serializer = FollowSerializer(paginated_following, many=True)
+    paginated_follows = paginator.paginate_queryset(follows, request)
+    
+    users_data = []
+    for follow in paginated_follows:
+        user = follow.following
+        user_data = {
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "created_at": user.created_at,
+            "since": follow.created_at,
+            "profile": user.profile if hasattr(user, 'profile') else None,
+        }
+        users_data.append(user_data)
+    
+    serializer = FollowerFollowingSerializer(users_data, many=True, context={"request": request})
     return paginator.get_paginated_response(serializer.data)
