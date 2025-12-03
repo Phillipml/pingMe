@@ -56,3 +56,9 @@ export interface SearchUsersResponse {
   previous: string | null
   results: SearchUserResult[]
 }
+export interface FollowRequest {
+  following: number
+}
+export interface FollowResponse {
+  message:string
+}
