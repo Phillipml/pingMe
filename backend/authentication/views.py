@@ -164,16 +164,12 @@ def logout(request):
 def profile_detail(request, user_id):
     try:
         user = User.objects.get(id=user_id)
-        profile = Profile.objects.get(user=user)
-        serializer = ProfileDetailSerializer(profile)
+        Profile.objects.get_or_create(user=user)
+        serializer = UserWithProfileSerializer(user, context={'request': request})
         return Response(serializer.data)
     except User.DoesNotExist:
         return Response(
             {"error": "Usuário não encontrado"}, status=status.HTTP_404_NOT_FOUND
-        )
-    except Profile.DoesNotExist:
-        return Response(
-            {"error": "Perfil não encontrado"}, status=status.HTTP_404_NOT_FOUND
         )
 
 
