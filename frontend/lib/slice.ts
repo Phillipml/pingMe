@@ -77,18 +77,18 @@ export const apiSlice = createApi({
         url: `/auth/profile/${id}/`
       })
     }),
-    follow: builder.mutation<FollowResponse,FollowRequest>({
-      query:(followData)=>({
-        url:'/follows/follow/',
+    follow: builder.mutation<FollowResponse, FollowRequest>({
+      query: (followData) => ({
+        url: '/follows/follow/',
         method: 'POST',
-        body:followData
+        body: followData
       })
     }),
-    unfollow: builder.mutation<FollowResponse,FollowRequest>({
-      query:(unfollowData)=>({
-        url:'/follows/unfollow/',
+    unfollow: builder.mutation<FollowResponse, FollowRequest>({
+      query: (unfollowData) => ({
+        url: '/follows/unfollow/',
         method: 'DELETE',
-        body:unfollowData
+        body: unfollowData
       })
     }),
     getMyFollowers: builder.query<FollowersResponse, void>({
