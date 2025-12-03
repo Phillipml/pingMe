@@ -9,7 +9,9 @@ import {
   Logout,
   SearchUsersResponse,
   FollowRequest,
-  FollowResponse
+  FollowResponse,
+  FollowersResponse,
+  FollowingResponse
 } from '@/utils/api-interfaces'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
@@ -77,17 +79,23 @@ export const apiSlice = createApi({
     }),
     follow: builder.mutation<FollowResponse,FollowRequest>({
       query:(followData)=>({
-        url:'/follows/follow',
+        url:'/follows/follow/',
         method: 'POST',
         body:followData
       })
     }),
     unfollow: builder.mutation<FollowResponse,FollowRequest>({
       query:(unfollowData)=>({
-        url:'/follows/follow',
+        url:'/follows/unfollow/',
         method: 'DELETE',
         body:unfollowData
       })
+    }),
+    getMyFollowers: builder.query<FollowersResponse, void>({
+      query: () => '/follows/my-followers/'
+    }),
+    getMyFollowing: builder.query<FollowingResponse, void>({
+      query: () => '/follows/my-following/'
     })
   })
 })
@@ -101,5 +109,7 @@ export const {
   useSearchUsersQuery,
   useGetPublicProfileQuery,
   useFollowMutation,
-  useUnfollowMutation
+  useUnfollowMutation,
+  useGetMyFollowersQuery,
+  useGetMyFollowingQuery
 } = apiSlice
