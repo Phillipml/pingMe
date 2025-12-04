@@ -1,16 +1,30 @@
 'use client'
 import Container from '@/components/layout/Container'
 import Button from '@/components/ui/Button'
-import { useGetPublicProfileQuery } from '@/lib/slice'
+import { useGetMyFollowingQuery, useGetPublicProfileQuery } from '@/lib/slice'
 import { useParams } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { FaRegUserCircle } from 'react-icons/fa'
 
 export default function UserProfile() {
+  const [isFollowing, setIsFollowing] = useState(false)
   const params = useParams()
   const userId = params.id as string
   const { data } = useGetPublicProfileQuery(userId, {
     skip: !userId
   })
+  const { data: followingData } = useGetMyFollowingQuery()
+
+  useEffect(() => {
+    if (data && followingData?.results) {
+      const isUserFollowing = followingData.results.some(
+        (user) => user.id == data.id
+      )
+      setIsFollowing(isUserFollowing)
+    } else {
+      setIsFollowing(false)
+    }
+  }, [data, followingData])
 
   return (
     <Container className="grid">
@@ -32,7 +46,12 @@ export default function UserProfile() {
           <h2 className="pt-2">
             Bio: <br /> {data?.info.bio}
           </h2>
-          <Button className="w-full">Seguir</Button>
+          <Button
+            className="w-full"
+            colorVariant={isFollowing ? 'red' : 'default'}
+          >
+            {isFollowing ? 'Deixar de Seguir' : 'Seguir'}
+          </Button>
         </div>
       </div>
     </Container>
