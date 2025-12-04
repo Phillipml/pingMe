@@ -79,12 +79,16 @@ class TestFollowUser:
 class TestUnfollowUser:
     def test_unfollow_user(self, authenticated_client, user1, user2):
         Follow.objects.create(follower=user1, following=user2)
-        response = authenticated_client.delete(f"/api/follows/unfollow/{user2.id}/")
+        response = authenticated_client.delete(
+            "/api/follows/unfollow/", {"following": user2.id}
+        )
         assert response.status_code == status.HTTP_200_OK
         assert not Follow.objects.filter(follower=user1, following=user2).exists()
 
     def test_unfollow_not_following(self, authenticated_client, user2):
-        response = authenticated_client.delete(f"/api/follows/unfollow/{user2.id}/")
+        response = authenticated_client.delete(
+            "/api/follows/unfollow/", {"following": user2.id}
+        )
         assert response.status_code == status.HTTP_404_NOT_FOUND
 
 

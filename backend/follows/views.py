@@ -3,9 +3,8 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.pagination import PageNumberPagination
-from django.shortcuts import get_object_or_404
 from .models import Follow
-from .serializers import FollowSerializer, FollowCreateSerializer
+from .serializers import FollowSerializer, FollowCreateSerializer, FollowerFollowingSerializer
 from authentication.models import User
 
 
@@ -14,26 +13,26 @@ from authentication.models import User
 def follow_user(request):
     serializer = FollowCreateSerializer(data=request.data)
     if serializer.is_valid():
-        following_user = serializer.validated_data["following"]
+        following = serializer.validated_data["following"]
 
-        if following_user == request.user:
+        if following == request.user:
             return Response(
                 {"error": "Você não pode seguir a si mesmo"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
         if Follow.objects.filter(
-            follower=request.user, following=following_user
+            follower=request.user, following=following
         ).exists():
             return Response(
                 {"error": "Você já está seguindo este usuário"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        follow = Follow.objects.create(follower=request.user, following=following_user)
+        follow = Follow.objects.create(follower=request.user, following=following)
         return Response(
             {
-                "message": f"Você começou a seguir {following_user.username}",
+                "message": f"Você começou a seguir {following.username}",
                 "follow": FollowSerializer(follow).data,
             },
             status=status.HTTP_201_CREATED,
@@ -44,42 +43,75 @@ def follow_user(request):
 
 @api_view(["DELETE"])
 @permission_classes([IsAuthenticated])
-def unfollow_user(request, user_id):
-    try:
-        following_user = get_object_or_404(User, id=user_id)
-        follow = Follow.objects.get(follower=request.user, following=following_user)
-        follow.delete()
+def unfollow_user(request):
+    serializer = FollowCreateSerializer(data=request.data)
+    if serializer.is_valid():
+        following = serializer.validated_data["following"]
+        
+        try:
+            follow = Follow.objects.get(follower=request.user, following=following)
+            follow.delete()
 
-        return Response(
-            {"message": f"Você deixou de seguir {following_user.username}"},
-            status=status.HTTP_200_OK,
-        )
-    except Follow.DoesNotExist:
-        return Response(
-            {"error": "Você não está seguindo este usuário"},
-            status=status.HTTP_404_NOT_FOUND,
-        )
+            return Response(
+                {"message": f"Você deixou de seguir {following.username}"},
+                status=status.HTTP_200_OK,
+            )
+        except Follow.DoesNotExist:
+            return Response(
+                {"error": "Você não está seguindo este usuário"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def my_followers(request):
-    followers = Follow.objects.filter(following=request.user).select_related("follower")
+    follows = Follow.objects.filter(following=request.user).select_related("follower", "follower__profile")
 
     paginator = PageNumberPagination()
     paginator.page_size = 20
-    paginated_followers = paginator.paginate_queryset(followers, request)
-    serializer = FollowSerializer(paginated_followers, many=True)
+    paginated_follows = paginator.paginate_queryset(follows, request)
+    
+    users_data = []
+    for follow in paginated_follows:
+        user = follow.follower
+        user_data = {
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "created_at": user.created_at,
+            "since": follow.created_at,
+            "profile": user.profile if hasattr(user, 'profile') else None,
+        }
+        users_data.append(user_data)
+    
+    serializer = FollowerFollowingSerializer(users_data, many=True, context={"request": request})
     return paginator.get_paginated_response(serializer.data)
 
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def my_following(request):
-    following = Follow.objects.filter(follower=request.user).select_related("following")
+    follows = Follow.objects.filter(follower=request.user).select_related("following", "following__profile")
 
     paginator = PageNumberPagination()
     paginator.page_size = 20
-    paginated_following = paginator.paginate_queryset(following, request)
-    serializer = FollowSerializer(paginated_following, many=True)
+    paginated_follows = paginator.paginate_queryset(follows, request)
+    
+    users_data = []
+    for follow in paginated_follows:
+        user = follow.following
+        user_data = {
+            "id": user.id,
+            "username": user.username,
+            "email": user.email,
+            "created_at": user.created_at,
+            "since": follow.created_at,
+            "profile": user.profile if hasattr(user, 'profile') else None,
+        }
+        users_data.append(user_data)
+    
+    serializer = FollowerFollowingSerializer(users_data, many=True, context={"request": request})
     return paginator.get_paginated_response(serializer.data)

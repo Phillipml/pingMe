@@ -30,13 +30,29 @@ export interface Logout {
 export interface LogoutRequest {
   refresh?: string
 }
-export interface SearchUserResult {
+export interface BaseUserResult {
   id: number
   username: string
   email: string
   created_at: string
   avatar: string | null
 }
+
+export interface UserResultWithSince extends BaseUserResult {
+  since: string
+}
+
+export interface PaginatedResponse<T> {
+  count: number
+  next: string | null
+  previous: string | null
+  results: T[]
+}
+
+export type SearchUserResult = BaseUserResult
+
+export type FollowersFollowingResult = UserResultWithSince
+
 export interface User {
   id: number
   username: string
@@ -44,15 +60,24 @@ export interface User {
   created_at: string
   info: Profile
 }
+
 export interface LoginRegisterResponse {
   message: string
   user: User
   access?: string
   refresh?: string
 }
-export interface SearchUsersResponse {
-  count: number
-  next: string | null
-  previous: string | null
-  results: SearchUserResult[]
+
+export type SearchUsersResponse = PaginatedResponse<SearchUserResult>
+
+export type FollowersResponse = PaginatedResponse<FollowersFollowingResult>
+
+export type FollowingResponse = PaginatedResponse<FollowersFollowingResult>
+
+export interface FollowRequest {
+  following: number
+}
+
+export interface FollowResponse {
+  message: string
 }
