@@ -1,9 +1,15 @@
 'use client'
 import Container from '@/components/layout/Container'
 import Button from '@/components/ui/Button'
-import { useFollowMutation, useGetMyFollowingQuery, useGetPublicProfileQuery, useUnfollowMutation } from '@/lib/slice'
+import {
+  useFollowMutation,
+  useGetMyFollowingQuery,
+  useGetPublicProfileQuery,
+  useUnfollowMutation
+} from '@/lib/slice'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import { AiOutlineLoading } from 'react-icons/ai'
 import { FaRegUserCircle } from 'react-icons/fa'
 
 export default function UserProfile() {
@@ -14,8 +20,8 @@ export default function UserProfile() {
     skip: !userId
   })
   const { data: followingData } = useGetMyFollowingQuery()
-  const [follow] = useFollowMutation()
-  const [unfollow] = useUnfollowMutation()
+  const [follow, { isLoading: followLoading }] = useFollowMutation()
+  const [unfollow, { isLoading: unfollowLoading }] = useUnfollowMutation()
 
   useEffect(() => {
     if (data && followingData?.results) {
@@ -27,21 +33,28 @@ export default function UserProfile() {
       setIsFollowing(false)
     }
   }, [data, followingData])
-  const followHandle = async ()=>{
-    if(!data?.id) return
+  const followHandle = async () => {
+    if (!data?.id) return
     try {
-      if (isFollowing){
-        await unfollow({following:data?.id})
+      if (isFollowing) {
+        await unfollow({ following: data?.id })
         setIsFollowing(false)
       } else {
-        await follow({following:data?.id})
+        await follow({ following: data?.id })
         setIsFollowing(true)
-
       }
     } catch (error) {
       alert('Erro ao fazer requisição')
-      
     }
+  }
+  const buttonContent = () => {
+    if (followLoading || unfollowLoading) {
+      return <AiOutlineLoading className="animate-spin m-auto" />
+    }
+    if (isFollowing) {
+      return 'Deixar de seguir'
+    }
+    return 'Seguir'
   }
 
   return (
@@ -69,7 +82,7 @@ export default function UserProfile() {
             colorVariant={isFollowing ? 'red' : 'default'}
             onClick={followHandle}
           >
-            {isFollowing ? 'Deixar de Seguir' : 'Seguir'}
+            {buttonContent()}
           </Button>
         </div>
       </div>
