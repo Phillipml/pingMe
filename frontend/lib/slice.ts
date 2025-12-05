@@ -16,7 +16,6 @@ import {
   CreatePost
 } from '@/utils/api-interfaces'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { url } from 'inspector'
 
 export const apiSlice = createApi({
   reducerPath: 'api',
@@ -100,11 +99,11 @@ export const apiSlice = createApi({
     getMyFollowing: builder.query<FollowingResponse, void>({
       query: () => '/follows/my-following/'
     }),
-    createPost: builder.mutation<PostResponse,CreatePost>({
-      query: (postData)=>({
-        url:'/posts/create/',
-        method:"POST",
-        body:postData
+    createPost: builder.mutation<PostResponse, CreatePost>({
+      query: (postData) => ({
+        url: '/posts/create/',
+        method: 'POST',
+        body: postData
       })
     })
   })
@@ -121,5 +120,6 @@ export const {
   useFollowMutation,
   useUnfollowMutation,
   useGetMyFollowersQuery,
-  useGetMyFollowingQuery
+  useGetMyFollowingQuery,
+  useCreatePostMutation
 } = apiSlice

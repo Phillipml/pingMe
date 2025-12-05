@@ -15,7 +15,7 @@ const Button = ({
   }
   return (
     <button
-      className={`p-4 rounded text-center ${setColorVariant[colorVariant]}  cursor-pointer mt-4 mb-4 transition ${
+      className={`p-4 rounded text-center ${setColorVariant[colorVariant]} cursor-pointer transition ${
         className ?? ''
       }`}
       {...props}
