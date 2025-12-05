@@ -247,8 +247,13 @@ export default function Profile() {
                 >
                   Cancelar
                 </Button>
-                <Button type="submit" disabled={isUpdating} className="flex-1">
-                  {isUpdating ? 'Salvando...' : 'Salvar'}
+                <Button
+                  type="submit"
+                  disabled={isUpdating}
+                  className="flex-1"
+                  loading={isUpdating}
+                >
+                  Salvar
                 </Button>
               </div>
             </Form>

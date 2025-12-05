@@ -65,7 +65,12 @@ export default function Login() {
             required
             placeholder="Senha"
           />
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={isLoading}
+            loading={isLoading}
+          >
             Entrar
           </Button>
           <p className="text-end">

@@ -1,12 +1,16 @@
+import { AiOutlineLoading } from 'react-icons/ai'
+
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode
   className?: string
   colorVariant?: 'default' | 'red'
+  loading?: boolean
 }
 const Button = ({
   children,
   className,
   colorVariant = 'default',
+  loading = false,
   ...props
 }: ButtonProps) => {
   const setColorVariant = {
@@ -15,12 +19,16 @@ const Button = ({
   }
   return (
     <button
-      className={`p-4 rounded text-center ${setColorVariant[colorVariant]} cursor-pointer transition ${
+      className={`p-2 rounded text-center ${setColorVariant[colorVariant]} cursor-pointer transition ${
         className ?? ''
       }`}
       {...props}
     >
-      {children}
+      {loading ? (
+        <AiOutlineLoading className="animate-spin m-auto" />
+      ) : (
+        children
+      )}
     </button>
   )
 }
