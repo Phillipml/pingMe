@@ -1,7 +1,6 @@
 import CenterContainer from '@/components/layout/CenterContainer'
 import Button from '@/components/ui/Button'
 import Link from 'next/link'
-import React from 'react'
 
 export default function UserCreated() {
   return (

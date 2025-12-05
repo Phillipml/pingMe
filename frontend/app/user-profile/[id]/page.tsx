@@ -48,9 +48,6 @@ export default function UserProfile() {
     }
   }
   const buttonContent = () => {
-    if (followLoading || unfollowLoading) {
-      return <AiOutlineLoading className="animate-spin m-auto" />
-    }
     if (isFollowing) {
       return 'Deixar de seguir'
     }
@@ -81,6 +78,7 @@ export default function UserProfile() {
             className="w-full"
             colorVariant={isFollowing ? 'red' : 'default'}
             onClick={followHandle}
+            loading={followLoading || unfollowLoading}
           >
             {buttonContent()}
           </Button>

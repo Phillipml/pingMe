@@ -62,7 +62,12 @@ export default function Register() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <Button type="submit" className="w-full" disabled={isLoading}>
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={isLoading}
+            loading={isLoading}
+          >
             Criar
           </Button>
         </Form>

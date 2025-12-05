@@ -69,8 +69,8 @@ export default function CompleteProfile() {
           />
           {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
 
-          <Button type="submit" disabled={isLoading}>
-            {isLoading ? 'Salvando' : 'Completar Perfil'}
+          <Button type="submit" disabled={isLoading} loading={isLoading}>
+            Salvando
           </Button>
         </Form>
       </div>

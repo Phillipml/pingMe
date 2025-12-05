@@ -81,3 +81,20 @@ export interface FollowRequest {
 export interface FollowResponse {
   message: string
 }
+export interface CreatePost {
+  content: string
+}
+export interface Post {
+  id: number
+  author: BaseUserResult
+  content: string
+  created_at: string
+  updated_at: string
+  likes_count: number
+  comments_count: number
+  is_liked: boolean
+}
+export interface PostResponse {
+  message: string
+  post: Post[]
+}
