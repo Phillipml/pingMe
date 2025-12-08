@@ -99,8 +99,10 @@ frontend/
    - Feed principal com posts de usuários seguidos + próprios posts
    - Formulário para criar novos posts (Pings)
    - Visualização de posts com autor, conteúdo, data, contadores de likes e comentários
+   - **Funcionalidade de curtir/descurtir posts** com atualização em tempo real
    - Indicador visual de sucesso ao criar post
    - Loading state durante carregamento do feed
+   - Atualização otimista do estado de likes usando RTK Query cache
 
 5. **Perfil (`/profile`)**:
    - Visualização e edição do perfil do usuário autenticado
@@ -251,6 +253,7 @@ O projeto usa Redux Toolkit Query (RTK Query) para gerenciar estado e requisiç�
   - `useFollowMutation`: Seguir um usuário
   - `useUnfollowMutation`: Deixar de seguir um usuário
   - `useCreatePostMutation`: Criar um novo post
+  - `useLikePostMutation`: Curtir/descurtir um post (toggle like)
 - **Queries** (operações de leitura):
   - `useGetProfileQuery`: Buscar perfil do usuário autenticado
   - `useGetPublicProfileQuery`: Buscar perfil público de outro usuário
@@ -401,6 +404,7 @@ import { getMediaUrl } from '@/utils/api-utils'
 
 - `GET /api/posts/` - Feed de posts (via `useFeedQuery`)
 - `POST /api/posts/create/` - Criar post (via `useCreatePostMutation`)
+- `POST /api/posts/{id}/like/` - Curtir/descurtir post (via `useLikePostMutation`)
 
 ### Armazenamento de Tokens
 
@@ -489,9 +493,11 @@ O projeto usa uma estratégia híbrida para armazenamento de tokens:
 - Feed principal com posts de usuários seguidos + próprios posts
 - Criação de posts (Pings) com formulário
 - Visualização de posts com autor, conteúdo, data
-- Contadores de likes e comentários
+- **Curtir e descurtir posts** (toggle like) - implementado
+- Contadores de likes e comentários atualizados em tempo real
 - Indicador visual de sucesso ao criar post
 - Loading states durante carregamento
+- Atualização otimista do estado de likes usando RTK Query cache
 
 ✅ **Sistema de Seguir Usuários**
 
@@ -516,7 +522,6 @@ O projeto usa uma estratégia híbrida para armazenamento de tokens:
 
 ## Próximos Passos
 
-- [ ] Adicionar funcionalidade de curtir posts (toggle like)
 - [ ] Adicionar funcionalidade de comentários (criar, visualizar, editar, deletar)
 - [ ] Implementar edição e deleção de posts próprios
 - [ ] Adicionar paginação no feed
@@ -530,6 +535,7 @@ O projeto usa uma estratégia híbrida para armazenamento de tokens:
 - [ ] Adicionar validação de username único na edição de perfil
 - [ ] Implementar infinite scroll no feed
 - [ ] Adicionar filtros e ordenação no feed
+- [ ] Adicionar visualização de quem curtiu um post
 
 ## Troubleshooting
 

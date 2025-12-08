@@ -26,8 +26,9 @@ authentication - Gerencia usuários
 
 posts - Gerencia conteúdo
 - Modelo Post (apenas texto)
-- Modelo Like (curtidas)
+- Modelo Like (curtidas) - toggle like/unlike
 - Modelo Comment (comentários)
+- Endpoints: feed, criar, editar, deletar, curtir, listar likes, comentários (CRUD completo)
 
 follows - Gerencia relacionamentos
 - Modelo Follow (seguir usuários)

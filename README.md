@@ -25,6 +25,7 @@ API backend de rede social feita com Django REST Framework. Permite criar posts,
 - Fluxo de completar perfil com upload de avatar
 - Página de perfil com visualização e edição completa (username, nome, sobrenome, bio, avatar)
 - **Feed principal com criação de posts e visualização do feed**
+- **Curtir e descurtir posts** (toggle like) com atualização em tempo real
 - **Página de busca de usuários**
 - **Página de perfil de outros usuários com funcionalidade de seguir/deixar de seguir**
 - Header com navegação, avatar do usuário e campo de busca

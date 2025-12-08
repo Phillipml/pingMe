@@ -767,12 +767,23 @@ Content-Type: application/json
 
 Para de seguir um usuário.
 
-**Endpoint:** `DELETE /api/follows/unfollow/{user_id}/`
+**Endpoint:** `DELETE /api/follows/unfollow/`
 
 **Headers:**
 ```
 Authorization: Bearer seu-access-token
+Content-Type: application/json
 ```
+
+**Body:**
+```json
+{
+  "following": 2
+}
+```
+
+**Campo:**
+- `following` (obrigatório): ID do usuário que você quer deixar de seguir
 
 **Resposta de Sucesso (200):**
 ```json
@@ -783,6 +794,7 @@ Authorization: Bearer seu-access-token
 
 **Erros Possíveis:**
 - `404`: Você não está seguindo este usuário
+- `400`: Dados inválidos
 
 ---
 
