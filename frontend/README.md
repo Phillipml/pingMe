@@ -96,7 +96,11 @@ frontend/
    - Redirecionamento para `/user-created` após registro bem-sucedido
 
 4. **Feed (`/feed`)**:
-   - Feed principal com posts (em desenvolvimento)
+   - Feed principal com posts de usuários seguidos + próprios posts
+   - Formulário para criar novos posts (Pings)
+   - Visualização de posts com autor, conteúdo, data, contadores de likes e comentários
+   - Indicador visual de sucesso ao criar post
+   - Loading state durante carregamento do feed
 
 5. **Perfil (`/profile`)**:
    - Visualização e edição do perfil do usuário autenticado
@@ -119,8 +123,19 @@ frontend/
    - Mensagem de boas-vindas
    - Link para página de login
 
-8. **Logout (`/logout`)**:
-   - Página de logout (em desenvolvimento)
+8. **Busca (`/search`)**:
+   - Página de busca de usuários
+   - Busca via query parameter `?q=termo`
+   - Exibe resultados com avatar, username e link para perfil
+   - Redireciona para feed se busca vazia ou muito curta (< 2 caracteres)
+   - Mensagem quando nenhum usuário é encontrado
+
+9. **Perfil de Usuário (`/user-profile/[id]`)**:
+   - Visualização de perfil público de outros usuários
+   - Exibe avatar, username e bio
+   - Botão para seguir/deixar de seguir
+   - Verifica automaticamente se já está seguindo o usuário
+   - Loading states durante requisições
 
 ## Como Começar
 
@@ -233,8 +248,16 @@ O projeto usa Redux Toolkit Query (RTK Query) para gerenciar estado e requisiç�
   - `useRegisterMutation`: Registro de novo usuário
   - `useLogoutMutation`: Logout de usuário
   - `useUpdateProfileMutation`: Atualização de perfil (suporta FormData para upload)
+  - `useFollowMutation`: Seguir um usuário
+  - `useUnfollowMutation`: Deixar de seguir um usuário
+  - `useCreatePostMutation`: Criar um novo post
 - **Queries** (operações de leitura):
   - `useGetProfileQuery`: Buscar perfil do usuário autenticado
+  - `useGetPublicProfileQuery`: Buscar perfil público de outro usuário
+  - `useSearchUsersQuery`: Buscar usuários por termo
+  - `useGetMyFollowersQuery`: Listar seguidores
+  - `useGetMyFollowingQuery`: Listar usuários seguidos
+  - `useFeedQuery`: Buscar feed de posts
 
 **Características:**
 
@@ -356,12 +379,25 @@ import { getMediaUrl } from '@/utils/api-utils'
 
 ### Endpoints Utilizados
 
+**Autenticação:**
 - `POST /api/auth/login/` - Login (via `useLoginMutation`)
 - `POST /api/auth/register/` - Registro (via `useRegisterMutation`)
 - `GET /api/auth/profile/` - Obter perfil (via `useGetProfileQuery`)
+- `GET /api/auth/profile/{id}/` - Obter perfil público (via `useGetPublicProfileQuery`)
 - `PUT /api/auth/profile/update/` - Atualizar perfil (via `useUpdateProfileMutation`)
+- `GET /api/auth/users/?q=termo` - Buscar usuários (via `useSearchUsersQuery`)
 - `POST /api/auth/logout/` - Logout (via `useLogoutMutation`)
 - `POST /api/auth/token/refresh/` - Renovar token (automático via interceptor Axios)
+
+**Seguir Usuários:**
+- `POST /api/follows/follow/` - Seguir usuário (via `useFollowMutation`)
+- `DELETE /api/follows/unfollow/` - Deixar de seguir (via `useUnfollowMutation`)
+- `GET /api/follows/my-followers/` - Listar seguidores (via `useGetMyFollowersQuery`)
+- `GET /api/follows/my-following/` - Listar seguindo (via `useGetMyFollowingQuery`)
+
+**Posts:**
+- `GET /api/posts/` - Feed de posts (via `useFeedQuery`)
+- `POST /api/posts/create/` - Criar post (via `useCreatePostMutation`)
 
 ### Armazenamento de Tokens
 
@@ -443,6 +479,24 @@ O projeto usa uma estratégia híbrida para armazenamento de tokens:
 - Edição de username, nome, sobrenome, bio e avatar
 - Preview de avatar ao selecionar nova imagem
 - Redirecionamento inteligente baseado em status
+- Visualização de perfil público de outros usuários
+
+✅ **Feed e Posts**
+
+- Feed principal com posts de usuários seguidos + próprios posts
+- Criação de posts (Pings) com formulário
+- Visualização de posts com autor, conteúdo, data
+- Contadores de likes e comentários
+- Indicador visual de sucesso ao criar post
+- Loading states durante carregamento
+
+✅ **Sistema de Seguir Usuários**
+
+- Busca de usuários com resultados em tempo real
+- Visualização de perfil público de outros usuários
+- Funcionalidade de seguir/deixar de seguir
+- Verificação automática de status de seguimento
+- Listagem de seguidores e seguindo
 
 ✅ **Arquitetura**
 
@@ -453,24 +507,26 @@ O projeto usa uma estratégia híbrida para armazenamento de tokens:
 
 ✅ **Componentes de Layout**
 
-- Header implementado com integração RTK Query
+- Header implementado com integração RTK Query e campo de busca
 - Sistema de containers responsivos
 - Formulários reutilizáveis
 
 ## Próximos Passos
 
-- [ ] Implementar página de feed completa
-- [ ] Adicionar funcionalidade de posts (criar, editar, deletar)
-- [ ] Adicionar funcionalidade de seguir usuários
-- [ ] Adicionar funcionalidade de curtidas e comentários
-- [ ] Implementar busca de usuários
+- [ ] Adicionar funcionalidade de curtir posts (toggle like)
+- [ ] Adicionar funcionalidade de comentários (criar, visualizar, editar, deletar)
+- [ ] Implementar edição e deleção de posts próprios
+- [ ] Adicionar paginação no feed
+- [ ] Melhorar UI/UX do feed com animações e transições
 - [ ] Implementar página de logout funcional
 - [ ] Adicionar notificações
-- [ ] Melhorar tratamento de erros
+- [ ] Melhorar tratamento de erros com mensagens mais amigáveis
 - [ ] Adicionar testes unitários e de integração
-- [ ] Implementar loading states mais elaborados
+- [ ] Implementar loading states mais elaborados (skeleton loaders)
 - [ ] Adicionar validação de formulários mais robusta
 - [ ] Adicionar validação de username único na edição de perfil
+- [ ] Implementar infinite scroll no feed
+- [ ] Adicionar filtros e ordenação no feed
 
 ## Troubleshooting
 

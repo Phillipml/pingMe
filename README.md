@@ -24,6 +24,9 @@ API backend de rede social feita com Django REST Framework. Permite criar posts,
 - Proteção de rotas baseada em autenticação e status do perfil
 - Fluxo de completar perfil com upload de avatar
 - Página de perfil com visualização e edição completa (username, nome, sobrenome, bio, avatar)
+- **Feed principal com criação de posts e visualização do feed**
+- **Página de busca de usuários**
+- **Página de perfil de outros usuários com funcionalidade de seguir/deixar de seguir**
 - Header com navegação, avatar do usuário e campo de busca
 - Design responsivo com Tailwind CSS
 - Integração com API backend via Axios com interceptors
@@ -72,11 +75,12 @@ pingMe/
 │   │   ├── page.tsx            # Página inicial (verifica auth e redireciona)
 │   │   ├── login/              # Página de login
 │   │   ├── register/           # Página de registro
-│   │   ├── feed/               # Feed principal
+│   │   ├── feed/               # Feed principal (criar posts e visualizar feed)
 │   │   ├── profile/            # Página de perfil (visualização e edição)
+│   │   ├── user-profile/[id]/ # Página de perfil de outros usuários
+│   │   ├── search/             # Página de busca de usuários
 │   │   ├── complete-profile/   # Completar perfil (upload avatar)
-│   │   ├── user-created/       # Confirmação de criação de conta
-│   │   └── logout/             # Página de logout
+│   │   └── user-created/       # Confirmação de criação de conta
 │   ├── components/             # Componentes reutilizáveis
 │   │   ├── layout/             # Componentes de layout
 │   │   │   ├── Header.tsx      # Barra de navegação superior

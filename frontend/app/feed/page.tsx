@@ -1,17 +1,18 @@
 'use client'
+import CenterContainer from '@/components/layout/CenterContainer'
 import Container from '@/components/layout/Container'
 import Form from '@/components/layout/Form'
 import Button from '@/components/ui/Button'
 import { useCreatePostMutation, useFeedQuery } from '@/lib/slice'
 import { useState } from 'react'
-import { AiFillLike, AiOutlineLike } from 'react-icons/ai'
+import { AiFillLike, AiOutlineLike, AiOutlineLoading } from 'react-icons/ai'
 import { MdOutlineInsertComment } from 'react-icons/md'
 
 export default function Feed() {
   const [post, setPost] = useState('')
   const [isPostCreated, setIsPostCreated] = useState(false)
   const [postData] = useCreatePostMutation()
-  const { data } = useFeedQuery()
+  const { data, isLoading } = useFeedQuery()
   const createPost = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
@@ -24,6 +25,7 @@ export default function Feed() {
       setIsPostCreated(false)
     }
   }
+  if(isLoading){return <CenterContainer><AiOutlineLoading className="animate-spin m-auto text-4xl" /></CenterContainer>}
   return (
     <Container>
       <div
@@ -55,7 +57,7 @@ export default function Feed() {
         <ul className="flex flex-col justify-center items-center">
           {data &&
             data.results.map((post) => (
-              <li className="w-1/3  mt-4 grid pb-2">
+              <li className="w-1/3  mt-4 grid pb-2" key={post.id}>
                 <div className="flex justify-between ">
                   <div className="flex items-center justify-center mb-4">
                     <img

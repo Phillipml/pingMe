@@ -598,11 +598,84 @@ Authorization: Bearer seu-access-token
 
 ## Usuários
 
-### 1. Listar Todos os Usuários
+### 1. Buscar Usuários
+
+Busca usuários por username ou email. **Todos os usuários autenticados podem acessar.** A busca é case-insensitive e retorna resultados parciais.
+
+**Endpoint:** `GET /api/auth/users/?q=termo&page=1`
+
+**Headers:**
+```
+Authorization: Bearer seu-access-token
+```
+
+**Query Parameters:**
+- `q` (opcional): Termo de busca (username ou email). Se não fornecido, retorna todos os usuários (exceto o usuário autenticado).
+- `page` (opcional): Número da página (padrão: 1)
+
+**Resposta de Sucesso (200):**
+```json
+{
+  "count": 10,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 2,
+      "username": "joaosilva",
+      "email": "joao@email.com",
+      "created_at": "2024-01-01T10:00:00Z",
+      "info": {
+        "first_name": "João",
+        "last_name": "Silva",
+        "bio": "Desenvolvedor",
+        "avatar": "/media/avatars/joao.jpg",
+        "status": 1
+      }
+    }
+  ]
+}
+```
+
+**Notas Importantes:**
+- O usuário autenticado é automaticamente excluído dos resultados
+- A busca funciona tanto por username quanto por email
+- Se `q` não for fornecido, retorna todos os usuários (exceto o usuário autenticado)
+- Ordenado por data de criação (mais recentes primeiro)
+
+**Exemplo de Busca:**
+```javascript
+// Buscar por username
+const response = await fetch('http://localhost:8000/api/auth/users/?q=joao', {
+  headers: {
+    'Authorization': `Bearer ${token}`
+  }
+});
+
+// Buscar por email
+const response = await fetch('http://localhost:8000/api/auth/users/?q=joao@email.com', {
+  headers: {
+    'Authorization': `Bearer ${token}`
+  }
+});
+
+// Listar todos (sem busca)
+const response = await fetch('http://localhost:8000/api/auth/users/', {
+  headers: {
+    'Authorization': `Bearer ${token}`
+  }
+});
+```
+
+**Paginação:** 20 itens por página. Use `?page=2` para próxima página.
+
+---
+
+### 2. Listar Todos os Usuários (Admin)
 
 Lista todos os usuários do sistema. **Apenas administradores podem acessar.**
 
-**Endpoint:** `GET /api/auth/users/?page=1`
+**Endpoint:** `GET /api/auth/users/?page=1` (sem parâmetro `q`)
 
 **Headers:**
 ```
@@ -630,6 +703,12 @@ Authorization: Bearer seu-access-token
 - `403`: Acesso negado. Apenas administradores podem acessar esta lista.
 
 **Paginação:** 20 itens por página. Use `?page=2` para próxima página.
+
+---
+
+### 2. Listar Todos os Usuários (Admin)
+
+**Nota:** Esta funcionalidade está disponível para administradores. Para usuários comuns, use a busca de usuários acima.
 
 ---
 
