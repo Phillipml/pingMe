@@ -99,3 +99,8 @@ export interface PostResponse {
   post: Post[]
 }
 export type FeedResponse = PaginatedResponse<Post>
+export interface LikeResponse {
+  message: string
+  liked: boolean
+  likes_count: number
+}
