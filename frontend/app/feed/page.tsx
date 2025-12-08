@@ -14,6 +14,7 @@ import { AiFillLike, AiOutlineLike, AiOutlineLoading } from 'react-icons/ai'
 import { MdOutlineInsertComment } from 'react-icons/md'
 import { useDispatch } from 'react-redux'
 import type { AppDispatch } from '@/lib/store'
+import Link from 'next/link'
 
 export default function Feed() {
   const [post, setPost] = useState('')
@@ -94,14 +95,17 @@ export default function Feed() {
             data.results.map((post) => (
               <li className="w-1/3  mt-4 grid pb-2" key={post.id}>
                 <div className="flex justify-between ">
-                  <div className="flex items-center justify-center mb-4">
+                  <Link
+                    href={`/user-profile/${post.author.id}`}
+                    className="flex items-center justify-center mb-4"
+                  >
                     <img
                       src={post.author.avatar || ' '}
                       alt=""
                       className="w-8 h-8 object-cover rounded-full mr-2"
                     />
                     <h2>@{post.author.username}</h2>
-                  </div>
+                  </Link>
                   <p className="text-gray-700">
                     {new Date(post.author.created_at).toLocaleString('pt-BR')}
                   </p>
