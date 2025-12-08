@@ -108,7 +108,7 @@ export const apiSlice = createApi({
         body: postData
       })
     }),
-    feed: builder.query<FeedResponse, number>({
+    feed: builder.query<FeedResponse, void>({
       query: () => '/posts/'
     }),
     likePost: builder.mutation<LikeResponse, number>({
