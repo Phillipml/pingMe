@@ -133,5 +133,6 @@ export const {
   useGetMyFollowersQuery,
   useGetMyFollowingQuery,
   useCreatePostMutation,
-  useFeedQuery
+  useFeedQuery,
+  useLikePostMutation
 } = apiSlice
