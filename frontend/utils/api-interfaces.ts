@@ -98,3 +98,4 @@ export interface PostResponse {
   message: string
   post: Post[]
 }
+export type FeedResponse = PaginatedResponse<Post>

@@ -22,7 +22,7 @@ authentication - Gerencia usuários
 - Modelo Profile com avatar (upload de imagem)
 - Autenticação por email
 - Validação de username único (não permite duplicatas)
-- Endpoints: register, login, logout, token refresh, profile, change password, user list, delete account
+- Endpoints: register, login, logout, token refresh, profile, change password, user search/list, delete account
 
 posts - Gerencia conteúdo
 - Modelo Post (apenas texto)

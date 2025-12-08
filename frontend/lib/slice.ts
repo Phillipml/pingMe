@@ -13,7 +13,8 @@ import {
   FollowersResponse,
   FollowingResponse,
   PostResponse,
-  CreatePost
+  CreatePost,
+  FeedResponse
 } from '@/utils/api-interfaces'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
@@ -105,6 +106,9 @@ export const apiSlice = createApi({
         method: 'POST',
         body: postData
       })
+    }),
+    feed: builder.query<FeedResponse, void>({
+      query: () => '/posts/'
     })
   })
 })
@@ -121,5 +125,6 @@ export const {
   useUnfollowMutation,
   useGetMyFollowersQuery,
   useGetMyFollowingQuery,
-  useCreatePostMutation
+  useCreatePostMutation,
+  useFeedQuery
 } = apiSlice
