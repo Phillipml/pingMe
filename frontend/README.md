@@ -380,6 +380,7 @@ import { getMediaUrl } from '@/utils/api-utils'
 ### Endpoints Utilizados
 
 **Autenticação:**
+
 - `POST /api/auth/login/` - Login (via `useLoginMutation`)
 - `POST /api/auth/register/` - Registro (via `useRegisterMutation`)
 - `GET /api/auth/profile/` - Obter perfil (via `useGetProfileQuery`)
@@ -390,12 +391,14 @@ import { getMediaUrl } from '@/utils/api-utils'
 - `POST /api/auth/token/refresh/` - Renovar token (automático via interceptor Axios)
 
 **Seguir Usuários:**
+
 - `POST /api/follows/follow/` - Seguir usuário (via `useFollowMutation`)
 - `DELETE /api/follows/unfollow/` - Deixar de seguir (via `useUnfollowMutation`)
 - `GET /api/follows/my-followers/` - Listar seguidores (via `useGetMyFollowersQuery`)
 - `GET /api/follows/my-following/` - Listar seguindo (via `useGetMyFollowingQuery`)
 
 **Posts:**
+
 - `GET /api/posts/` - Feed de posts (via `useFeedQuery`)
 - `POST /api/posts/create/` - Criar post (via `useCreatePostMutation`)
 

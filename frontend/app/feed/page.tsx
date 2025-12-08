@@ -25,7 +25,13 @@ export default function Feed() {
       setIsPostCreated(false)
     }
   }
-  if(isLoading){return <CenterContainer><AiOutlineLoading className="animate-spin m-auto text-4xl" /></CenterContainer>}
+  if (isLoading) {
+    return (
+      <CenterContainer>
+        <AiOutlineLoading className="animate-spin m-auto text-4xl" />
+      </CenterContainer>
+    )
+  }
   return (
     <Container>
       <div
