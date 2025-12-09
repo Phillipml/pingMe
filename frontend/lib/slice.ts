@@ -116,6 +116,12 @@ export const apiSlice = createApi({
         url: `/posts/${id}/like/`,
         method: 'POST'
       })
+    }),
+    getUserPost: builder.query<FeedResponse, number>({
+      query: (id) => ({
+        url: `/posts/user/${id}`,
+        method: 'GET'
+      })
     })
   })
 })
@@ -134,5 +140,6 @@ export const {
   useGetMyFollowingQuery,
   useCreatePostMutation,
   useFeedQuery,
-  useLikePostMutation
+  useLikePostMutation,
+  useGetUserPostQuery
 } = apiSlice
