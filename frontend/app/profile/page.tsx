@@ -1,12 +1,19 @@
 'use client'
 import Container from '@/components/layout/Container'
+import FeedCard from '@/components/layout/Card/FeedCard'
 import Form from '@/components/layout/Form'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
-import { useGetProfileQuery, useUpdateProfileMutation } from '@/lib/slice'
+import {
+  useGetProfileQuery,
+  useGetUserPostQuery,
+  useUpdateProfileMutation
+} from '@/lib/slice'
 import { getMediaUrl } from '@/utils/api-utils'
+import { skipToken } from '@reduxjs/toolkit/query'
 import { useState, useEffect } from 'react'
 import { TbPhotoEdit } from 'react-icons/tb'
+import UserPostCard from '@/components/layout/Card/UserPostCard'
 
 export default function Profile() {
   const { data, isLoading, refetch } = useGetProfileQuery()
@@ -20,6 +27,7 @@ export default function Profile() {
   const [bio, setBio] = useState('')
   const [avatar, setAvatar] = useState<File | null>(null)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
+  const { data: userPosts } = useGetUserPostQuery(data ? data?.id : skipToken)
 
   useEffect(() => {
     if (data) {
@@ -258,6 +266,24 @@ export default function Profile() {
               </div>
             </Form>
           )}
+        </div>
+        <div>
+          <h2 className="text-center">Posts</h2>
+          <ul className="grid w-1/2 m-auto justify-between">
+            {userPosts?.results &&
+              userPosts.results.map((post) => (
+                <UserPostCard
+                  key={post.id}
+                  created_at={post.created_at}
+                  onClick={() => null}
+                  is_liked={post.is_liked}
+                  comments_count={post.comments_count}
+                  likes_count={post.likes_count}
+                >
+                  {post.content}
+                </UserPostCard>
+              ))}
+          </ul>
         </div>
       </Container>
     </>

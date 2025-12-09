@@ -13,7 +13,7 @@ import { useState } from 'react'
 import { AiOutlineLoading } from 'react-icons/ai'
 import { useDispatch } from 'react-redux'
 import type { AppDispatch } from '@/lib/store'
-import FeedCard from '@/components/layout/FeedCard'
+import FeedCard from '@/components/layout/Card/FeedCard'
 
 export default function Feed() {
   const [post, setPost] = useState('')
