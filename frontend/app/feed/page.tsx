@@ -10,11 +10,10 @@ import {
   useLikePostMutation
 } from '@/lib/slice'
 import { useState } from 'react'
-import { AiFillLike, AiOutlineLike, AiOutlineLoading } from 'react-icons/ai'
-import { MdOutlineInsertComment } from 'react-icons/md'
+import { AiOutlineLoading } from 'react-icons/ai'
 import { useDispatch } from 'react-redux'
 import type { AppDispatch } from '@/lib/store'
-import Link from 'next/link'
+import FeedCard from '@/components/layout/FeedCard'
 
 export default function Feed() {
   const [post, setPost] = useState('')
@@ -34,7 +33,7 @@ export default function Feed() {
       setIsPostCreated(false)
     }
   }
-  const dispatch = useDispatch<AppDispatch>() // Adicionar tipo genérico
+  const dispatch = useDispatch<AppDispatch>()
 
   const likePost = async (id: number) => {
     try {
@@ -93,38 +92,20 @@ export default function Feed() {
         <ul className="flex flex-col justify-center items-center">
           {data &&
             data.results.map((post) => (
-              <li className="w-1/3  mt-4 grid pb-2" key={post.id}>
-                <div className="flex justify-between ">
-                  <Link
-                    href={`/user-profile/${post.author.id}`}
-                    className="flex items-center justify-center mb-4"
-                  >
-                    <img
-                      src={post.author.avatar || ' '}
-                      alt=""
-                      className="w-8 h-8 object-cover rounded-full mr-2"
-                    />
-                    <h2>@{post.author.username}</h2>
-                  </Link>
-                  <p className="text-gray-700">
-                    {new Date(post.author.created_at).toLocaleString('pt-BR')}
-                  </p>
-                </div>
-                <div className="border-b border-purple-950">{post.content}</div>
-                <div className="flex justify-around">
-                  <button
-                    className="flex items-center justify-center gap-1 cursor-pointer"
-                    onClick={() => likePost(post.id)}
-                  >
-                    {post.is_liked ? <AiFillLike /> : <AiOutlineLike />}
-                    {post.likes_count}
-                  </button>
-                  <button className="flex items-center justify-center gap-1">
-                    <MdOutlineInsertComment />
-                    {post.comments_count}
-                  </button>
-                </div>
-              </li>
+              <FeedCard
+                href={`/user-profile/${post.author.id}`}
+                key={post.id}
+                img={post.author.avatar || ' '}
+                alt={`${post.author.username}'s avatar`}
+                author={post.author.username}
+                created_at={post.created_at}
+                onClick={() => likePost(post.id)}
+                is_liked={post.is_liked}
+                comments_count={post.comments_count}
+                likes_count={post.likes_count}
+              >
+                {post.content}
+              </FeedCard>
             ))}
         </ul>
       </div>
