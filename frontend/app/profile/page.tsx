@@ -14,6 +14,8 @@ import { skipToken } from '@reduxjs/toolkit/query'
 import { useState, useEffect } from 'react'
 import { TbPhotoEdit } from 'react-icons/tb'
 import UserPostCard from '@/components/layout/Card/UserPostCard'
+import CenterContainer from '@/components/layout/CenterContainer'
+import { AiOutlineLoading } from 'react-icons/ai'
 
 export default function Profile() {
   const { data, isLoading, refetch } = useGetProfileQuery()
@@ -104,11 +106,9 @@ export default function Profile() {
 
   if (isLoading) {
     return (
-      <>
-        <Container className="flex justify-center items-center min-h-[60vh]">
-          <p>Carregando...</p>
-        </Container>
-      </>
+      <CenterContainer>
+        <AiOutlineLoading className="animate-spin m-auto text-4xl" />
+      </CenterContainer>
     )
   }
 
@@ -273,7 +273,7 @@ export default function Profile() {
             {userPosts?.results &&
               userPosts.results.map((post) => (
                 <UserPostCard
-                  key={post.id}
+                  key={post.id || ''}
                   created_at={post.created_at}
                   onClick={() => null}
                   is_liked={post.is_liked}

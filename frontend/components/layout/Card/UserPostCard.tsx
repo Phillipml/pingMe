@@ -28,7 +28,7 @@ export default function UserPostCard({
       key={key ? key : undefined}
     >
       <div className="flex justify-between border-b border-purple-600 mb-4">
-        <div className='w-1/2'>
+        <div className="w-1/2">
           <p className="text-gray-700 pb-2">
             {new Date(created_at).toLocaleString('pt-BR')}
           </p>
