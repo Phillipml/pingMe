@@ -264,7 +264,9 @@ make get_secret_key
   - Blacklist de tokens no logout
   - Cookies HttpOnly: Tokens também salvos em cookies para uso em navegadores
 - **CORS**: Habilitado para frontend (configurável via `CORS_ALLOWED_ORIGINS`)
-- **Paginação**: 20 itens por página (padrão do DRF)
+- **Paginação**: 
+  - Feed e listagens gerais: 20 itens por página (padrão do DRF)
+  - Posts de usuário específico: 5 itens por página
 - **Media Files**: 
   - URL: `/media/`
   - Diretório: `backend/media/`

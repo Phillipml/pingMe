@@ -112,6 +112,9 @@ frontend/
    - Upload de nova foto de perfil com preview
    - Botão de editar que alterna entre visualização e edição
    - Ícone de câmera (TbPhotoEdit) para alterar avatar no modo de edição
+   - **Listagem de posts do usuário com paginação** (5 posts por página)
+   - Controles de navegação (anterior/próxima) para navegar entre páginas
+   - Exibição de contador de posts e página atual
 
 6. **Completar Perfil (`/complete-profile`)**:
    - Formulário completo para atualizar informações do perfil
@@ -245,6 +248,7 @@ O projeto usa Redux Toolkit Query (RTK Query) para gerenciar estado e requisiç�
 
 - **API Slice** (`lib/slice.ts`): Define todos os endpoints da API
 - **Store** (`lib/store.ts`): Configuração da store Redux com middleware RTK Query
+- **Implementação Simplificada**: O RTK Query gerencia cache e refetch automaticamente baseado nos argumentos da query, sem necessidade de configurações complexas de `serializeQueryArgs`, `merge` ou `forceRefetch`
 - **Mutations** (operações que modificam dados):
   - `useLoginMutation`: Login de usuário
   - `useRegisterMutation`: Registro de novo usuário
@@ -261,14 +265,16 @@ O projeto usa Redux Toolkit Query (RTK Query) para gerenciar estado e requisiç�
   - `useGetMyFollowersQuery`: Listar seguidores
   - `useGetMyFollowingQuery`: Listar usuários seguidos
   - `useFeedQuery`: Buscar feed de posts
+  - `useGetUserPostQuery`: Buscar posts de um usuário específico com paginação
 
 **Características:**
 
-- Cache automático de requisições
-- Invalidação de cache quando necessário
+- Cache automático de requisições baseado nos argumentos da query
+- Refetch automático quando os argumentos mudam (ex: mudança de página na paginação)
 - Tags para controle de cache (`User`, `Post`)
 - Credentials incluídos automaticamente (`credentials: 'include'`)
 - Headers de autenticação configurados automaticamente via `prepareHeaders`
+- **Paginação simplificada**: RTK Query gerencia cache e refetch automaticamente quando parâmetros de paginação mudam
 
 ## Componentes Principais
 
@@ -405,6 +411,7 @@ import { getMediaUrl } from '@/utils/api-utils'
 - `GET /api/posts/` - Feed de posts (via `useFeedQuery`)
 - `POST /api/posts/create/` - Criar post (via `useCreatePostMutation`)
 - `POST /api/posts/{id}/like/` - Curtir/descurtir post (via `useLikePostMutation`)
+- `GET /api/posts/user/{id}/?page=1` - Posts de um usuário com paginação (via `useGetUserPostQuery`)
 
 ### Armazenamento de Tokens
 
@@ -498,6 +505,9 @@ O projeto usa uma estratégia híbrida para armazenamento de tokens:
 - Indicador visual de sucesso ao criar post
 - Loading states durante carregamento
 - Atualização otimista do estado de likes usando RTK Query cache
+- **Paginação de posts no perfil** com controles de navegação (anterior/próxima)
+- Exibição de contador de posts e página atual
+- Navegação entre páginas com atualização automática via RTK Query
 
 ✅ **Sistema de Seguir Usuários**
 
@@ -524,6 +534,7 @@ O projeto usa uma estratégia híbrida para armazenamento de tokens:
 
 - [ ] Adicionar funcionalidade de comentários (criar, visualizar, editar, deletar)
 - [ ] Implementar edição e deleção de posts próprios
+- [x] Adicionar paginação de posts no perfil do usuário
 - [ ] Adicionar paginação no feed
 - [ ] Melhorar UI/UX do feed com animações e transições
 - [ ] Implementar página de logout funcional

@@ -3,7 +3,6 @@ import { AiFillLike, AiOutlineLike } from 'react-icons/ai'
 import { MdOutlineInsertComment } from 'react-icons/md'
 type CardProps = {
   children: string
-  key: string | number
   href: string
   img: string
   alt: string
@@ -16,7 +15,6 @@ type CardProps = {
 }
 export default function FeedCard({
   children,
-  key,
   href,
   img,
   alt,
@@ -28,7 +26,7 @@ export default function FeedCard({
   comments_count
 }: CardProps) {
   return (
-    <li className="w-1/3  mt-4 grid pb-2" key={key ? key : undefined}>
+    <li className="w-1/3  mt-4 grid pb-2">
       <div className="flex justify-between">
         <Link href={href} className="flex items-center justify-center mb-4">
           <img

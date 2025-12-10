@@ -1342,7 +1342,7 @@ Authorization: Bearer seu-access-token
 }
 ```
 
-**Paginação:** 20 itens por página. Use `?page=2` para próxima página.
+**Paginação:** 5 itens por página. Use `?page=2` para próxima página.
 
 **Erros Possíveis:**
 - `404`: Usuário não encontrado

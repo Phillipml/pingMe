@@ -6,7 +6,6 @@ import {
 } from 'react-icons/md'
 type CardProps = {
   children: string
-  key: string | number
   created_at: string
   onClick: () => void
   is_liked: boolean
@@ -15,7 +14,6 @@ type CardProps = {
 }
 export default function UserPostCard({
   children,
-  key,
   created_at,
   onClick,
   is_liked,
@@ -23,10 +21,7 @@ export default function UserPostCard({
   comments_count
 }: CardProps) {
   return (
-    <li
-      className="mt-4 grid pb-2 border-2 border-purple-600 rounded-2xl p-4"
-      key={key ? key : undefined}
-    >
+    <li className="mt-4 grid pb-2 border-2 border-purple-600 rounded-2xl p-4">
       <div className="flex justify-between border-b border-purple-600 mb-4">
         <div className="w-1/2">
           <p className="text-gray-700 pb-2">
