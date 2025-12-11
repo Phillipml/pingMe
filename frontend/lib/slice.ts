@@ -24,7 +24,7 @@ export const apiSlice = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: API_BASE_URL,
     credentials: 'include',
-    prepareHeaders: (headers, { getState }) => {
+    prepareHeaders: (headers) => {
       const token =
         typeof window !== 'undefined'
           ? localStorage.getItem('accessToken')

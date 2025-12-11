@@ -1681,9 +1681,9 @@ O endpoint `PUT /auth/profile/update/` retorna apenas os campos do perfil (sem o
 - Simple JWT 5.5.1
 - Celery 5.5.3 (tarefas assíncronas)
 - Redis 7.2 (broker para Celery)
-- PostgreSQL (produção) / SQLite (desenvolvimento)
+- MySQL 8.0 (produção via Docker) / SQLite (desenvolvimento)
 
 ### Configuração
 - Poetry para gerenciamento de dependências
-- Docker Compose para PostgreSQL e Redis
+- Docker Compose para MySQL 8.0 e Redis 7.2
 - Variáveis de ambiente via python-decouple

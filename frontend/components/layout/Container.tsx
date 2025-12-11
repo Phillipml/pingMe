@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React from 'react'
 type ContainerProps = {
   children: React.ReactNode
   className?: string
