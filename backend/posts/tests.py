@@ -207,6 +207,25 @@ class TestUserPosts:
         assert response.status_code == status.HTTP_200_OK
         assert len(response.data["results"]) == 1
 
+    def test_get_user_posts_pagination(self, authenticated_client, user1):
+        for i in range(7):
+            Post.objects.create(author=user1, content=f"Post {i}")
+        response = authenticated_client.get(f"/api/posts/user/{user1.id}/")
+        assert response.status_code == status.HTTP_200_OK
+        assert len(response.data["results"]) == 5
+        assert response.data["count"] == 7
+        assert response.data["next"] is not None
+
+    def test_get_user_posts_second_page(self, authenticated_client, user1):
+        for i in range(7):
+            Post.objects.create(author=user1, content=f"Post {i}")
+        response = authenticated_client.get(f"/api/posts/user/{user1.id}/?page=2")
+        assert response.status_code == status.HTTP_200_OK
+        assert len(response.data["results"]) == 2
+        assert response.data["count"] == 7
+        assert response.data["previous"] is not None
+        assert response.data["next"] is None
+
     def test_get_my_posts(self, authenticated_client, user1, post):
         Post.objects.create(author=user1, content="Post 2")
         response = authenticated_client.get("/api/posts/my-posts/")

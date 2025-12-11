@@ -1,12 +1,21 @@
 'use client'
 import Container from '@/components/layout/Container'
+import FeedCard from '@/components/layout/Card/FeedCard'
 import Form from '@/components/layout/Form'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
-import { useGetProfileQuery, useUpdateProfileMutation } from '@/lib/slice'
+import {
+  useGetProfileQuery,
+  useGetUserPostQuery,
+  useUpdateProfileMutation
+} from '@/lib/slice'
 import { getMediaUrl } from '@/utils/api-utils'
+import { skipToken } from '@reduxjs/toolkit/query'
 import { useState, useEffect } from 'react'
 import { TbPhotoEdit } from 'react-icons/tb'
+import UserPostCard from '@/components/layout/Card/UserPostCard'
+import CenterContainer from '@/components/layout/CenterContainer'
+import { AiOutlineLoading } from 'react-icons/ai'
 
 export default function Profile() {
   const { data, isLoading, refetch } = useGetProfileQuery()
@@ -20,6 +29,10 @@ export default function Profile() {
   const [bio, setBio] = useState('')
   const [avatar, setAvatar] = useState<File | null>(null)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
+  const [currentPage, setCurrentPage] = useState(1)
+  const { data: userPosts, isLoading: isLoadingPosts } = useGetUserPostQuery(
+    data ? { id: data?.id, page: currentPage } : skipToken
+  )
 
   useEffect(() => {
     if (data) {
@@ -39,6 +52,9 @@ export default function Profile() {
       }
     }
   }, [data, isEditing])
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [data?.id])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -93,21 +109,31 @@ export default function Profile() {
       setAvatarPreview(data ? getMediaUrl(data.info.avatar) : null)
     }
   }
+  const totalPages = userPosts?.count ? Math.ceil(userPosts.count / 5) : 0
 
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prev) => prev + 1)
+    }
+  }
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prev) => prev - 1)
+    }
+  }
   if (isLoading) {
     return (
-      <>
-        <Container className="flex justify-center items-center min-h-[60vh]">
-          <p>Carregando...</p>
-        </Container>
-      </>
+      <CenterContainer>
+        <AiOutlineLoading className="animate-spin m-auto text-4xl" />
+      </CenterContainer>
     )
   }
 
   return (
     <>
-      <Container className="max-w-2xl mx-auto pb-8">
-        <div className="flex flex-col items-center gap-6 py-6">
+      <Container className="max-w-2xl mx-auto pb-8 flex justify-around p-2">
+        <div className="flex flex-col items-center gap-6 p-4">
           <div className="relative">
             <img
               src={avatarPreview || getMediaUrl(data?.info.avatar)}
@@ -257,6 +283,68 @@ export default function Profile() {
                 </Button>
               </div>
             </Form>
+          )}
+        </div>
+        <div className="w-1/2">
+          <h2 className="text-center text-2xl font-bold">Posts</h2>
+          {isLoadingPosts ? (
+            <AiOutlineLoading className="animate-spin m-auto text-4xl" />
+          ) : (
+            <>
+              {userPosts?.results ? (
+                <>
+                  <ul className="m-auto justify-between">
+                    {userPosts?.results &&
+                      userPosts.results.map((post) => (
+                        <UserPostCard
+                          key={post.id || ''}
+                          created_at={post.created_at}
+                          onClick={() => null}
+                          is_liked={post.is_liked}
+                          comments_count={post.comments_count}
+                          likes_count={post.likes_count}
+                        >
+                          {post.content}
+                        </UserPostCard>
+                      ))}
+                  </ul>
+                  <div className="flex flex-col items-center gap-4 mt-8 mb-8">
+                    <p className="text-sm text-gray-400">
+                      Página {currentPage} de {totalPages || 1}
+                      {userPosts?.count && ` • Total: ${userPosts.count} posts`}
+                    </p>
+
+                    <div className="flex gap-4 items-center">
+                      <Button
+                        onClick={handlePreviousPage}
+                        disabled={currentPage <= 1 || isLoadingPosts}
+                        className="px-6"
+                      >
+                        ← Anterior
+                      </Button>
+
+                      <Button
+                        onClick={handleNextPage}
+                        disabled={
+                          currentPage >= totalPages ||
+                          isLoadingPosts ||
+                          totalPages === 0
+                        }
+                        className="px-6"
+                      >
+                        Próxima →
+                      </Button>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <p className="text-center text-gray-400 mt-4">
+                    Nenhum post encontrado
+                  </p>
+                </>
+              )}
+            </>
           )}
         </div>
       </Container>

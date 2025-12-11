@@ -210,7 +210,7 @@ def user_posts(request, user_id):
     )
 
     paginator = PageNumberPagination()
-    paginator.page_size = 20
+    paginator.page_size = 5
     paginated_posts = paginator.paginate_queryset(posts, request)
     serializer = PostSerializer(
         paginated_posts, many=True, context={"request": request}

@@ -99,8 +99,10 @@ frontend/
    - Feed principal com posts de usuários seguidos + próprios posts
    - Formulário para criar novos posts (Pings)
    - Visualização de posts com autor, conteúdo, data, contadores de likes e comentários
+   - **Funcionalidade de curtir/descurtir posts** com atualização em tempo real
    - Indicador visual de sucesso ao criar post
    - Loading state durante carregamento do feed
+   - Atualização otimista do estado de likes usando RTK Query cache
 
 5. **Perfil (`/profile`)**:
    - Visualização e edição do perfil do usuário autenticado
@@ -110,6 +112,9 @@ frontend/
    - Upload de nova foto de perfil com preview
    - Botão de editar que alterna entre visualização e edição
    - Ícone de câmera (TbPhotoEdit) para alterar avatar no modo de edição
+   - **Listagem de posts do usuário com paginação** (5 posts por página)
+   - Controles de navegação (anterior/próxima) para navegar entre páginas
+   - Exibição de contador de posts e página atual
 
 6. **Completar Perfil (`/complete-profile`)**:
    - Formulário completo para atualizar informações do perfil
@@ -243,6 +248,7 @@ O projeto usa Redux Toolkit Query (RTK Query) para gerenciar estado e requisiç�
 
 - **API Slice** (`lib/slice.ts`): Define todos os endpoints da API
 - **Store** (`lib/store.ts`): Configuração da store Redux com middleware RTK Query
+- **Implementação Simplificada**: O RTK Query gerencia cache e refetch automaticamente baseado nos argumentos da query, sem necessidade de configurações complexas de `serializeQueryArgs`, `merge` ou `forceRefetch`
 - **Mutations** (operações que modificam dados):
   - `useLoginMutation`: Login de usuário
   - `useRegisterMutation`: Registro de novo usuário
@@ -251,6 +257,7 @@ O projeto usa Redux Toolkit Query (RTK Query) para gerenciar estado e requisiç�
   - `useFollowMutation`: Seguir um usuário
   - `useUnfollowMutation`: Deixar de seguir um usuário
   - `useCreatePostMutation`: Criar um novo post
+  - `useLikePostMutation`: Curtir/descurtir um post (toggle like)
 - **Queries** (operações de leitura):
   - `useGetProfileQuery`: Buscar perfil do usuário autenticado
   - `useGetPublicProfileQuery`: Buscar perfil público de outro usuário
@@ -258,14 +265,16 @@ O projeto usa Redux Toolkit Query (RTK Query) para gerenciar estado e requisiç�
   - `useGetMyFollowersQuery`: Listar seguidores
   - `useGetMyFollowingQuery`: Listar usuários seguidos
   - `useFeedQuery`: Buscar feed de posts
+  - `useGetUserPostQuery`: Buscar posts de um usuário específico com paginação
 
 **Características:**
 
-- Cache automático de requisições
-- Invalidação de cache quando necessário
+- Cache automático de requisições baseado nos argumentos da query
+- Refetch automático quando os argumentos mudam (ex: mudança de página na paginação)
 - Tags para controle de cache (`User`, `Post`)
 - Credentials incluídos automaticamente (`credentials: 'include'`)
 - Headers de autenticação configurados automaticamente via `prepareHeaders`
+- **Paginação simplificada**: RTK Query gerencia cache e refetch automaticamente quando parâmetros de paginação mudam
 
 ## Componentes Principais
 
@@ -380,6 +389,7 @@ import { getMediaUrl } from '@/utils/api-utils'
 ### Endpoints Utilizados
 
 **Autenticação:**
+
 - `POST /api/auth/login/` - Login (via `useLoginMutation`)
 - `POST /api/auth/register/` - Registro (via `useRegisterMutation`)
 - `GET /api/auth/profile/` - Obter perfil (via `useGetProfileQuery`)
@@ -390,14 +400,18 @@ import { getMediaUrl } from '@/utils/api-utils'
 - `POST /api/auth/token/refresh/` - Renovar token (automático via interceptor Axios)
 
 **Seguir Usuários:**
+
 - `POST /api/follows/follow/` - Seguir usuário (via `useFollowMutation`)
 - `DELETE /api/follows/unfollow/` - Deixar de seguir (via `useUnfollowMutation`)
 - `GET /api/follows/my-followers/` - Listar seguidores (via `useGetMyFollowersQuery`)
 - `GET /api/follows/my-following/` - Listar seguindo (via `useGetMyFollowingQuery`)
 
 **Posts:**
+
 - `GET /api/posts/` - Feed de posts (via `useFeedQuery`)
 - `POST /api/posts/create/` - Criar post (via `useCreatePostMutation`)
+- `POST /api/posts/{id}/like/` - Curtir/descurtir post (via `useLikePostMutation`)
+- `GET /api/posts/user/{id}/?page=1` - Posts de um usuário com paginação (via `useGetUserPostQuery`)
 
 ### Armazenamento de Tokens
 
@@ -486,9 +500,14 @@ O projeto usa uma estratégia híbrida para armazenamento de tokens:
 - Feed principal com posts de usuários seguidos + próprios posts
 - Criação de posts (Pings) com formulário
 - Visualização de posts com autor, conteúdo, data
-- Contadores de likes e comentários
+- **Curtir e descurtir posts** (toggle like) - implementado
+- Contadores de likes e comentários atualizados em tempo real
 - Indicador visual de sucesso ao criar post
 - Loading states durante carregamento
+- Atualização otimista do estado de likes usando RTK Query cache
+- **Paginação de posts no perfil** com controles de navegação (anterior/próxima)
+- Exibição de contador de posts e página atual
+- Navegação entre páginas com atualização automática via RTK Query
 
 ✅ **Sistema de Seguir Usuários**
 
@@ -513,9 +532,9 @@ O projeto usa uma estratégia híbrida para armazenamento de tokens:
 
 ## Próximos Passos
 
-- [ ] Adicionar funcionalidade de curtir posts (toggle like)
 - [ ] Adicionar funcionalidade de comentários (criar, visualizar, editar, deletar)
 - [ ] Implementar edição e deleção de posts próprios
+- [x] Adicionar paginação de posts no perfil do usuário
 - [ ] Adicionar paginação no feed
 - [ ] Melhorar UI/UX do feed com animações e transições
 - [ ] Implementar página de logout funcional
@@ -527,6 +546,7 @@ O projeto usa uma estratégia híbrida para armazenamento de tokens:
 - [ ] Adicionar validação de username único na edição de perfil
 - [ ] Implementar infinite scroll no feed
 - [ ] Adicionar filtros e ordenação no feed
+- [ ] Adicionar visualização de quem curtiu um post
 
 ## Troubleshooting
 

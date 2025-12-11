@@ -3,16 +3,24 @@ import CenterContainer from '@/components/layout/CenterContainer'
 import Container from '@/components/layout/Container'
 import Form from '@/components/layout/Form'
 import Button from '@/components/ui/Button'
-import { useCreatePostMutation, useFeedQuery } from '@/lib/slice'
+import {
+  apiSlice,
+  useCreatePostMutation,
+  useFeedQuery,
+  useLikePostMutation
+} from '@/lib/slice'
 import { useState } from 'react'
-import { AiFillLike, AiOutlineLike, AiOutlineLoading } from 'react-icons/ai'
-import { MdOutlineInsertComment } from 'react-icons/md'
+import { AiOutlineLoading } from 'react-icons/ai'
+import { useDispatch } from 'react-redux'
+import type { AppDispatch } from '@/lib/store'
+import FeedCard from '@/components/layout/Card/FeedCard'
 
 export default function Feed() {
   const [post, setPost] = useState('')
   const [isPostCreated, setIsPostCreated] = useState(false)
   const [postData] = useCreatePostMutation()
   const { data, isLoading } = useFeedQuery()
+  const [like, error] = useLikePostMutation()
   const createPost = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
@@ -25,7 +33,34 @@ export default function Feed() {
       setIsPostCreated(false)
     }
   }
-  if(isLoading){return <CenterContainer><AiOutlineLoading className="animate-spin m-auto text-4xl" /></CenterContainer>}
+  const dispatch = useDispatch<AppDispatch>()
+
+  const likePost = async (id: number) => {
+    try {
+      const response = await like(id).unwrap()
+
+      dispatch(
+        apiSlice.util.updateQueryData('feed', undefined, (draft) => {
+          const postToUpdate = draft.results.find((p) => p.id === id)
+          if (postToUpdate) {
+            postToUpdate.is_liked = response.liked
+            postToUpdate.likes_count = response.likes_count
+          }
+        })
+      )
+    } catch (error) {
+      const err = error as { data?: { error?: string; message?: string } }
+      alert(err?.data?.error || err?.data?.message || 'Erro ao curtir post')
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <CenterContainer>
+        <AiOutlineLoading className="animate-spin m-auto text-4xl" />
+      </CenterContainer>
+    )
+  }
   return (
     <Container>
       <div
@@ -57,32 +92,20 @@ export default function Feed() {
         <ul className="flex flex-col justify-center items-center">
           {data &&
             data.results.map((post) => (
-              <li className="w-1/3  mt-4 grid pb-2" key={post.id}>
-                <div className="flex justify-between ">
-                  <div className="flex items-center justify-center mb-4">
-                    <img
-                      src={post.author.avatar || ' '}
-                      alt=""
-                      className="w-8 h-8 object-cover rounded-full mr-2"
-                    />
-                    <h2>@{post.author.username}</h2>
-                  </div>
-                  <p className="text-gray-700">
-                    {new Date(post.author.created_at).toLocaleString('pt-BR')}
-                  </p>
-                </div>
-                <div className="border-b border-purple-950">{post.content}</div>
-                <div className="flex justify-around">
-                  <button className="flex items-center justify-center gap-1">
-                    <AiOutlineLike />
-                    {post.likes_count}
-                  </button>
-                  <button className="flex items-center justify-center gap-1">
-                    <MdOutlineInsertComment />
-                    {post.comments_count}
-                  </button>
-                </div>
-              </li>
+              <FeedCard
+                href={`/user-profile/${post.author.id}`}
+                key={post.id}
+                img={post.author.avatar || ' '}
+                alt={`${post.author.username}'s avatar`}
+                author={post.author.username}
+                created_at={post.created_at}
+                onClick={() => likePost(post.id)}
+                is_liked={post.is_liked}
+                comments_count={post.comments_count}
+                likes_count={post.likes_count}
+              >
+                {post.content}
+              </FeedCard>
             ))}
         </ul>
       </div>

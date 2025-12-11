@@ -14,7 +14,8 @@ import {
   FollowingResponse,
   PostResponse,
   CreatePost,
-  FeedResponse
+  FeedResponse,
+  LikeResponse
 } from '@/utils/api-interfaces'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
@@ -109,6 +110,18 @@ export const apiSlice = createApi({
     }),
     feed: builder.query<FeedResponse, void>({
       query: () => '/posts/'
+    }),
+    likePost: builder.mutation<LikeResponse, number>({
+      query: (id) => ({
+        url: `/posts/${id}/like/`,
+        method: 'POST'
+      })
+    }),
+    getUserPost: builder.query<FeedResponse, { id: number; page?: number }>({
+      query: ({ id, page = 1 }) => ({
+        url: `/posts/user/${id}/`,
+        params: { page }
+      })
     })
   })
 })
@@ -126,5 +139,7 @@ export const {
   useGetMyFollowersQuery,
   useGetMyFollowingQuery,
   useCreatePostMutation,
-  useFeedQuery
+  useFeedQuery,
+  useLikePostMutation,
+  useGetUserPostQuery
 } = apiSlice
