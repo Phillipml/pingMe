@@ -1,6 +1,5 @@
 'use client'
 import Container from '@/components/layout/Container'
-import FeedCard from '@/components/layout/Card/FeedCard'
 import Form from '@/components/layout/Form'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
@@ -34,7 +33,23 @@ export default function Profile() {
   const { data: userPosts, isLoading: isLoadingPosts } = useGetUserPostQuery(
     data ? { id: data?.id, page: currentPage } : skipToken
   )
-  const [deletePost,{isLoading: isDeleting, error:deletError}] = useDeletePostMutation()
+  const [deletePost, { isLoading: isDeleting, error: deletError }] =
+    useDeletePostMutation()
+    const deletePostById = async (id: number) => {
+      if (!id) {
+        alert('ID do post inválido')
+        return
+      }
+      
+      try {
+        await deletePost(id).unwrap()
+        alert('Post deletado com sucesso')
+        refetch()
+      } catch (error: any) {
+        const errorMessage = error?.data?.message || error?.data?.error || 'Erro ao deletar post'
+        alert(errorMessage)
+      }
+    }
 
   useEffect(() => {
     if (data) {
@@ -302,7 +317,9 @@ export default function Profile() {
                           key={post.id || ''}
                           created_at={post.created_at}
                           onClick={() => null}
+                          clickDelete={()=>deletePostById(post.id)}
                           is_liked={post.is_liked}
+                          isDeleting={isDeleting}
                           comments_count={post.comments_count}
                           likes_count={post.likes_count}
                         >

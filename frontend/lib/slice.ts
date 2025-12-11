@@ -123,10 +123,10 @@ export const apiSlice = createApi({
         params: { page }
       })
     }),
-    deletePost: builder.mutation<MessageResponse,number>({
-      query:(id)=>({
-        url:`/post/${id}/delete/`,
-        method:'DELETE'
+    deletePost: builder.mutation<MessageResponse, number>({
+      query: (id) => ({
+        url: `/posts/${id}/delete/`,
+        method: 'DELETE'
       })
     })
   })

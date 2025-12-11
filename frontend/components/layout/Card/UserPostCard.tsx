@@ -1,4 +1,4 @@
-import { AiFillLike, AiOutlineLike } from 'react-icons/ai'
+import { AiFillLike, AiOutlineLike, AiOutlineLoading } from 'react-icons/ai'
 import {
   MdDeleteForever,
   MdEditSquare,
@@ -8,7 +8,9 @@ type CardProps = {
   children: string
   created_at: string
   onClick: () => void
+  clickDelete: ()=>void
   is_liked: boolean
+  isDeleting: boolean
   likes_count: number
   comments_count: number
 }
@@ -16,7 +18,9 @@ export default function UserPostCard({
   children,
   created_at,
   onClick,
+  clickDelete,
   is_liked,
+  isDeleting,
   likes_count,
   comments_count
 }: CardProps) {
@@ -33,8 +37,12 @@ export default function UserPostCard({
             <MdEditSquare />
             Editar
           </button>
-          <button className="text-sm flex items-center align-center cursor-pointer hover:text-red-600">
-            <MdDeleteForever />
+          <button className="text-sm flex items-center align-center cursor-pointer hover:text-red-600" onClick={clickDelete}>
+            {isDeleting ? (
+              <AiOutlineLoading className="animate-spin m-auto text-4xl" />
+            ) : (
+              <MdDeleteForever />
+            )}
             Deletar
           </button>
         </div>
