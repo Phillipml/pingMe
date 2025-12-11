@@ -72,7 +72,7 @@ export type SearchUsersResponse = PaginatedResponse<SearchUserResult>
 
 export type FollowersResponse = PaginatedResponse<FollowersFollowingResult>
 
-export type FollowingResponse = PaginatedResponse<FollowersFollowingResult>
+export type MessageResponse = PaginatedResponse<FollowersFollowingResult>
 
 export interface FollowRequest {
   following: number

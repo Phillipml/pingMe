@@ -1680,10 +1680,10 @@ O endpoint `PUT /auth/profile/update/` retorna apenas os campos do perfil (sem o
 - Django REST Framework 3.16.1
 - Simple JWT 5.5.1
 - Celery 5.5.3 (tarefas assíncronas)
-- Redis 7.0.0 (broker para Celery)
-- PostgreSQL (produção) / SQLite (desenvolvimento)
+- Redis 7.2 (broker para Celery)
+- MySQL 8.0 (produção via Docker) / SQLite (desenvolvimento)
 
 ### Configuração
 - Poetry para gerenciamento de dependências
-- Docker Compose para PostgreSQL e Redis
+- Docker Compose para MySQL 8.0 e Redis 7.2
 - Variáveis de ambiente via python-decouple
