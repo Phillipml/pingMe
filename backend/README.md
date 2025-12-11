@@ -323,7 +323,7 @@ Principais:
 - Simple JWT 5.5.1 (autenticação JWT)
 - Pillow 12.0.0 (processamento de imagens para avatares)
 - Celery 5.5.3 (tarefas assíncronas)
-- Redis 7.0.0 (broker para Celery)
+- Redis 7.2 (broker para Celery)
 - PyMySQL 1.1.0 (driver MySQL)
 - python-decouple 3.8 (variáveis de ambiente)
 - dj-database-url 2.3.0 (configuração flexível de banco)

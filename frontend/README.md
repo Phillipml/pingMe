@@ -37,7 +37,10 @@ frontend/
 │   │   ├── Header.tsx       # Barra de navegação superior
 │   │   ├── CenterContainer.tsx
 │   │   ├── Container.tsx
-│   │   └── Form.tsx
+│   │   ├── Form.tsx
+│   │   └── Card/            # Componentes de card
+│   │       ├── FeedCard.tsx # Card para posts no feed
+│   │       └── UserPostCard.tsx # Card para posts do usuário
 │   └── ui/                  # Componentes de UI
 │       ├── Button.tsx
 │       ├── Input.tsx
@@ -57,7 +60,7 @@ frontend/
 ├── package.json             # Dependências e scripts
 ├── tsconfig.json            # Configuração TypeScript
 ├── next.config.ts           # Configuração Next.js
-└── tailwind.config.js       # Configuração Tailwind CSS
+└── postcss.config.mjs       # Configuração PostCSS (Tailwind CSS 4)
 ```
 
 ## Funcionalidades

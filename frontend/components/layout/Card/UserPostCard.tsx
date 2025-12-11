@@ -8,7 +8,7 @@ type CardProps = {
   children: string
   created_at: string
   onClick: () => void
-  clickDelete: ()=>void
+  clickDelete: () => void
   is_liked: boolean
   isDeleting: boolean
   likes_count: number
@@ -37,9 +37,12 @@ export default function UserPostCard({
             <MdEditSquare />
             Editar
           </button>
-          <button className="text-sm flex items-center align-center cursor-pointer hover:text-red-600" onClick={clickDelete}>
+          <button
+            className="text-sm flex items-center align-center cursor-pointer hover:text-red-600"
+            onClick={clickDelete}
+          >
             {isDeleting ? (
-              <AiOutlineLoading className="animate-spin m-auto text-4xl" />
+              <AiOutlineLoading className="animate-spin" />
             ) : (
               <MdDeleteForever />
             )}

@@ -88,7 +88,10 @@ pingMe/
 │   │   │   ├── Header.tsx      # Barra de navegação superior
 │   │   │   ├── Container.tsx   # Container responsivo
 │   │   │   ├── CenterContainer.tsx # Container centralizado
-│   │   │   └── Form.tsx        # Wrapper de formulário
+│   │   │   ├── Form.tsx        # Wrapper de formulário
+│   │   │   └── Card/           # Componentes de card
+│   │   │       ├── FeedCard.tsx # Card para posts no feed
+│   │   │       └── UserPostCard.tsx # Card para posts do usuário
 │   │   └── ui/                 # Componentes de UI
 │   │       ├── Button.tsx      # Botão reutilizável
 │   │       ├── Input.tsx       # Campo de entrada

@@ -1,10 +1,10 @@
-# 🚀 Deploy no Python Everywhere
+# 🚀 Deploy no PythonAnywhere
 
-Este guia explica como fazer deploy do backend PingMe no Python Everywhere.
+Este guia explica como fazer deploy do backend PingMe no PythonAnywhere.
 
 ## 📋 Pré-requisitos
 
-1. Conta no Python Everywhere (free ou paid)
+1. Conta no PythonAnywhere (free ou paid)
 2. Projeto no GitHub (ou repositório git)
 
 ## 🔧 Passo a Passo
@@ -20,7 +20,7 @@ O projeto já está configurado com:
 - ✅ MEDIA_ROOT configurado
 - ✅ Sistema de logging com rotação automática
 
-### 2. No Python Everywhere
+### 2. No PythonAnywhere
 
 #### A. Clonar o Repositório
 
@@ -148,7 +148,7 @@ from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
 ```
 
-**Importante:** Ajuste `seu-usuario` para seu username do Python Everywhere.
+**Importante:** Ajuste `seu-usuario` para seu username do PythonAnywhere.
 
 #### C. Configurar Static Files
 
@@ -226,7 +226,7 @@ staticfiles/
 
 **Database errors:**
 - Verifique se as credenciais do banco estão corretas no `.env`
-- Confirme que o banco foi criado no Python Everywhere
+- Confirme que o banco foi criado no PythonAnywhere
 
 **Import errors:**
 - Verifique se todas as dependências foram instaladas
@@ -234,7 +234,7 @@ staticfiles/
 
 ## 📝 Notas Importantes
 
-- Python Everywhere usa Python 3.10 por padrão
+- PythonAnywhere usa Python 3.10 por padrão
 - Sempre use `python3.10` nos comandos
 - O caminho do projeto deve ser exato: `~/pingMe/backend/`
 - Media files: crie a pasta manualmente se necessário:

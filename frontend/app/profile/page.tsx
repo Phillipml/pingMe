@@ -18,11 +18,8 @@ import CenterContainer from '@/components/layout/CenterContainer'
 import { AiOutlineLoading } from 'react-icons/ai'
 
 export default function Profile() {
-  const { data, isLoading, refetch } = useGetProfileQuery()
-  const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation()
   const [isEditing, setIsEditing] = useState(false)
   const [error, setError] = useState('')
-
   const [username, setUsername] = useState('')
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
@@ -30,26 +27,31 @@ export default function Profile() {
   const [avatar, setAvatar] = useState<File | null>(null)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
+  const [isDeletingById, setIsDeletingById] = useState<number | null>(null)
+  const { data, isLoading, refetch } = useGetProfileQuery()
+  const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation()
   const { data: userPosts, isLoading: isLoadingPosts } = useGetUserPostQuery(
     data ? { id: data?.id, page: currentPage } : skipToken
   )
-  const [deletePost, { isLoading: isDeleting, error: deletError }] =
-    useDeletePostMutation()
-    const deletePostById = async (id: number) => {
-      if (!id) {
-        alert('ID do post inválido')
-        return
-      }
-      
-      try {
-        await deletePost(id).unwrap()
-        alert('Post deletado com sucesso')
-        refetch()
-      } catch (error: any) {
-        const errorMessage = error?.data?.message || error?.data?.error || 'Erro ao deletar post'
-        alert(errorMessage)
-      }
+  const [deletePost] = useDeletePostMutation()
+  const deletePostById = async (id: number) => {
+    if (!id) {
+      alert('ID do post inválido')
+      return
     }
+    setIsDeletingById(id)
+    try {
+      await deletePost(id).unwrap()
+      alert('Post deletado com sucesso')
+      refetch()
+    } catch (error: any) {
+      const errorMessage =
+        error?.data?.message || error?.data?.error || 'Erro ao deletar post'
+      alert(errorMessage)
+    } finally {
+      setIsDeletingById(null)
+    }
+  }
 
   useEffect(() => {
     if (data) {
@@ -317,9 +319,9 @@ export default function Profile() {
                           key={post.id || ''}
                           created_at={post.created_at}
                           onClick={() => null}
-                          clickDelete={()=>deletePostById(post.id)}
+                          clickDelete={() => deletePostById(post.id)}
                           is_liked={post.is_liked}
-                          isDeleting={isDeleting}
+                          isDeleting={isDeletingById === post.id}
                           comments_count={post.comments_count}
                           likes_count={post.likes_count}
                         >
