@@ -11,7 +11,7 @@ import {
   FollowRequest,
   FollowResponse,
   FollowersResponse,
-  FollowingResponse,
+  MessageResponse,
   PostResponse,
   CreatePost,
   FeedResponse,
@@ -98,7 +98,7 @@ export const apiSlice = createApi({
     getMyFollowers: builder.query<FollowersResponse, void>({
       query: () => '/follows/my-followers/'
     }),
-    getMyFollowing: builder.query<FollowingResponse, void>({
+    getMyFollowing: builder.query<MessageResponse, void>({
       query: () => '/follows/my-following/'
     }),
     createPost: builder.mutation<PostResponse, CreatePost>({
@@ -122,6 +122,12 @@ export const apiSlice = createApi({
         url: `/posts/user/${id}/`,
         params: { page }
       })
+    }),
+    deletePost: builder.mutation<MessageResponse,number>({
+      query:(id)=>({
+        url:`/post/${id}/delete/`,
+        method:'DELETE'
+      })
     })
   })
 })
@@ -141,5 +147,6 @@ export const {
   useCreatePostMutation,
   useFeedQuery,
   useLikePostMutation,
-  useGetUserPostQuery
+  useGetUserPostQuery,
+  useDeletePostMutation
 } = apiSlice

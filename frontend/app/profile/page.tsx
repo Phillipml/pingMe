@@ -5,6 +5,7 @@ import Form from '@/components/layout/Form'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import {
+  useDeletePostMutation,
   useGetProfileQuery,
   useGetUserPostQuery,
   useUpdateProfileMutation
@@ -33,6 +34,7 @@ export default function Profile() {
   const { data: userPosts, isLoading: isLoadingPosts } = useGetUserPostQuery(
     data ? { id: data?.id, page: currentPage } : skipToken
   )
+  const [deletePost,{isLoading: isDeleting, error:deletError}] = useDeletePostMutation()
 
   useEffect(() => {
     if (data) {
