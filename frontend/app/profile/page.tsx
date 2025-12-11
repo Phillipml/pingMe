@@ -339,7 +339,6 @@ export default function Profile() {
                 </>
               ) : (
                 <>
-                  {' '}
                   <p className="text-center text-gray-400 mt-4">
                     Nenhum post encontrado
                   </p>
