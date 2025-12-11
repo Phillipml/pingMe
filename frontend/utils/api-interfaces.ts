@@ -94,6 +94,15 @@ export interface Post {
   comments_count: number
   is_liked: boolean
 }
+export interface Comment {
+  id:number
+  post:number
+  author:BaseUserResult
+  content:string
+  create_at:string
+  updated_at:string
+}
+export type CommentResponse=PaginatedResponse<Comment>
 export interface PostResponse {
   message: string
   post: Post[]
