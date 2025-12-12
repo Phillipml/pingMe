@@ -49,10 +49,6 @@ export interface PaginatedResponse<T> {
   results: T[]
 }
 
-export type SearchUserResult = BaseUserResult
-
-export type FollowersFollowingResult = UserResultWithSince
-
 export interface User {
   id: number
   username: string
@@ -67,12 +63,6 @@ export interface LoginRegisterResponse {
   access?: string
   refresh?: string
 }
-
-export type SearchUsersResponse = PaginatedResponse<SearchUserResult>
-
-export type FollowersResponse = PaginatedResponse<FollowersFollowingResult>
-
-export type MessageResponse = PaginatedResponse<FollowersFollowingResult>
 
 export interface FollowRequest {
   following: number
@@ -94,15 +84,7 @@ export interface Post {
   comments_count: number
   is_liked: boolean
 }
-export interface Comment {
-  id:number
-  post:number
-  author:BaseUserResult
-  content:string
-  create_at:string
-  updated_at:string
-}
-export type CommentResponse=PaginatedResponse<Comment>
+
 export interface PostResponse {
   message: string
   post: Post[]
@@ -113,3 +95,18 @@ export interface LikeResponse {
   liked: boolean
   likes_count: number
 }
+export interface Comment {
+  id: number
+  post: number
+  author: BaseUserResult
+  content: string
+  create_at: string
+  updated_at: string
+}
+
+export type SearchUserResult = BaseUserResult
+export type FollowersFollowingResult = UserResultWithSince
+export type SearchUsersResponse = PaginatedResponse<SearchUserResult>
+export type FollowersResponse = PaginatedResponse<FollowersFollowingResult>
+export type MessageResponse = PaginatedResponse<FollowersFollowingResult>
+export type CommentResponse = PaginatedResponse<Comment>
