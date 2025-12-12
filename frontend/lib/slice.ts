@@ -130,9 +130,9 @@ export const apiSlice = createApi({
         method: 'DELETE'
       })
     }),
-    getPost:builder.query<Post, number | string>({
-      query:(id)=>({
-        url:`/posts/${id}/`
+    getPost: builder.query<Post, number | string>({
+      query: (id) => ({
+        url: `/posts/${id}/`
       })
     })
   })
