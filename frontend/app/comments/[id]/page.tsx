@@ -1,3 +1,4 @@
+'use client'
 import { useGetPostQuery } from '@/lib/slice'
 import { useParams } from 'next/navigation'
 

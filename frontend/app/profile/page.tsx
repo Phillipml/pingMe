@@ -320,6 +320,7 @@ export default function Profile() {
                           created_at={post.created_at}
                           onClick={() => null}
                           clickDelete={() => deletePostById(post.id)}
+                          commentRoute={post.id}
                           is_liked={post.is_liked}
                           isDeleting={isDeletingById === post.id}
                           comments_count={post.comments_count}
