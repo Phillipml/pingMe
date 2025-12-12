@@ -15,7 +15,8 @@ import {
   PostResponse,
   CreatePost,
   FeedResponse,
-  LikeResponse
+  LikeResponse,
+  Post
 } from '@/utils/api-interfaces'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
@@ -128,6 +129,11 @@ export const apiSlice = createApi({
         url: `/posts/${id}/delete/`,
         method: 'DELETE'
       })
+    }),
+    getPost:builder.query<Post, number | string>({
+      query:(id)=>({
+        url:`/posts/${id}/`
+      })
     })
   })
 })
@@ -148,5 +154,6 @@ export const {
   useFeedQuery,
   useLikePostMutation,
   useGetUserPostQuery,
-  useDeletePostMutation
+  useDeletePostMutation,
+  useGetPostQuery
 } = apiSlice
