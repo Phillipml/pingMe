@@ -13,6 +13,7 @@ export interface RegisterRequest {
   email: string
   password: string
 }
+
 export interface Profile {
   first_name?: string
   last_name?: string
@@ -20,9 +21,11 @@ export interface Profile {
   avatar?: string | null
   status?: number
 }
+
 export interface LogoutResponse {
   message: string
 }
+
 export interface Logout {
   refresh?: string
 }
@@ -30,6 +33,7 @@ export interface Logout {
 export interface LogoutRequest {
   refresh?: string
 }
+
 export interface BaseUserResult {
   id: number
   username: string
@@ -71,9 +75,11 @@ export interface FollowRequest {
 export interface FollowResponse {
   message: string
 }
+
 export interface CreatePost {
   content: string
 }
+
 export interface Post {
   id: number
   author: BaseUserResult
@@ -89,12 +95,13 @@ export interface PostResponse {
   message: string
   post: Post[]
 }
-export type FeedResponse = PaginatedResponse<Post>
+
 export interface LikeResponse {
   message: string
   liked: boolean
   likes_count: number
 }
+
 export interface Comment {
   id: number
   post: number
@@ -104,6 +111,7 @@ export interface Comment {
   updated_at: string
 }
 
+export type FeedResponse = PaginatedResponse<Post>
 export type SearchUserResult = BaseUserResult
 export type FollowersFollowingResult = UserResultWithSince
 export type SearchUsersResponse = PaginatedResponse<SearchUserResult>
