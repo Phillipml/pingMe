@@ -5,9 +5,9 @@ import { useParams } from 'next/navigation'
 export default function Comments() {
   const params = useParams()
   const postId = params.id as string
-  const { data, isLoading } = useGetPostQuery(postId)
+  const { data: postData, isLoading } = useGetPostQuery(postId)
   if (isLoading) {
     return 'Carregando'
   }
-  return <h2>{data?.content}</h2>
+  return <h2>{postData?.content}</h2>
 }

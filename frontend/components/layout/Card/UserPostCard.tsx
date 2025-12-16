@@ -1,5 +1,5 @@
-import { useRouter } from 'next/navigation'
 import { AiFillLike, AiOutlineLike, AiOutlineLoading } from 'react-icons/ai'
+import { useNavigation } from '@/hooks/useNavigation'
 import {
   MdDeleteForever,
   MdEditSquare,
@@ -27,10 +27,7 @@ export default function UserPostCard({
   likes_count,
   comments_count
 }: CardProps) {
-  const router = useRouter()
-  const commentRouter = (id: number | string) => {
-    router.push(`comments/${id}`)
-  }
+  const { toComment } = useNavigation()
   return (
     <li className="mt-4 grid pb-2 border-2 border-purple-600 rounded-2xl p-4">
       <div className="flex justify-between border-b border-purple-600 mb-4">
@@ -68,7 +65,7 @@ export default function UserPostCard({
         </button>
         <button
           className="flex items-center justify-center gap-1"
-          onClick={() => commentRouter(commentRoute)}
+          onClick={() => toComment(commentRoute)}
         >
           <MdOutlineInsertComment />
           {comments_count}
