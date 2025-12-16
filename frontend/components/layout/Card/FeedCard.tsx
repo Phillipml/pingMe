@@ -1,3 +1,4 @@
+import { useNavigation } from '@/hooks/useNavigation'
 import Link from 'next/link'
 import { AiFillLike, AiOutlineLike } from 'react-icons/ai'
 import { MdOutlineInsertComment } from 'react-icons/md'
@@ -9,6 +10,7 @@ type CardProps = {
   author: string
   created_at: string
   onClick: () => void
+  commentRoute: number | string
   is_liked: boolean
   likes_count: number
   comments_count: number
@@ -21,10 +23,12 @@ export default function FeedCard({
   author,
   created_at,
   onClick,
+  commentRoute,
   is_liked,
   likes_count,
   comments_count
 }: CardProps) {
+  const { toComment } = useNavigation()
   return (
     <li className="w-1/3  mt-4 grid pb-2">
       <div className="flex justify-between">
@@ -49,7 +53,10 @@ export default function FeedCard({
           {is_liked ? <AiFillLike /> : <AiOutlineLike />}
           {likes_count}
         </button>
-        <button className="flex items-center justify-center gap-1">
+        <button
+          className="flex items-center justify-center gap-1 cursor-pointer"
+          onClick={() => toComment(commentRoute)}
+        >
           <MdOutlineInsertComment />
           {comments_count}
         </button>

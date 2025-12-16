@@ -335,7 +335,6 @@ export default function Profile() {
                       Página {currentPage} de {totalPages || 1}
                       {userPosts?.count && ` • Total: ${userPosts.count} posts`}
                     </p>
-
                     <div className="flex gap-4 items-center">
                       <Button
                         onClick={handlePreviousPage}
@@ -344,7 +343,6 @@ export default function Profile() {
                       >
                         ← Anterior
                       </Button>
-
                       <Button
                         onClick={handleNextPage}
                         disabled={

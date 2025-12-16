@@ -100,6 +100,7 @@ export default function Feed() {
                 author={post.author.username}
                 created_at={post.created_at}
                 onClick={() => likePost(post.id)}
+                commentRoute={post.id}
                 is_liked={post.is_liked}
                 comments_count={post.comments_count}
                 likes_count={post.likes_count}

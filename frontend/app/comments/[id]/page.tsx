@@ -6,6 +6,7 @@ export default function Comments() {
   const params = useParams()
   const postId = params.id as string
   const { data: postData, isLoading } = useGetPostQuery(postId)
+
   if (isLoading) {
     return 'Carregando'
   }

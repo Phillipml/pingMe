@@ -64,7 +64,7 @@ export default function UserPostCard({
           {likes_count}
         </button>
         <button
-          className="flex items-center justify-center gap-1"
+          className="flex items-center justify-center gap-1 cursor-pointer"
           onClick={() => toComment(commentRoute)}
         >
           <MdOutlineInsertComment />
