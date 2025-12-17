@@ -57,16 +57,17 @@ export default function Comments() {
                     ? new Date(comment.updated_at).toLocaleString('pt-BR')
                     : ''}
                 </h2>
-                <div className='flex gap-2'>
-                  {comment.author.username === profileData?.username ? (
+
+                {comment.author.username === profileData?.username ? (
+                  <div className="flex gap-2">
                     <button className="flex items-center align-center cursor-pointer hover:text-green-600">
                       <MdEditSquare />
                     </button>
-                  ) : null}
-                  <button className="flex items-center align-center cursor-pointer hover:text-red-600">
-                    <MdDeleteForever />
-                  </button>
-                </div>
+                    <button className="flex items-center align-center cursor-pointer hover:text-red-600">
+                      <MdDeleteForever />
+                    </button>
+                  </div>
+                ) : null}
               </div>
               {comment.content}
             </div>
