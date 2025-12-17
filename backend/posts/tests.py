@@ -151,6 +151,8 @@ class TestPostLike:
         response = authenticated_client.get(f"/api/posts/{post.id}/likes/")
         assert response.status_code == status.HTTP_200_OK
         assert len(response.data["results"]) == 1
+        assert "user" in response.data["results"][0]
+        assert "avatar" in response.data["results"][0]["user"]
 
 
 @pytest.mark.django_db
@@ -161,6 +163,21 @@ class TestComment:
         )
         assert response.status_code == status.HTTP_201_CREATED
         assert Comment.objects.filter(author=user1, post=post).exists()
+        assert response.data["comment"]["author"]["id"] == user1.id
+        assert response.data["comment"]["author"]["username"] == user1.username
+        assert response.data["comment"]["author"]["id"] != post.author.id
+        assert "avatar" in response.data["comment"]["author"]
+
+    def test_create_comment_author_is_comment_creator_not_post_author(self, authenticated_client, post, user1, user2):
+        post_user2 = Post.objects.create(author=user2, content="Post from user2")
+        response = authenticated_client.post(
+            f"/api/posts/{post_user2.id}/comments/create/", {"content": "Comment from user1"}
+        )
+        assert response.status_code == status.HTTP_201_CREATED
+        assert response.data["comment"]["author"]["id"] == user1.id
+        assert response.data["comment"]["author"]["username"] == user1.username
+        assert response.data["comment"]["author"]["id"] != post_user2.author.id
+        assert response.data["comment"]["author"]["id"] != user2.id
 
     def test_get_comments_list(self, authenticated_client, post, user1):
         Comment.objects.create(author=user1, post=post, content="Comment 1")
@@ -168,6 +185,11 @@ class TestComment:
         response = authenticated_client.get(f"/api/posts/{post.id}/comments/")
         assert response.status_code == status.HTTP_200_OK
         assert len(response.data["results"]) == 2
+        for comment in response.data["results"]:
+            assert "author" in comment
+            assert comment["author"]["id"] == user1.id
+            assert comment["author"]["username"] == user1.username
+            assert "avatar" in comment["author"]
 
     def test_update_comment(self, authenticated_client, post, user1):
         comment = Comment.objects.create(author=user1, post=post, content="Original")
@@ -179,6 +201,8 @@ class TestComment:
         assert response.status_code == status.HTTP_200_OK
         comment.refresh_from_db()
         assert comment.content == "Updated comment"
+        assert response.data["comment"]["author"]["id"] == user1.id
+        assert response.data["comment"]["author"]["username"] == user1.username
 
     def test_update_other_user_comment(self, authenticated_client, post, user2):
         comment = Comment.objects.create(

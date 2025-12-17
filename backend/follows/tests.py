@@ -56,6 +56,11 @@ class TestFollowUser:
         )
         assert response.status_code == status.HTTP_201_CREATED
         assert Follow.objects.filter(follower=user1, following=user2).exists()
+        assert "follow" in response.data
+        assert "follower" in response.data["follow"]
+        assert "following" in response.data["follow"]
+        assert "avatar" in response.data["follow"]["follower"]
+        assert "avatar" in response.data["follow"]["following"]
 
     def test_follow_user_unauthorized(self, api_client, user2):
         response = api_client.post("/api/follows/follow/", {"following": user2.id})
@@ -99,6 +104,7 @@ class TestMyFollowers:
         response = authenticated_client.get("/api/follows/my-followers/")
         assert response.status_code == status.HTTP_200_OK
         assert len(response.data["results"]) == 1
+        assert "avatar" in response.data["results"][0]
 
 
 @pytest.mark.django_db
@@ -108,3 +114,4 @@ class TestMyFollowing:
         response = authenticated_client.get("/api/follows/my-following/")
         assert response.status_code == status.HTTP_200_OK
         assert len(response.data["results"]) == 1
+        assert "avatar" in response.data["results"][0]
