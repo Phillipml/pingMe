@@ -16,7 +16,8 @@ import {
   CreatePost,
   FeedResponse,
   LikeResponse,
-  Post
+  Post,
+  CommentResponse
 } from '@/utils/api-interfaces'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
@@ -134,6 +135,11 @@ export const apiSlice = createApi({
       query: (id) => ({
         url: `/posts/${id}/`
       })
+    }),
+    getComments: builder.query<CommentResponse, number | string>({
+      query: (id) => ({
+        url: `/posts/${id}/comments/`
+      })
     })
   })
 })
@@ -155,5 +161,6 @@ export const {
   useLikePostMutation,
   useGetUserPostQuery,
   useDeletePostMutation,
-  useGetPostQuery
+  useGetPostQuery,
+  useGetCommentsQuery
 } = apiSlice
