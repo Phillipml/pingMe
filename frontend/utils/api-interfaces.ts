@@ -111,3 +111,4 @@ export type FollowingResponse = PaginatedResponse<UserWithSince>
 export type CommentResponse = PaginatedResponse<Comment>
 export type CreatePost = ContentRequest
 export type CreateComment = ContentRequest
+export type UpdateComment = ContentRequest

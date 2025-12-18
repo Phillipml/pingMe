@@ -18,7 +18,8 @@ import {
   CreateComment,
   FeedResponse,
   LikeResponse,
-  Post
+  Post,
+  UpdateComment
 } from '@/utils/api-interfaces'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
@@ -142,17 +143,30 @@ export const apiSlice = createApi({
         url: `/posts/${id}/comments/`
       })
     }),
-    createComment: builder.mutation<CommentCreateResponse, { postId: number | string; data: CreateComment }>({
+    createComment: builder.mutation<
+      CommentCreateResponse,
+      { postId: number | string; data: CreateComment }
+    >({
       query: ({ postId, data }) => ({
         url: `/posts/${postId}/comments/create/`,
         method: 'POST',
         body: data
       })
     }),
+    updateComment: builder.mutation<
+      UpdateComment,
+      { commentId: number | string; data: CreateComment }
+    >({
+      query: ({ commentId, data }) => ({
+        url: `/posts/comments/${commentId}/update/`,
+        method: 'PUT',
+        body: data
+      })
+    }),
     deleteComment: builder.mutation<MessageResponse, number | string>({
-      query:(id)=>({
-        url:`/posts/comments/${id}/delete/`,
-        method: "DELETE"
+      query: (id) => ({
+        url: `/posts/comments/${id}/delete/`,
+        method: 'DELETE'
       })
     })
   })
