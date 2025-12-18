@@ -191,5 +191,6 @@ export const {
   useDeletePostMutation,
   useGetPostQuery,
   useGetCommentsQuery,
-  useCreateCommentMutation
+  useCreateCommentMutation,
+  useUpdateCommentMutation
 } = apiSlice
