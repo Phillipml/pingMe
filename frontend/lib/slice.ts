@@ -148,6 +148,12 @@ export const apiSlice = createApi({
         method: 'POST',
         body: data
       })
+    }),
+    deleteComment: builder.mutation<MessageResponse, number | string>({
+      query:(id)=>({
+        url:`/posts/comments/${id}/delete/`,
+        method: "DELETE"
+      })
     })
   })
 })
