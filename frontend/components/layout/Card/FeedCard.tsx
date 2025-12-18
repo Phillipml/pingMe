@@ -30,7 +30,7 @@ export default function FeedCard({
 }: CardProps) {
   const { toComment } = useNavigation()
   return (
-    <li className="w-1/3  mt-4 grid pb-2">
+    <li className="w-1/3 mt-4 grid pb-2">
       <div className="flex justify-between">
         <Link href={href} className="flex items-center justify-center mb-4">
           <img
@@ -40,11 +40,11 @@ export default function FeedCard({
           />
           <h2>@{author}</h2>
         </Link>
-        <p className="text-gray-700">
+        <p className="text-purple-900">
           {new Date(created_at).toLocaleString('pt-BR')}
         </p>
       </div>
-      <div className="border-b border-purple-950">{children}</div>
+      <div className="border-b border-purple-950 pb-4">{children}</div>
       <div className="flex justify-around">
         <button
           className="flex items-center justify-center gap-1 cursor-pointer"

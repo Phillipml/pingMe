@@ -64,7 +64,7 @@ export default function Feed() {
   return (
     <Container>
       <div
-        className={`w-1/3 m-auto border-2 ${isPostCreated ? 'border-green-600' : 'border-purple-600'}  rounded p-2`}
+        className={`w-1/2 m-auto mt-8 ${isPostCreated ? 'shadow-[0_0px_64px_-22px_rgba(22,163,74,1)]' : 'shadow-[0_0px_64px_-22px_rgba(147,51,234,1)]'}  rounded p-2`}
       >
         <Form className="border-2 border-gray-900" onSubmit={createPost}>
           <textarea
@@ -88,7 +88,7 @@ export default function Feed() {
           </div>
         </Form>
       </div>
-      <div>
+      <div className="mt-8">
         <ul className="flex flex-col justify-center items-center">
           {data &&
             data.results.map((post) => (

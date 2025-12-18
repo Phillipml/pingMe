@@ -4,20 +4,21 @@ import {
   LoginRequest,
   RegisterRequest,
   User,
-  LogoutResponse,
+  MessageResponse,
   Profile,
-  Logout,
+  LogoutRequest,
   SearchUsersResponse,
   FollowRequest,
-  FollowResponse,
   FollowersResponse,
-  MessageResponse,
-  PostResponse,
+  FollowingResponse,
+  PostCreateResponse,
   CreatePost,
+  CommentResponse,
+  CommentCreateResponse,
+  CreateComment,
   FeedResponse,
   LikeResponse,
-  Post,
-  CommentResponse
+  Post
 } from '@/utils/api-interfaces'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
@@ -58,7 +59,7 @@ export const apiSlice = createApi({
     getProfile: builder.query<User, void>({
       query: () => '/auth/profile/'
     }),
-    logout: builder.mutation<LogoutResponse, Logout>({
+    logout: builder.mutation<MessageResponse, LogoutRequest>({
       query: () => ({
         url: '/auth/logout/',
         method: 'POST',
@@ -83,14 +84,14 @@ export const apiSlice = createApi({
         url: `/auth/profile/${id}/`
       })
     }),
-    follow: builder.mutation<FollowResponse, FollowRequest>({
+    follow: builder.mutation<MessageResponse, FollowRequest>({
       query: (followData) => ({
         url: '/follows/follow/',
         method: 'POST',
         body: followData
       })
     }),
-    unfollow: builder.mutation<FollowResponse, FollowRequest>({
+    unfollow: builder.mutation<MessageResponse, FollowRequest>({
       query: (unfollowData) => ({
         url: '/follows/unfollow/',
         method: 'DELETE',
@@ -100,10 +101,10 @@ export const apiSlice = createApi({
     getMyFollowers: builder.query<FollowersResponse, void>({
       query: () => '/follows/my-followers/'
     }),
-    getMyFollowing: builder.query<MessageResponse, void>({
+    getMyFollowing: builder.query<FollowingResponse, void>({
       query: () => '/follows/my-following/'
     }),
-    createPost: builder.mutation<PostResponse, CreatePost>({
+    createPost: builder.mutation<PostCreateResponse, CreatePost>({
       query: (postData) => ({
         url: '/posts/create/',
         method: 'POST',
@@ -140,6 +141,13 @@ export const apiSlice = createApi({
       query: (id) => ({
         url: `/posts/${id}/comments/`
       })
+    }),
+    createComment: builder.mutation<CommentCreateResponse, { postId: number | string; data: CreateComment }>({
+      query: ({ postId, data }) => ({
+        url: `/posts/${postId}/comments/create/`,
+        method: 'POST',
+        body: data
+      })
     })
   })
 })
@@ -162,5 +170,6 @@ export const {
   useGetUserPostQuery,
   useDeletePostMutation,
   useGetPostQuery,
-  useGetCommentsQuery
+  useGetCommentsQuery,
+  useCreateCommentMutation
 } = apiSlice
