@@ -19,7 +19,7 @@ import {
   FeedResponse,
   LikeResponse,
   Post,
-  UpdateComment
+  CommentUpdateResponse
 } from '@/utils/api-interfaces'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
@@ -154,7 +154,7 @@ export const apiSlice = createApi({
       })
     }),
     updateComment: builder.mutation<
-      UpdateComment,
+      CommentUpdateResponse,
       { commentId: number | string; data: CreateComment }
     >({
       query: ({ commentId, data }) => ({
