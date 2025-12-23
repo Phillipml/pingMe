@@ -23,12 +23,15 @@ export default function Comments() {
   const {
     deleteComment,
     createComment,
+    updateComment,
     isDeleting,
     isCreating,
-    deleteCommentId
+    isUpdating
   } = useComments(postId)
   const [comment, setComment] = useState('')
   const [isCommentCreated, setIsCommentCreated] = useState(false)
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null)
+  const [editingContent, setEditingContent] = useState('')
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     if (!comment.trim()) {
@@ -62,6 +65,27 @@ export default function Comments() {
       )
     }
     return null
+  }
+  const handleStartEdit = (commentId: number, currentContent: string) => {
+    setEditingCommentId(commentId)
+    setEditingContent(currentContent)
+  }
+  const handleCancelEdit = () => {
+    setEditingCommentId(null)
+    setEditingContent('')
+  }
+  const handleSaveEdit = async (commentId: number) => {
+    if (!editingContent.trim()) {
+      alert('O comentário não pode estar vazio')
+      return
+    }
+    try {
+      await updateComment(commentId, { content: editingContent.trim() })
+      setEditingCommentId(null)
+      setEditingContent('')
+    } catch (error) {
+      console.error('Erro ao atualizar comentário:', error)
+    }
   }
   if (isLoading) {
     return 'Carregando'
@@ -121,6 +145,7 @@ export default function Comments() {
                   alt={`${comment?.author.username} avatar`}
                   className="w-8 h-8 min-w-8 min-h-8 object-cover object-center rounded-full mr-2 shrink-0"
                 />
+
                 <h2>{comment?.author.username}</h2>
                 <p className="text-sm text-purple-900 text-center">
                   {comment?.updated_at
@@ -129,21 +154,51 @@ export default function Comments() {
                 </p>
                 {comment.author.username === profileData?.username ? (
                   <div className="flex gap-2">
-                    <button className="flex items-center align-center cursor-pointer hover:text-green-600">
+                    <button
+                      className="flex items-center align-center cursor-pointer hover:text-green-600"
+                      onClick={() =>
+                        handleStartEdit(comment.id, comment.content)
+                      }
+                    >
                       <MdEditSquare />
                     </button>
                     <button
                       className="flex items-center align-center cursor-pointer hover:text-red-600"
                       onClick={() => deleteComment(comment.id)}
                     >
-                      <MdDeleteForever />
+                      {isDeleting ? (
+                        <AiOutlineLoading className="animate-spin" />
+                      ) : (
+                        <MdDeleteForever />
+                      )}
                     </button>
                   </div>
                 ) : null}
               </div>
-              <p className="mt-2 p-2 border-b border-purple-900">
-                {comment.content}
-              </p>
+              {editingCommentId === comment.id ? (
+                <div className="mt-2 p-2 border-b border-purple-900">
+                  <textarea
+                    value={editingContent}
+                    onChange={(e) => setEditingContent(e.target.value)}
+                    className="w-full resize-none border border-purple-900 rounded p-2"
+                    rows={3}
+                    autoFocus
+                  />
+                  <div className="flex gap-2 mt-2 justify-end">
+                    <button onClick={handleCancelEdit}>Cancelar</button>
+                    <button
+                      onClick={() => handleSaveEdit(comment.id)}
+                      disabled={isUpdating}
+                    >
+                      {isUpdating ? 'Salvando...' : 'Salvar'}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <p className="mt-2 p-2 border-b border-purple-900">
+                  {comment.content}
+                </p>
+              )}
             </div>
           ))
         )}
