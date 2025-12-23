@@ -31,7 +31,6 @@ export default function Comments() {
   const [isCommentCreated, setIsCommentCreated] = useState(false)
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-
     if (!comment.trim()) {
       alert('Favor escreva algo para comentar')
       return
@@ -133,7 +132,10 @@ export default function Comments() {
                     <button className="flex items-center align-center cursor-pointer hover:text-green-600">
                       <MdEditSquare />
                     </button>
-                    <button className="flex items-center align-center cursor-pointer hover:text-red-600">
+                    <button
+                      className="flex items-center align-center cursor-pointer hover:text-red-600"
+                      onClick={() => deleteComment(comment.id)}
+                    >
                       <MdDeleteForever />
                     </button>
                   </div>
