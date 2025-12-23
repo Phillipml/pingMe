@@ -184,11 +184,17 @@ export default function Comments() {
                     rows={3}
                     autoFocus
                   />
-                  <div className="flex gap-2 mt-2 justify-end">
-                    <button onClick={handleCancelEdit}>Cancelar</button>
+                  <div className="flex gap-2 mt-2 justify-end ">
+                    <button
+                      onClick={handleCancelEdit}
+                      className="bg-red-600 p-1 rounded cursor-pointer"
+                    >
+                      Cancelar
+                    </button>
                     <button
                       onClick={() => handleSaveEdit(comment.id)}
                       disabled={isUpdating}
+                      className="bg-green-600 p-1 rounded cursor-pointer"
                     >
                       {isUpdating ? 'Salvando...' : 'Salvar'}
                     </button>
