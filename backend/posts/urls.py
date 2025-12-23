@@ -22,5 +22,4 @@ urlpatterns = [
         name="comment_delete",
     ),
     path("user/<int:user_id>/", views.user_posts, name="user_posts"),
-    path("my-posts/", views.my_posts, name="my_posts"),
 ]

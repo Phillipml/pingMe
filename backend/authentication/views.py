@@ -165,7 +165,7 @@ def profile_detail(request, user_id):
     try:
         user = User.objects.get(id=user_id)
         Profile.objects.get_or_create(user=user)
-        serializer = UserWithProfileSerializer(user, context={'request': request})
+        serializer = UserWithProfileSerializer(user, context={"request": request})
         return Response(serializer.data)
     except User.DoesNotExist:
         return Response(
@@ -223,7 +223,9 @@ def user_list(request):
     paginator = PageNumberPagination()
     paginator.page_size = 20
     paginated_users = paginator.paginate_queryset(users, request)
-    serializer = UserSerializer(paginated_users, many=True, context={'request': request})
+    serializer = UserSerializer(
+        paginated_users, many=True, context={"request": request}
+    )
 
     return paginator.get_paginated_response(serializer.data)
 

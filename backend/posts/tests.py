@@ -168,10 +168,13 @@ class TestComment:
         assert response.data["comment"]["author"]["id"] != post.author.id
         assert "avatar" in response.data["comment"]["author"]
 
-    def test_create_comment_author_is_comment_creator_not_post_author(self, authenticated_client, post, user1, user2):
+    def test_create_comment_author_is_comment_creator_not_post_author(
+        self, authenticated_client, post, user1, user2
+    ):
         post_user2 = Post.objects.create(author=user2, content="Post from user2")
         response = authenticated_client.post(
-            f"/api/posts/{post_user2.id}/comments/create/", {"content": "Comment from user1"}
+            f"/api/posts/{post_user2.id}/comments/create/",
+            {"content": "Comment from user1"},
         )
         assert response.status_code == status.HTTP_201_CREATED
         assert response.data["comment"]["author"]["id"] == user1.id
@@ -249,9 +252,3 @@ class TestUserPosts:
         assert response.data["count"] == 7
         assert response.data["previous"] is not None
         assert response.data["next"] is None
-
-    def test_get_my_posts(self, authenticated_client, user1, post):
-        Post.objects.create(author=user1, content="Post 2")
-        response = authenticated_client.get("/api/posts/my-posts/")
-        assert response.status_code == status.HTTP_200_OK
-        assert len(response.data["results"]) == 2

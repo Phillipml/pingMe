@@ -1367,42 +1367,6 @@ Authorization: Bearer seu-access-token
 
 ---
 
-### 10. Meus Posts
-
-Lista todos os seus posts.
-
-**Endpoint:** `GET /api/posts/my-posts/?page=1`
-
-**Headers:**
-```
-Authorization: Bearer seu-access-token
-```
-
-**Resposta de Sucesso (200):**
-```json
-{
-  "count": 10,
-  "next": null,
-  "previous": null,
-  "results": [
-    {
-      "id": 1,
-      "author": {...},
-      "content": "Meu post",
-      "created_at": "2024-01-01T12:00:00Z",
-      "updated_at": "2024-01-01T12:00:00Z",
-      "likes_count": 5,
-      "comments_count": 3,
-      "is_liked": false
-    }
-  ]
-}
-```
-
-**Paginação:** 20 itens por página. Use `?page=2` para próxima página.
-
----
-
 ## Exemplos Práticos
 
 ### Função Helper para Requisições Autenticadas

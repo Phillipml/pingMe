@@ -4,13 +4,14 @@ from .models import User, Profile
 
 class UserSerializer(serializers.ModelSerializer):
     avatar = serializers.SerializerMethodField()
+
     class Meta:
         model = User
         fields = ["id", "username", "email", "created_at", "avatar"]
 
     def get_avatar(self, obj):
-        if hasattr(obj, 'profile') and obj.profile.avatar:
-            request = self.context.get('request')
+        if hasattr(obj, "profile") and obj.profile.avatar:
+            request = self.context.get("request")
             if request:
                 return request.build_absolute_uri(obj.profile.avatar.url)
             return obj.profile.avatar.url
@@ -97,7 +98,7 @@ class UserWithProfileSerializer(serializers.ModelSerializer):
 
     def get_info(self, obj):
         profile = obj.profile
-        request = self.context.get('request')
+        request = self.context.get("request")
         avatar_url = None
         if profile.avatar:
             if request:
