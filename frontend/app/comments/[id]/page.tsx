@@ -42,12 +42,28 @@ export default function Comments() {
       setIsCommentCreated(true)
       setTimeout(() => {
         setIsCommentCreated(false)
-      }, 3000)
+      }, 8000)
     } catch (error) {
       console.error('Erro ao criar comentário:', error)
     }
   }
-
+  const creatingCommentaryResponse = () => {
+    if (isCreating) {
+      return (
+        <span className="text-white bg-green-600 p-2 rounded-2xl">
+          Comentando...
+        </span>
+      )
+    }
+    if (isCommentCreated) {
+      return (
+        <span className="text-white bg-green-600 p-2 rounded-2xl">
+          Comentário criado com sucesso
+        </span>
+      )
+    }
+    return null
+  }
   if (isLoading) {
     return 'Carregando'
   }
@@ -72,7 +88,10 @@ export default function Comments() {
       <div
         className={`w-1/2 m-auto mt-8 ${isCommentCreated ? 'shadow-[0_20px_24px_-22px_rgba(22, 163, 74,1)]' : 'shadow-[0_20px_24px_-22px_rgba(147,51,234,1)]'}  rounded p-2`}
       >
-        <Form className="border-2 border-gray-900 w-1/2" onSubmit={handleSubmit}>
+        <Form
+          className="border-2 border-gray-900 w-1/2"
+          onSubmit={handleSubmit}
+        >
           <textarea
             name=""
             id=""
@@ -83,11 +102,7 @@ export default function Comments() {
             onFocus={() => setIsCommentCreated(false)}
           />
           <div className="flex justify-between items-center mt-2">
-            {isCommentCreated ? (
-              <span className="text-white bg-green-600 p-2 rounded-2xl">
-                Comentário criado com sucesso
-              </span>
-            ) : null}
+            {creatingCommentaryResponse()}
             <Button type="submit" className="w-1/3 self-end">
               Comentar
             </Button>
