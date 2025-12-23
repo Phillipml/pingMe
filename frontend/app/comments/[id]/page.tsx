@@ -2,13 +2,14 @@
 import Container from '@/components/layout/Container'
 import Form from '@/components/layout/Form'
 import Button from '@/components/ui/Button'
+import { useComments } from '@/hooks/useComments'
 import {
   useGetCommentsQuery,
   useGetPostQuery,
   useGetProfileQuery
 } from '@/lib/slice'
 import { useParams } from 'next/navigation'
-import { useState } from 'react'
+import { FormEvent, useState } from 'react'
 import { AiOutlineLoading } from 'react-icons/ai'
 import { MdDeleteForever, MdEditSquare } from 'react-icons/md'
 
@@ -19,8 +20,33 @@ export default function Comments() {
   const { data: commentsData, isLoading: loadingComments } =
     useGetCommentsQuery(postId)
   const { data: profileData } = useGetProfileQuery()
-  const [post, setPost] = useState('')
+  const {
+    deleteComment,
+    createComment,
+    isDeleting,
+    isCreating,
+    deleteCommentId
+  } = useComments(postId)
+  const [comment, setComment] = useState('')
   const [isCommentCreated, setIsCommentCreated] = useState(false)
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    if (!comment.trim()) {
+      alert('Favor escreva algo para comentar')
+      return
+    }
+    try {
+      await createComment({ content: comment.trim() })
+      setComment('')
+      setIsCommentCreated(true)
+      setTimeout(() => {
+        setIsCommentCreated(false)
+      }, 3000)
+    } catch (error) {
+      console.error('Erro ao criar comentário:', error)
+    }
+  }
 
   if (isLoading) {
     return 'Carregando'
@@ -46,14 +72,14 @@ export default function Comments() {
       <div
         className={`w-1/2 m-auto mt-8 ${isCommentCreated ? 'shadow-[0_20px_24px_-22px_rgba(22, 163, 74,1)]' : 'shadow-[0_20px_24px_-22px_rgba(147,51,234,1)]'}  rounded p-2`}
       >
-        <Form className="border-2 border-gray-900 w-1/2">
+        <Form className="border-2 border-gray-900 w-1/2" onSubmit={handleSubmit}>
           <textarea
             name=""
             id=""
             className="resize-none border-b border-gray-800 focus:outline-0"
             placeholder="Comentar Ping"
-            value={post}
-            onChange={(e) => setPost(e.target.value)}
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
             onFocus={() => setIsCommentCreated(false)}
           />
           <div className="flex justify-between items-center mt-2">
