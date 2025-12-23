@@ -127,7 +127,9 @@ def post_likes(request, post_id):
     paginator = PageNumberPagination()
     paginator.page_size = 20
     paginated_likes = paginator.paginate_queryset(likes, request)
-    serializer = LikeSerializer(paginated_likes, many=True, context={"request": request})
+    serializer = LikeSerializer(
+        paginated_likes, many=True, context={"request": request}
+    )
     return paginator.get_paginated_response(serializer.data)
 
 
@@ -140,16 +142,16 @@ def comment_create(request, post_id):
     if serializer.is_valid():
         # Cria o comentário diretamente garantindo que o author seja request.user
         comment = Comment.objects.create(
-            author=request.user,
-            post=post,
-            content=serializer.validated_data["content"]
+            author=request.user, post=post, content=serializer.validated_data["content"]
         )
         # Recarrega o comentário do banco com o relacionamento author carregado
         comment = Comment.objects.select_related("author").get(id=comment.id)
         return Response(
             {
                 "message": "Comentário criado com sucesso",
-                "comment": CommentSerializer(comment, context={"request": request}).data,
+                "comment": CommentSerializer(
+                    comment, context={"request": request}
+                ).data,
             },
             status=status.HTTP_201_CREATED,
         )
@@ -169,7 +171,9 @@ def comment_list(request, post_id):
     paginator = PageNumberPagination()
     paginator.page_size = 20
     paginated_comments = paginator.paginate_queryset(comments, request)
-    serializer = CommentSerializer(paginated_comments, many=True, context={"request": request})
+    serializer = CommentSerializer(
+        paginated_comments, many=True, context={"request": request}
+    )
     return paginator.get_paginated_response(serializer.data)
 
 
@@ -191,7 +195,9 @@ def comment_update_delete(request, comment_id):
             return Response(
                 {
                     "message": "Comentário atualizado com sucesso",
-                    "comment": CommentSerializer(comment, context={"request": request}).data,
+                    "comment": CommentSerializer(
+                        comment, context={"request": request}
+                    ).data,
                 }
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -218,25 +224,6 @@ def user_posts(request, user_id):
 
     paginator = PageNumberPagination()
     paginator.page_size = 5
-    paginated_posts = paginator.paginate_queryset(posts, request)
-    serializer = PostSerializer(
-        paginated_posts, many=True, context={"request": request}
-    )
-    return paginator.get_paginated_response(serializer.data)
-
-
-@api_view(["GET"])
-@permission_classes([IsAuthenticated])
-def my_posts(request):
-    posts = (
-        Post.objects.filter(author=request.user)
-        .select_related("author")
-        .prefetch_related("likes", "comments")
-        .order_by("-created_at")
-    )
-
-    paginator = PageNumberPagination()
-    paginator.page_size = 20
     paginated_posts = paginator.paginate_queryset(posts, request)
     serializer = PostSerializer(
         paginated_posts, many=True, context={"request": request}

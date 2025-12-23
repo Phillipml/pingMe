@@ -29,14 +29,14 @@ class FollowerFollowingSerializer(serializers.Serializer):
 
     def get_avatar(self, obj):
         if isinstance(obj, dict):
-            profile = obj.get('profile')
+            profile = obj.get("profile")
             if profile and profile.avatar:
-                request = self.context.get('request')
+                request = self.context.get("request")
                 if request:
                     return request.build_absolute_uri(profile.avatar.url)
                 return profile.avatar.url
-        elif hasattr(obj, 'profile') and obj.profile.avatar:
-            request = self.context.get('request')
+        elif hasattr(obj, "profile") and obj.profile.avatar:
+            request = self.context.get("request")
             if request:
                 return request.build_absolute_uri(obj.profile.avatar.url)
             return obj.profile.avatar.url
