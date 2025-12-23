@@ -13,6 +13,7 @@ export interface RegisterRequest {
   email: string
   password: string
 }
+
 export interface Profile {
   first_name?: string
   last_name?: string
@@ -20,17 +21,12 @@ export interface Profile {
   avatar?: string | null
   status?: number
 }
-export interface LogoutResponse {
-  message: string
-}
-export interface Logout {
-  refresh?: string
-}
 
 export interface LogoutRequest {
   refresh?: string
 }
-export interface BaseUserResult {
+
+export interface BaseUser {
   id: number
   username: string
   email: string
@@ -38,7 +34,7 @@ export interface BaseUserResult {
   avatar: string | null
 }
 
-export interface UserResultWithSince extends BaseUserResult {
+export interface UserWithSince extends BaseUser {
   since: string
 }
 
@@ -49,10 +45,6 @@ export interface PaginatedResponse<T> {
   results: T[]
 }
 
-export type SearchUserResult = BaseUserResult
-
-export type FollowersFollowingResult = UserResultWithSince
-
 export interface User {
   id: number
   username: string
@@ -61,32 +53,27 @@ export interface User {
   info: Profile
 }
 
-export interface LoginRegisterResponse {
+export interface MessageResponse {
   message: string
+}
+
+export interface LoginRegisterResponse extends MessageResponse {
   user: User
   access?: string
   refresh?: string
 }
 
-export type SearchUsersResponse = PaginatedResponse<SearchUserResult>
-
-export type FollowersResponse = PaginatedResponse<FollowersFollowingResult>
-
-export type MessageResponse = PaginatedResponse<FollowersFollowingResult>
-
 export interface FollowRequest {
   following: number
 }
 
-export interface FollowResponse {
-  message: string
-}
-export interface CreatePost {
+export interface ContentRequest {
   content: string
 }
+
 export interface Post {
   id: number
-  author: BaseUserResult
+  author: BaseUser
   content: string
   created_at: string
   updated_at: string
@@ -94,13 +81,34 @@ export interface Post {
   comments_count: number
   is_liked: boolean
 }
-export interface PostResponse {
-  message: string
-  post: Post[]
+
+export interface PostCreateResponse extends MessageResponse {
+  post: Post
 }
-export type FeedResponse = PaginatedResponse<Post>
-export interface LikeResponse {
-  message: string
+
+export interface LikeResponse extends MessageResponse {
   liked: boolean
   likes_count: number
 }
+
+export interface Comment {
+  id: number
+  post: number
+  author: BaseUser
+  content: string
+  created_at: string
+  updated_at: string
+}
+
+export interface CommentCreateResponse extends MessageResponse {
+  comment: Comment
+}
+
+export type FeedResponse = PaginatedResponse<Post>
+export type SearchUsersResponse = PaginatedResponse<BaseUser>
+export type FollowersResponse = PaginatedResponse<UserWithSince>
+export type FollowingResponse = PaginatedResponse<UserWithSince>
+export type CommentResponse = PaginatedResponse<Comment>
+export type CreatePost = ContentRequest
+export type CreateComment = ContentRequest
+export type CommentUpdateResponse = CommentCreateResponse

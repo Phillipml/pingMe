@@ -320,6 +320,7 @@ export default function Profile() {
                           created_at={post.created_at}
                           onClick={() => null}
                           clickDelete={() => deletePostById(post.id)}
+                          commentRoute={post.id}
                           is_liked={post.is_liked}
                           isDeleting={isDeletingById === post.id}
                           comments_count={post.comments_count}
@@ -334,7 +335,6 @@ export default function Profile() {
                       Página {currentPage} de {totalPages || 1}
                       {userPosts?.count && ` • Total: ${userPosts.count} posts`}
                     </p>
-
                     <div className="flex gap-4 items-center">
                       <Button
                         onClick={handlePreviousPage}
@@ -343,7 +343,6 @@ export default function Profile() {
                       >
                         ← Anterior
                       </Button>
-
                       <Button
                         onClick={handleNextPage}
                         disabled={

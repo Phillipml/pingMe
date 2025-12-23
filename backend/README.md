@@ -97,7 +97,7 @@ Like - Curtida
 
 Comment - Comentário
 - Post: ForeignKey para Post
-- Autor: ForeignKey para User
+- Autor: ForeignKey para User (sempre o usuário que criou o comentário, não o autor do post)
 - Campos: content, created_at, updated_at
 
 Follow - Relacionamento de seguir
@@ -155,8 +155,8 @@ poetry run pytest
 
 **Estrutura de Testes:**
 - `authentication/tests.py`: Testes de registro, login, logout, refresh token, perfil, alterar senha, listar usuários, deletar conta
-- `posts/tests.py`: Testes de posts, curtidas, comentários
-- `follows/tests.py`: Testes de seguir/deixar de seguir
+- `posts/tests.py`: Testes de posts, curtidas, comentários (inclui validação de autor correto do comentário e URLs de avatar)
+- `follows/tests.py`: Testes de seguir/deixar de seguir (inclui validação de URLs de avatar)
 
 **Nota**: Execute os comandos `make` sempre do diretório raiz do projeto, não de dentro de `backend/`. O Makefile já gerencia o caminho corretamente.
 
@@ -314,6 +314,11 @@ curl -X PUT http://localhost:8000/api/auth/profile/update/ \
   -F "avatar=@foto.jpg" \
   -F "first_name=João"
 ```
+
+**Nota sobre URLs de Avatar:**
+- Todas as respostas da API que incluem informações de usuário (posts, comentários, likes, follows) retornam URLs absolutas dos avatares
+- As URLs são construídas automaticamente usando o contexto do request
+- Se o usuário não tiver avatar, o campo `avatar` será `null`
 
 ## Dependências
 

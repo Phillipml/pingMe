@@ -127,7 +127,7 @@ def post_likes(request, post_id):
     paginator = PageNumberPagination()
     paginator.page_size = 20
     paginated_likes = paginator.paginate_queryset(likes, request)
-    serializer = LikeSerializer(paginated_likes, many=True)
+    serializer = LikeSerializer(paginated_likes, many=True, context={"request": request})
     return paginator.get_paginated_response(serializer.data)
 
 
@@ -138,11 +138,18 @@ def comment_create(request, post_id):
     serializer = CommentCreateSerializer(data=request.data)
 
     if serializer.is_valid():
-        comment = serializer.save(author=request.user, post=post)
+        # Cria o comentário diretamente garantindo que o author seja request.user
+        comment = Comment.objects.create(
+            author=request.user,
+            post=post,
+            content=serializer.validated_data["content"]
+        )
+        # Recarrega o comentário do banco com o relacionamento author carregado
+        comment = Comment.objects.select_related("author").get(id=comment.id)
         return Response(
             {
                 "message": "Comentário criado com sucesso",
-                "comment": CommentSerializer(comment).data,
+                "comment": CommentSerializer(comment, context={"request": request}).data,
             },
             status=status.HTTP_201_CREATED,
         )
@@ -162,7 +169,7 @@ def comment_list(request, post_id):
     paginator = PageNumberPagination()
     paginator.page_size = 20
     paginated_comments = paginator.paginate_queryset(comments, request)
-    serializer = CommentSerializer(paginated_comments, many=True)
+    serializer = CommentSerializer(paginated_comments, many=True, context={"request": request})
     return paginator.get_paginated_response(serializer.data)
 
 
@@ -184,7 +191,7 @@ def comment_update_delete(request, comment_id):
             return Response(
                 {
                     "message": "Comentário atualizado com sucesso",
-                    "comment": CommentSerializer(comment).data,
+                    "comment": CommentSerializer(comment, context={"request": request}).data,
                 }
             )
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

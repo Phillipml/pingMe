@@ -30,8 +30,16 @@ frontend/
 │   │   └── page.tsx
 │   ├── complete-profile/    # Completar perfil
 │   │   └── page.tsx
-│   └── user-created/        # Confirmação de criação de conta
-│       └── page.tsx
+│   ├── user-created/        # Confirmação de criação de conta
+│   │   └── page.tsx
+│   ├── search/              # Página de busca de usuários
+│   │   └── page.tsx
+│   ├── user-profile/        # Perfil público de outros usuários
+│   │   └── [id]/
+│   │       └── page.tsx
+│   └── comments/            # Página de comentários de um post
+│       └── [id]/
+│           └── page.tsx
 ├── components/              # Componentes reutilizáveis
 │   ├── layout/              # Componentes de layout
 │   │   ├── Header.tsx       # Barra de navegação superior
@@ -50,7 +58,9 @@ frontend/
 │   ├── slice.ts             # Redux Toolkit API slice
 │   └── store.ts             # Configuração da store Redux
 ├── hooks/                    # Custom hooks
-│   └── useAuth.ts           # Hook para autenticação
+│   ├── useAuth.ts           # Hook para autenticação
+│   ├── useComments.ts       # Hook para gerenciar comentários
+│   └── useNavigation.ts     # Hook para navegação
 ├── providers/                # Providers React
 │   └── AppProvider.tsx     # Provider do Redux
 ├── utils/                    # Utilitários
@@ -145,6 +155,19 @@ frontend/
    - Verifica automaticamente se já está seguindo o usuário
    - Loading states durante requisições
 
+10. **Comentários (`/comments/[id]`)**:
+    - Visualização completa de um post com todos os seus comentários
+    - Exibe informações do autor do post (avatar, username, data)
+    - Formulário para criar novos comentários
+    - Listagem de todos os comentários do post
+    - **Edição de comentários próprios** com modo inline
+    - **Exclusão de comentários próprios** com confirmação
+    - Indicadores visuais de estado (criando, criado com sucesso)
+    - Atualização otimista do cache RTK Query
+    - Contadores de comentários atualizados automaticamente no feed e no post
+    - Loading states durante carregamento
+    - Validação de campos obrigatórios
+
 ## Como Começar
 
 ### Pré-requisitos
@@ -191,6 +214,7 @@ npm run start        # Inicia servidor de produção
 
 # Qualidade
 npm run lint         # Executa ESLint e corrige erros
+npm run format       # Formata código com Prettier
 ```
 
 ## Configuração
@@ -261,6 +285,10 @@ O projeto usa Redux Toolkit Query (RTK Query) para gerenciar estado e requisiç�
   - `useUnfollowMutation`: Deixar de seguir um usuário
   - `useCreatePostMutation`: Criar um novo post
   - `useLikePostMutation`: Curtir/descurtir um post (toggle like)
+  - `useDeletePostMutation`: Deletar um post próprio
+  - `useCreateCommentMutation`: Criar um comentário em um post
+  - `useUpdateCommentMutation`: Atualizar um comentário próprio
+  - `useDeleteCommentMutation`: Deletar um comentário próprio
 - **Queries** (operações de leitura):
   - `useGetProfileQuery`: Buscar perfil do usuário autenticado
   - `useGetPublicProfileQuery`: Buscar perfil público de outro usuário
@@ -269,6 +297,8 @@ O projeto usa Redux Toolkit Query (RTK Query) para gerenciar estado e requisiç�
   - `useGetMyFollowingQuery`: Listar usuários seguidos
   - `useFeedQuery`: Buscar feed de posts
   - `useGetUserPostQuery`: Buscar posts de um usuário específico com paginação
+  - `useGetPostQuery`: Buscar um post específico por ID
+  - `useGetCommentsQuery`: Buscar comentários de um post
 
 **Características:**
 
@@ -368,6 +398,42 @@ export default function Layout() {
 - Logo centralizado que redireciona para home
 - Campo de busca no lado direito (funcionalidade a ser implementada)
 
+### Custom Hooks
+
+#### useComments()
+
+Hook customizado para gerenciar operações de comentários em um post:
+
+```tsx
+import { useComments } from '@/hooks/useComments'
+
+// Em um componente
+const {
+  createComment,
+  updateComment,
+  deleteComment,
+  isCreating,
+  isUpdating,
+  isDeleting
+} = useComments(postId)
+
+// Criar comentário
+await createComment({ content: 'Meu comentário' })
+
+// Atualizar comentário
+await updateComment(commentId, { content: 'Comentário atualizado' })
+
+// Deletar comentário
+await deleteComment(commentId)
+```
+
+**Características:**
+- Atualização otimista do cache RTK Query
+- Atualiza múltiplas queries simultaneamente (feed, post, comentários)
+- Estados de loading para cada operação
+- Tratamento de erros com mensagens amigáveis
+- Confirmação antes de deletar comentário
+
 ### Utilitários
 
 #### getMediaUrl()
@@ -415,6 +481,15 @@ import { getMediaUrl } from '@/utils/api-utils'
 - `POST /api/posts/create/` - Criar post (via `useCreatePostMutation`)
 - `POST /api/posts/{id}/like/` - Curtir/descurtir post (via `useLikePostMutation`)
 - `GET /api/posts/user/{id}/?page=1` - Posts de um usuário com paginação (via `useGetUserPostQuery`)
+- `GET /api/posts/{id}/` - Obter um post específico (via `useGetPostQuery`)
+- `DELETE /api/posts/{id}/delete/` - Deletar post próprio (via `useDeletePostMutation`)
+
+**Comentários:**
+
+- `GET /api/posts/{id}/comments/` - Listar comentários de um post (via `useGetCommentsQuery`)
+- `POST /api/posts/{postId}/comments/create/` - Criar comentário (via `useCreateCommentMutation`)
+- `PUT /api/posts/comments/{commentId}/update/` - Atualizar comentário próprio (via `useUpdateCommentMutation`)
+- `DELETE /api/posts/comments/{id}/delete/` - Deletar comentário próprio (via `useDeleteCommentMutation`)
 
 ### Armazenamento de Tokens
 
@@ -446,10 +521,12 @@ O projeto usa uma estratégia híbrida para armazenamento de tokens:
   - `page.tsx`: Página inicial com lógica de redirecionamento
   - `login/`: Página de login
   - `register/`: Página de registro
-  - `feed/`: Feed principal (em desenvolvimento)
+  - `feed/`: Feed principal
   - `complete-profile/`: Página para completar perfil
   - `user-created/`: Confirmação de criação de conta
-  - `logout/`: Página de logout (em desenvolvimento)
+  - `search/`: Página de busca de usuários
+  - `user-profile/[id]/`: Perfil público de outros usuários
+  - `comments/[id]/`: Página de comentários de um post
 - **components/**: Componentes React reutilizáveis
   - `layout/`: Componentes de layout (CenterContainer, Container, Form)
   - `ui/`: Componentes de UI (Button, Input, Logo)
@@ -459,6 +536,8 @@ O projeto usa uma estratégia híbrida para armazenamento de tokens:
   - `axios.ts`: Instâncias do Axios com interceptors
 - **hooks/**: Custom hooks React
   - `useAuth.ts`: Hook para verificar autenticação via RTK Query
+  - `useComments.ts`: Hook customizado para gerenciar operações de comentários (criar, editar, deletar) com atualização otimista do cache
+  - `useNavigation.ts`: Hook para navegação
 - **providers/**: Context providers
   - `AppProvider.tsx`: Provider do Redux store
 - **utils/**: Funções utilitárias e interfaces TypeScript
@@ -511,6 +590,21 @@ O projeto usa uma estratégia híbrida para armazenamento de tokens:
 - **Paginação de posts no perfil** com controles de navegação (anterior/próxima)
 - Exibição de contador de posts e página atual
 - Navegação entre páginas com atualização automática via RTK Query
+- Deletar posts próprios
+
+✅ **Sistema de Comentários**
+
+- Página dedicada para visualizar post e seus comentários (`/comments/[id]`)
+- Criar comentários em posts
+- Visualizar todos os comentários de um post
+- **Editar comentários próprios** com modo inline de edição
+- **Deletar comentários próprios** com confirmação
+- Atualização otimista do cache RTK Query em múltiplas queries (feed, post, comentários)
+- Contadores de comentários atualizados automaticamente
+- Indicadores visuais de estado (criando, criado com sucesso)
+- Loading states durante operações
+- Validação de campos obrigatórios
+- Interface responsiva e moderna
 
 ✅ **Sistema de Seguir Usuários**
 
@@ -535,8 +629,8 @@ O projeto usa uma estratégia híbrida para armazenamento de tokens:
 
 ## Próximos Passos
 
-- [ ] Adicionar funcionalidade de comentários (criar, visualizar, editar, deletar)
-- [ ] Implementar edição e deleção de posts próprios
+- [x] Adicionar funcionalidade de comentários (criar, visualizar, editar, deletar)
+- [x] Implementar edição e deleção de posts próprios
 - [x] Adicionar paginação de posts no perfil do usuário
 - [ ] Adicionar paginação no feed
 - [ ] Melhorar UI/UX do feed com animações e transições

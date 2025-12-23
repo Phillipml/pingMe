@@ -46,6 +46,12 @@ Authorization: Bearer seu-token-aqui
 - Access Token: Válido por 60 minutos, use em todas as requisições autenticadas
 - Refresh Token: Válido por 7 dias, use só para renovar o access token
 
+### Sobre Avatares
+
+Todas as respostas da API que incluem informações de usuário (posts, comentários, likes, follows) retornam o campo `avatar` com a URL absoluta da imagem do avatar. Se o usuário não tiver avatar, o campo será `null`. As URLs são construídas automaticamente e incluem o domínio completo (ex: `http://localhost:8000/media/avatars/nome.png`).
+
+**Importante sobre Comentários:** O campo `author` em comentários sempre retorna o usuário que criou o comentário (não o autor do post original).
+
 ---
 
 ## Autenticação
@@ -1193,7 +1199,8 @@ Content-Type: application/json
       "id": 2,
       "username": "maria",
       "email": "maria@email.com",
-      "created_at": "2024-01-01T10:00:00Z"
+      "created_at": "2024-01-01T10:00:00Z",
+      "avatar": "http://localhost:8000/media/avatars/maria.png"
     },
     "content": "Ótimo post!",
     "created_at": "2024-01-01T12:30:00Z",
@@ -1201,6 +1208,8 @@ Content-Type: application/json
   }
 }
 ```
+
+**Importante:** O campo `author` sempre retorna o usuário que criou o comentário (não o autor do post). O campo `avatar` contém a URL absoluta da imagem do avatar ou `null` se o usuário não tiver avatar.
 
 **Erros Possíveis:**
 - `404`: Post não encontrado
@@ -1229,7 +1238,8 @@ Authorization: Bearer seu-access-token
         "id": 2,
         "username": "maria",
         "email": "maria@email.com",
-        "created_at": "2024-01-01T10:00:00Z"
+        "created_at": "2024-01-01T10:00:00Z",
+        "avatar": "http://localhost:8000/media/avatars/maria.png"
       },
       "content": "Ótimo post!",
       "created_at": "2024-01-01T12:30:00Z",
@@ -1238,6 +1248,8 @@ Authorization: Bearer seu-access-token
   ]
 }
 ```
+
+**Importante:** O campo `author` em cada comentário sempre retorna o usuário que criou aquele comentário específico (não o autor do post). O campo `avatar` contém a URL absoluta da imagem do avatar ou `null` se o usuário não tiver avatar.
 
 **Paginação:** 20 itens por página. Use `?page=2` para próxima página.
 
@@ -1271,7 +1283,13 @@ Content-Type: application/json
   "comment": {
     "id": 1,
     "post": 1,
-    "author": {...},
+    "author": {
+      "id": 2,
+      "username": "maria",
+      "email": "maria@email.com",
+      "created_at": "2024-01-01T10:00:00Z",
+      "avatar": "http://localhost:8000/media/avatars/maria.png"
+    },
     "content": "Comentário atualizado",
     "created_at": "2024-01-01T12:30:00Z",
     "updated_at": "2024-01-01T12:35:00Z"

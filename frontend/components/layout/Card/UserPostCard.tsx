@@ -1,4 +1,5 @@
 import { AiFillLike, AiOutlineLike, AiOutlineLoading } from 'react-icons/ai'
+import { useNavigation } from '@/hooks/useNavigation'
 import {
   MdDeleteForever,
   MdEditSquare,
@@ -9,6 +10,7 @@ type CardProps = {
   created_at: string
   onClick: () => void
   clickDelete: () => void
+  commentRoute: number | string
   is_liked: boolean
   isDeleting: boolean
   likes_count: number
@@ -19,11 +21,13 @@ export default function UserPostCard({
   created_at,
   onClick,
   clickDelete,
+  commentRoute,
   is_liked,
   isDeleting,
   likes_count,
   comments_count
 }: CardProps) {
+  const { toComment } = useNavigation()
   return (
     <li className="mt-4 grid pb-2 border-2 border-purple-600 rounded-2xl p-4">
       <div className="flex justify-between border-b border-purple-600 mb-4">
@@ -59,7 +63,10 @@ export default function UserPostCard({
           {is_liked ? <AiFillLike /> : <AiOutlineLike />}
           {likes_count}
         </button>
-        <button className="flex items-center justify-center gap-1">
+        <button
+          className="flex items-center justify-center gap-1 cursor-pointer"
+          onClick={() => toComment(commentRoute)}
+        >
           <MdOutlineInsertComment />
           {comments_count}
         </button>

@@ -9,7 +9,6 @@ import {
 } from '@/lib/slice'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { AiOutlineLoading } from 'react-icons/ai'
 import { FaRegUserCircle } from 'react-icons/fa'
 
 export default function UserProfile() {

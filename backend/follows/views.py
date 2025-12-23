@@ -33,7 +33,7 @@ def follow_user(request):
         return Response(
             {
                 "message": f"Você começou a seguir {following.username}",
-                "follow": FollowSerializer(follow).data,
+                "follow": FollowSerializer(follow, context={"request": request}).data,
             },
             status=status.HTTP_201_CREATED,
         )
