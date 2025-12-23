@@ -12,7 +12,6 @@ import {
 import { getMediaUrl } from '@/utils/api-utils'
 import { useState, useEffect } from 'react'
 import { TbPhotoEdit } from 'react-icons/tb'
-import UserPostCard from '@/components/layout/Card/UserPostCard'
 import CenterContainer from '@/components/layout/CenterContainer'
 import { AiOutlineLoading } from 'react-icons/ai'
 import UserPostsList from '@/components/layout/UserPostsList'
@@ -28,24 +27,6 @@ export default function Profile() {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
   const { data, isLoading, refetch } = useGetProfileQuery()
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation()
-  const [deletePost] = useDeletePostMutation()
-  const deletePostById = async (id: number) => {
-    if (!id) {
-      alert('ID do post inválido')
-      return
-    }
-    try {
-      await deletePost(id).unwrap()
-      alert('Post deletado com sucesso')
-      refetch()
-    } catch (error: any) {
-      const errorMessage =
-        error?.data?.message || error?.data?.error || 'Erro ao deletar post'
-      alert(errorMessage)
-    } finally {
-    }
-  }
-
   useEffect(() => {
     if (data) {
       if (isEditing) {

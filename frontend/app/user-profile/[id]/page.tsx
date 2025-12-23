@@ -1,5 +1,6 @@
 'use client'
 import Container from '@/components/layout/Container'
+import UserPostsList from '@/components/layout/UserPostsList'
 import Button from '@/components/ui/Button'
 import {
   useFollowMutation,
@@ -82,6 +83,15 @@ export default function UserProfile() {
             {buttonContent()}
           </Button>
         </div>
+      </div>
+      <div className="w-1/2 m-auto">
+        <UserPostsList
+          userId={userId}
+          showDelete={false}
+          title={`Pings de ${data?.username}`}
+          onPostDelete={() => {}}
+          className="mt-14"
+        />
       </div>
     </Container>
   )

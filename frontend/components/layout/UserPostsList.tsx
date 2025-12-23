@@ -7,7 +7,7 @@ import Button from '../ui/Button'
 import UserPostCard from './Card/UserPostCard'
 
 interface UserPostsListProps {
-  userId: number | null | undefined
+  userId: number | string | null | undefined
   title?: string
   pageSize?: number
   showDelete?: boolean
