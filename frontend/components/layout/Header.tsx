@@ -89,17 +89,18 @@ export default function Header() {
         <div className="flex items-center justify-center lg:justify-end flex-1 order-3 lg:order-3">
           <form
             onSubmit={handleSearch}
-            className="flex bg-gray-950 rounded-full p-0 w-64 mb-0 overflow-hidden"
+            className="flex items-center bg-gray-950 rounded-full p-0 w-64 mb-0 overflow-hidden h-10"
           >
             <button
               type="submit"
-              className="flex items-center justify-center bg-gray-900 px-4 py-2"
+              className="flex items-center justify-center bg-gray-900 px-4 h-full rounded-l-full"
             >
               <CiSearch className="text-gray-400" />
             </button>
-            <Input
+            <input
+              type="text"
               placeholder="Buscar usuários"
-              className="border-none focus:outline-none bg-transparent flex-1"
+              className="border-none focus:outline-none bg-transparent flex-1 px-3 h-full"
               value={searchUser}
               onChange={(e) => setSearchUser(e.target.value)}
             />
