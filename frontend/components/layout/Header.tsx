@@ -52,10 +52,21 @@ export default function Header() {
   }
   return hideHeader ? null : (
     <header className="w-full bg-violet-600">
-      <Container className="flex items-center justify-around p-2">
-        <div className="flex items-center justify-center flex-1">
+      <Container className="grid lg:grid-cols-3 items-center p-2 gap-4 relative">
+        <div className="flex items-center justify-center lg:justify-start order-1 lg:order-2 gap-2">
           <button
-            className="rounded-full mr-2 border p-0.5 cursor-pointer"
+            className="rounded-full border p-0.5 cursor-pointer lg:hidden"
+            onClick={handleLogout}
+          >
+            <CiLogout className="text-3xl text-white" />
+          </button>
+          <Link href={'/'} className="lg:absolute lg:left-1/2 lg:-translate-x-1/2">
+            <Logo />
+          </Link>
+        </div>
+        <div className="flex items-center justify-center flex-2 order-2 lg:order-1">
+          <button
+            className="rounded-full mr-2 border p-0.5 cursor-pointer hidden lg:flex"
             onClick={handleLogout}
           >
             <CiLogout className="text-3xl text-white" />
@@ -72,12 +83,7 @@ export default function Header() {
             </div>
           </Link>
         </div>
-        <div className="flex items-center justify-center flex-1">
-          <Link href={'/'}>
-            <Logo />
-          </Link>
-        </div>
-        <div className="flex items-center justify-center flex-1">
+        <div className="flex items-center justify-center lg:justify-end flex-1 order-3 lg:order-3">
           <form
             onSubmit={handleSearch}
             className="flex bg-gray-950 rounded-full p-0 w-64 mb-0 overflow-hidden"
