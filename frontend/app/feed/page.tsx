@@ -64,25 +64,26 @@ export default function Feed() {
   return (
     <Container>
       <div
-        className={`w-1/2 m-auto mt-8 ${isPostCreated ? 'shadow-[0_0px_64px_-22px_rgba(22,163,74,1)]' : 'shadow-[0_0px_64px_-22px_rgba(147,51,234,1)]'}  rounded p-2`}
+        className={`w-full md:w-3/4 lg:w-1/2 m-auto mt-8 ${isPostCreated ? 'shadow-[0_0px_64px_-22px_rgba(22,163,74,1)]' : 'shadow-[0_0px_64px_-22px_rgba(147,51,234,1)]'}  rounded p-2`}
       >
         <Form className="border-2 border-gray-900" onSubmit={createPost}>
           <textarea
             name=""
             id=""
-            className="resize-none border-b border-gray-800 focus:outline-0"
+            className="resize-none border-b border-gray-800 focus:outline-0 w-full"
             placeholder="Criar Ping"
             value={post}
             onChange={(e) => setPost(e.target.value)}
             onFocus={() => setIsPostCreated(false)}
+            rows={4}
           />
-          <div className="flex justify-between items-center mt-2">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mt-2">
             {isPostCreated ? (
-              <span className="text-white bg-green-600 p-2 rounded-2xl">
-                Post Criado com sucesso
+              <span className="text-green-600 text-sm sm:text-base">
+                Ping criado com sucesso
               </span>
             ) : null}
-            <Button type="submit" className="w-1/3 self-end">
+            <Button type="submit" className="w-full sm:w-auto sm:w-1/3 self-end">
               Criar Ping
             </Button>
           </div>
