@@ -203,6 +203,50 @@ Links úteis:
 - Admin: http://127.0.0.1:8000/admin/
 - Media: http://127.0.0.1:8000/media/
 
+### Acessar via Celular/Dispositivos Móveis
+
+Para acessar a aplicação de outros dispositivos na mesma rede Wi-Fi:
+
+1. **Descubra o IP da sua máquina:**
+   - Windows: Abra PowerShell e execute `ipconfig`, procure por "IPv4 Address"
+   - Linux/Mac: Execute `ifconfig` ou `ip addr`, procure pelo IP da sua interface Wi-Fi
+   - Exemplo: `192.168.0.18`
+
+2. **Configure o backend (`backend/.env`):**
+   ```env
+   SECRET_KEY=sua-chave-secreta-aqui
+   DEBUG=True
+   ALLOWED_HOSTS=localhost,127.0.0.1,192.168.0.18
+   DATABASE_URL=mysql://postgres:postgres@localhost:3306/pingme
+   CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000,http://192.168.0.18:3000
+   ```
+   **Importante:** Substitua `192.168.0.18` pelo IP real da sua máquina.
+
+3. **Configure o frontend (`frontend/.env.local`):**
+   ```env
+   NEXT_PUBLIC_API_URL=http://192.168.0.18:8000/api
+   NEXT_PUBLIC_BACKEND_URL=http://192.168.0.18:8000
+   ```
+   **Importante:** Substitua `192.168.0.18` pelo IP real da sua máquina.
+
+4. **Reinicie os servidores:**
+   - Backend: O servidor já está configurado para escutar em `0.0.0.0:8000` (todas as interfaces)
+   - Frontend: Certifique-se de que está rodando com `-H 0.0.0.0` para aceitar conexões externas
+
+5. **Configure o Firewall (Windows):**
+   ```powershell
+   # Execute como Administrador
+   New-NetFirewallRule -DisplayName "Django Backend" -Direction Inbound -LocalPort 8000 -Protocol TCP -Action Allow
+   New-NetFirewallRule -DisplayName "Next.js Frontend" -Direction Inbound -LocalPort 3000 -Protocol TCP -Action Allow
+   ```
+
+6. **Acesse no celular:**
+   - Frontend: `http://192.168.0.18:3000`
+   - Backend: `http://192.168.0.18:8000`
+   - Admin: `http://192.168.0.18:8000/admin/`
+
+**Nota:** Se o IP da sua máquina mudar, atualize os arquivos `.env` com o novo IP.
+
 ### Usando Docker (opcional)
 
 Se quiser usar MySQL e Redis com Docker:
@@ -335,6 +379,7 @@ O sistema suporta configuração flexível de banco de dados com três níveis d
 
 ### CORS e Segurança
 - CORS configurado para `http://localhost:3000` e `http://127.0.0.1:3000` (configurável via `CORS_ALLOWED_ORIGINS`)
+- Para acesso via celular, adicione o IP da sua máquina em `CORS_ALLOWED_ORIGINS` (ex: `http://192.168.0.18:3000`)
 - Endpoints protegidos requerem autenticação (exceto: register, login, token/refresh, logout)
 - Validação de senhas do Django (mínimo 8 caracteres)
 - Validação de username único (não permite usernames duplicados no registro e atualização de perfil)
@@ -351,6 +396,8 @@ O sistema suporta configuração flexível de banco de dados com três níveis d
 
 ## Variáveis de Ambiente
 
+### Backend (`backend/.env`)
+
 Crie um arquivo `.env` no diretório `backend/` baseado no `backend/env.example`:
 
 ```env
@@ -361,6 +408,9 @@ SECRET_KEY=sua-chave-secreta-aqui
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
 
+# Para acesso via celular, adicione o IP da sua máquina:
+# ALLOWED_HOSTS=localhost,127.0.0.1,192.168.0.18
+
 # ============================================================================
 # Configuração de Banco de Dados
 # Prioridade: DATABASE_URL > Variáveis Individuais > SQLite (fallback)
@@ -368,7 +418,7 @@ ALLOWED_HOSTS=localhost,127.0.0.1
 
 # Opção 1: DATABASE_URL (RECOMENDADO - mais fácil e portátil)
 # Desenvolvimento local (Docker MySQL):
-DATABASE_URL=mysql://usuario:senha@localhost:3306/pingme
+DATABASE_URL=mysql://postgres:postgres@localhost:3306/pingme
 
 # Produção (PythonAnywhere - substitua pelos valores reais):
 # DATABASE_URL=mysql://seu-usuario:sua-senha@seu-usuario.mysql.pythonanywhere-services.com:3306/seu-usuario$nome-do-banco
@@ -376,8 +426,8 @@ DATABASE_URL=mysql://usuario:senha@localhost:3306/pingme
 # Opção 2: Variáveis Individuais (use apenas se não usar DATABASE_URL)
 # Descomente as linhas abaixo caso prefira essa abordagem
 # DB_NAME=pingme
-# DB_USER=usuario
-# DB_PASSWORD=senha
+# DB_USER=postgres
+# DB_PASSWORD=postgres
 # DB_HOST=localhost
 # DB_PORT=3306
 
@@ -385,6 +435,9 @@ DATABASE_URL=mysql://usuario:senha@localhost:3306/pingme
 # Configurações de CORS
 # ============================================================================
 CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+
+# Para acesso via celular, adicione o IP da sua máquina:
+# CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000,http://192.168.0.18:3000
 ```
 
 **Gerar SECRET_KEY automaticamente:**
@@ -394,6 +447,24 @@ make get_secret_key
 ```
 
 **Nota**: O arquivo `.env` deve estar em `backend/.env` (não na raiz do projeto). O projeto usa `python-decouple` para ler variáveis de ambiente.
+
+### Frontend (`frontend/.env.local`)
+
+Para desenvolvimento local, crie um arquivo `.env.local` na pasta `frontend/`:
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000/api
+NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
+```
+
+**Para acesso via celular**, use o IP da sua máquina:
+
+```env
+NEXT_PUBLIC_API_URL=http://192.168.0.18:8000/api
+NEXT_PUBLIC_BACKEND_URL=http://192.168.0.18:8000
+```
+
+**Importante:** Substitua `192.168.0.18` pelo IP real da sua máquina. Reinicie o servidor do frontend após alterar essas variáveis.
 
 ## Segurança
 

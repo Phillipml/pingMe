@@ -66,9 +66,11 @@ follows - Gerencia relacionamentos
    ```
 
 A API estará em:
-- http://localhost:8000
+- http://localhost:8000 (ou http://127.0.0.1:8000)
 - Admin: http://localhost:8000/admin/
 - Media: http://localhost:8000/media/
+
+**Nota:** O servidor está configurado para escutar em `0.0.0.0:8000`, permitindo acesso de outros dispositivos na mesma rede. Veja a seção "Acesso via Celular/Dispositivos Móveis" abaixo.
 
 ## Modelos do Banco de Dados
 
@@ -222,6 +224,9 @@ SECRET_KEY=sua-chave-secreta-aqui
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
 
+# Para acesso via celular, adicione o IP da sua máquina:
+# ALLOWED_HOSTS=localhost,127.0.0.1,192.168.0.18
+
 # ============================================================================
 # Configuração de Banco de Dados
 # Prioridade: DATABASE_URL > Variáveis Individuais > SQLite (fallback)
@@ -229,7 +234,7 @@ ALLOWED_HOSTS=localhost,127.0.0.1
 
 # Opção 1: DATABASE_URL (RECOMENDADO - mais fácil e portátil)
 # Desenvolvimento local (Docker MySQL):
-DATABASE_URL=mysql://usuario:senha@localhost:3306/pingme
+DATABASE_URL=mysql://postgres:postgres@localhost:3306/pingme
 
 # Produção (PythonAnywhere - substitua pelos valores reais):
 # DATABASE_URL=mysql://seu-usuario:sua-senha@seu-usuario.mysql.pythonanywhere-services.com:3306/seu-usuario$nome-do-banco
@@ -237,8 +242,8 @@ DATABASE_URL=mysql://usuario:senha@localhost:3306/pingme
 # Opção 2: Variáveis Individuais (use apenas se não usar DATABASE_URL)
 # Descomente as linhas abaixo caso prefira essa abordagem
 # DB_NAME=pingme
-# DB_USER=usuario
-# DB_PASSWORD=senha
+# DB_USER=postgres
+# DB_PASSWORD=postgres
 # DB_HOST=localhost
 # DB_PORT=3306
 
@@ -246,6 +251,9 @@ DATABASE_URL=mysql://usuario:senha@localhost:3306/pingme
 # Configurações de CORS
 # ============================================================================
 CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
+
+# Para acesso via celular, adicione o IP da sua máquina:
+# CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000,http://192.168.0.18:3000
 ```
 
 **Para gerar uma SECRET_KEY automaticamente:**
@@ -253,6 +261,40 @@ CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
 ```bash
 make get_secret_key
 ```
+
+### Acesso via Celular/Dispositivos Móveis
+
+Para acessar a API de outros dispositivos na mesma rede Wi-Fi:
+
+1. **Descubra o IP da sua máquina:**
+   - Windows: Abra PowerShell e execute `ipconfig`, procure por "IPv4 Address"
+   - Linux/Mac: Execute `ifconfig` ou `ip addr`
+   - Exemplo: `192.168.0.18`
+
+2. **Atualize o `.env` do backend (`backend/.env`):**
+   ```env
+   ALLOWED_HOSTS=localhost,127.0.0.1,192.168.0.18
+   CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000,http://192.168.0.18:3000
+   ```
+   **Importante:** Substitua `192.168.0.18` pelo IP real da sua máquina.
+
+3. **Reinicie o servidor backend:**
+   ```bash
+   make dev-backend
+   ```
+   O servidor já está configurado para escutar em `0.0.0.0:8000` (todas as interfaces).
+
+4. **Configure o Firewall (Windows):**
+   ```powershell
+   # Execute como Administrador
+   New-NetFirewallRule -DisplayName "Django Backend" -Direction Inbound -LocalPort 8000 -Protocol TCP -Action Allow
+   ```
+
+5. **Acesse no celular:**
+   - API: `http://192.168.0.18:8000`
+   - Admin: `http://192.168.0.18:8000/admin/`
+
+**Nota:** Se o IP da sua máquina mudar, atualize o `.env` com o novo IP e reinicie o servidor.
 
 ### Configurações Principais
 
@@ -264,6 +306,7 @@ make get_secret_key
   - Blacklist de tokens no logout
   - Cookies HttpOnly: Tokens também salvos em cookies para uso em navegadores
 - **CORS**: Habilitado para frontend (configurável via `CORS_ALLOWED_ORIGINS`)
+  - Para acesso via celular, adicione o IP da sua máquina em `CORS_ALLOWED_ORIGINS`
 - **Paginação**: 
   - Feed e listagens gerais: 20 itens por página (padrão do DRF)
   - Posts de usuário específico: 5 itens por página
