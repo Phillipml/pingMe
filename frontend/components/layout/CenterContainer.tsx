@@ -11,7 +11,8 @@ export default function CenterContainer({
 }: CenterContainerProps) {
   return (
     <div
-      className={`min-h-screen flex flex-col justify-center items-center p-4 w-full ${className}`}
+      className={`flex flex-col justify-center items-center p-3 sm:p-4 md:p-6 w-full ${className}`}
+      style={{ minHeight: '100dvh' }}
     >
       {children}
     </div>
