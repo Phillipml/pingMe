@@ -55,27 +55,33 @@ export default function UserProfile() {
   }
 
   return (
-    <Container className="grid">
-      <div className="flex w-1/3 justify-center items-center rounded-2xl shadow-2xl shadow-purple-600 m-auto p-2 mt-8">
+    <Container className="flex flex-col lg:flex-row gap-8">
+      <div className="flex flex-col sm:flex-row w-full lg:w-1/3 justify-center items-center rounded-2xl shadow-2xl shadow-purple-600 m-auto p-4 sm:p-6 mt-8 gap-4 sm:gap-6">
         {data && data.info.avatar ? (
           <img
             src={data?.info.avatar || ' '}
             alt={`${data?.username} profile picture`}
-            className="w-24 h-24 object-cover rounded-full mr-4"
+            className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-full shrink-0"
           />
         ) : (
-          <FaRegUserCircle className="w-24 h-24 object-cover rounded-full mr-4" />
+          <FaRegUserCircle className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-full shrink-0" />
         )}
-        <div>
-          <h2 className="border-b-2 border-purple-600 pb-2">
+        <div className="w-full sm:w-auto text-center sm:text-left">
+          <h2 className="border-b-2 border-purple-600 pb-2 text-sm sm:text-base mb-2">
             Nome de usuário:
-            <br /> {data?.username}
+            <br />
+            <span className="font-bold text-base sm:text-lg">
+              {data?.username}
+            </span>
           </h2>
-          <h2 className="pt-2">
-            Bio: <br /> {data?.info.bio}
-          </h2>
+          {data?.info.bio && (
+            <h2 className="pt-2 text-sm sm:text-base mb-4">
+              Bio: <br />
+              <span className="wrap-break-word">{data?.info.bio}</span>
+            </h2>
+          )}
           <Button
-            className="w-full"
+            className="w-full sm:w-auto"
             colorVariant={isFollowing ? 'red' : 'default'}
             onClick={followHandle}
             loading={followLoading || unfollowLoading}
@@ -84,13 +90,13 @@ export default function UserProfile() {
           </Button>
         </div>
       </div>
-      <div className="w-1/2 m-auto">
+      <div className="w-full lg:w-1/2 m-auto">
         <UserPostsList
           userId={userId}
           showDelete={false}
           title={`Pings de ${data?.username}`}
           onPostDelete={() => {}}
-          className="mt-14"
+          className="mt-8 lg:mt-14"
         />
       </div>
     </Container>
