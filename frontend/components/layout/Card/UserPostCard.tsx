@@ -29,46 +29,52 @@ export default function UserPostCard({
 }: CardProps) {
   const { toComment } = useNavigation()
   return (
-    <li className="mt-4 grid pb-2 border-2 border-purple-600 rounded-2xl p-4">
-      <div className="flex justify-between border-b border-purple-600 mb-4">
-        <div className="w-1/2">
-          <p className="text-gray-700 pb-2">
+    <li className="mt-4 grid pb-2 border-2 border-purple-600 rounded-2xl p-3 sm:p-4">
+      <div className="flex flex-col sm:flex-row justify-between border-b border-purple-600 mb-4 gap-2">
+        <div className="w-full sm:w-1/2">
+          <p className="text-gray-700 pb-2 text-xs sm:text-sm">
             {new Date(created_at).toLocaleString('pt-BR')}
           </p>
         </div>
-        <div className="w-full flex items-center justify-end mb-4 gap-4 ">
-          <button className="text-sm flex items-center align-center cursor-pointer hover:text-green-600">
-            <MdEditSquare />
-            Editar
+        <div className="w-full sm:w-auto flex items-center justify-start sm:justify-end gap-2 sm:gap-4">
+          <button className="text-xs sm:text-sm flex items-center align-center cursor-pointer hover:text-green-600 transition-colors gap-1">
+            <MdEditSquare className="text-base sm:text-lg" />
+            <span>Editar</span>
           </button>
           <button
-            className="text-sm flex items-center align-center cursor-pointer hover:text-red-600"
+            className="text-xs sm:text-sm flex items-center align-center cursor-pointer hover:text-red-600 transition-colors gap-1"
             onClick={clickDelete}
           >
             {isDeleting ? (
-              <AiOutlineLoading className="animate-spin" />
+              <AiOutlineLoading className="animate-spin text-base sm:text-lg" />
             ) : (
-              <MdDeleteForever />
+              <MdDeleteForever className="text-base sm:text-lg" />
             )}
-            Deletar
+            <span>Deletar</span>
           </button>
         </div>
       </div>
-      <div className="pb-4 border-b border-purple-950">{children}</div>
-      <div className="flex justify-around">
+      <div className="pb-4 border-b border-purple-950 text-sm sm:text-base wrap-break-word">
+        {children}
+      </div>
+      <div className="flex justify-around mt-2">
         <button
-          className="flex items-center justify-center gap-1 cursor-pointer"
+          className="flex items-center justify-center gap-1 cursor-pointer hover:opacity-80 transition-opacity text-sm sm:text-base"
           onClick={onClick}
         >
-          {is_liked ? <AiFillLike /> : <AiOutlineLike />}
-          {likes_count}
+          {is_liked ? (
+            <AiFillLike className="text-lg sm:text-xl" />
+          ) : (
+            <AiOutlineLike className="text-lg sm:text-xl" />
+          )}
+          <span>{likes_count}</span>
         </button>
         <button
-          className="flex items-center justify-center gap-1 cursor-pointer"
+          className="flex items-center justify-center gap-1 cursor-pointer hover:opacity-80 transition-opacity text-sm sm:text-base"
           onClick={() => toComment(commentRoute)}
         >
-          <MdOutlineInsertComment />
-          {comments_count}
+          <MdOutlineInsertComment className="text-lg sm:text-xl" />
+          <span>{comments_count}</span>
         </button>
       </div>
     </li>

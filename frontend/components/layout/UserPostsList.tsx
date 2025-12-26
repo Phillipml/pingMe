@@ -65,7 +65,9 @@ export default function UserPostsList({
   if (isLoadingPosts) {
     return (
       <div className={className}>
-        <h2 className="text-center text-2xl font-bold mb-4">{title}</h2>
+        <h2 className="text-center text-xl sm:text-2xl font-bold mb-4">
+          {title}
+        </h2>
         <AiOutlineLoading className="animate-spin m-auto text-4xl" />
       </div>
     )
@@ -73,7 +75,9 @@ export default function UserPostsList({
 
   return (
     <div className={className}>
-      <h2 className="text-center text-2xl font-bold mb-4">{title}</h2>
+      <h2 className="text-center text-xl sm:text-2xl font-bold mb-4">
+        {title}
+      </h2>
       {userPosts?.results && userPosts.results.length > 0 ? (
         <>
           <ul className="m-auto justify-between">
@@ -96,15 +100,15 @@ export default function UserPostsList({
             ))}
           </ul>
           <div className="flex flex-col items-center gap-4 mt-8 mb-8">
-            <p className="text-sm text-gray-400">
+            <p className="text-xs sm:text-sm text-gray-400 text-center px-4">
               Página {currentPage} de {totalPages || 1}
               {userPosts?.count && ` • Total: ${userPosts.count} posts`}
             </p>
-            <div className="flex gap-4 items-center">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 items-center w-full sm:w-auto">
               <Button
                 onClick={handlePreviousPage}
                 disabled={currentPage <= 1 || isLoadingPosts}
-                className="px-6"
+                className="w-full sm:w-auto px-4 sm:px-6 text-sm sm:text-base"
               >
                 ← Anterior
               </Button>
@@ -115,7 +119,7 @@ export default function UserPostsList({
                   isLoadingPosts ||
                   totalPages === 0
                 }
-                className="px-6"
+                className="w-full sm:w-auto px-4 sm:px-6 text-sm sm:text-base"
               >
                 Próxima →
               </Button>
@@ -123,7 +127,9 @@ export default function UserPostsList({
           </div>
         </>
       ) : (
-        <p className="text-center text-gray-400 mt-4">Nenhum post encontrado</p>
+        <p className="text-center text-gray-400 mt-4 text-sm sm:text-base">
+          Nenhum post encontrado
+        </p>
       )}
     </div>
   )
