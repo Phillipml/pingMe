@@ -24,7 +24,7 @@ check:
 	$(POETRY) python manage.py check
 
 dev-backend:
-	$(POETRY) python manage.py runserver
+	$(POETRY) python manage.py runserver 0.0.0.0:8000
 
 dev-frontend:
 	$(NPM) dev
