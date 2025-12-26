@@ -32,7 +32,12 @@ export default function Header() {
       alert(err?.data?.error || err?.data?.message || 'Erro ao fazer logout')
     }
   }
-  const HIDDEN_HEADER_ROUTES = ['/login', '/register', '/user-created'] as const
+  const HIDDEN_HEADER_ROUTES = [
+    '/login',
+    '/register',
+    '/user-created',
+    '/complete-profile'
+  ] as const
   const hideHeader = HIDDEN_HEADER_ROUTES.some(
     (route) => pathname === route || pathname.startsWith(route + '/')
   )
