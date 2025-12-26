@@ -60,7 +60,10 @@ export default function Header() {
           >
             <CiLogout className="text-3xl text-white" />
           </button>
-          <Link href={'/'} className="lg:absolute lg:left-1/2 lg:-translate-x-1/2">
+          <Link
+            href={'/'}
+            className="lg:absolute lg:left-1/2 lg:-translate-x-1/2"
+          >
             <Logo />
           </Link>
         </div>

@@ -83,7 +83,10 @@ export default function Feed() {
                 Ping criado com sucesso
               </span>
             ) : null}
-            <Button type="submit" className="w-full sm:w-auto sm:w-1/3 self-end">
+            <Button
+              type="submit"
+              className="w-full sm:w-auto sm:w-1/3 self-end"
+            >
               Criar Ping
             </Button>
           </div>
