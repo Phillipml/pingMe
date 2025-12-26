@@ -428,6 +428,7 @@ await deleteComment(commentId)
 ```
 
 **Características:**
+
 - Atualização otimista do cache RTK Query
 - Atualiza múltiplas queries simultaneamente (feed, post, comentários)
 - Estados de loading para cada operação

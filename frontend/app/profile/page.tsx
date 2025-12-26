@@ -10,12 +10,11 @@ import {
   useUpdateProfileMutation
 } from '@/lib/slice'
 import { getMediaUrl } from '@/utils/api-utils'
-import { skipToken } from '@reduxjs/toolkit/query'
 import { useState, useEffect } from 'react'
 import { TbPhotoEdit } from 'react-icons/tb'
-import UserPostCard from '@/components/layout/Card/UserPostCard'
 import CenterContainer from '@/components/layout/CenterContainer'
 import { AiOutlineLoading } from 'react-icons/ai'
+import UserPostsList from '@/components/layout/UserPostsList'
 
 export default function Profile() {
   const [isEditing, setIsEditing] = useState(false)
@@ -26,33 +25,8 @@ export default function Profile() {
   const [bio, setBio] = useState('')
   const [avatar, setAvatar] = useState<File | null>(null)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [isDeletingById, setIsDeletingById] = useState<number | null>(null)
   const { data, isLoading, refetch } = useGetProfileQuery()
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation()
-  const { data: userPosts, isLoading: isLoadingPosts } = useGetUserPostQuery(
-    data ? { id: data?.id, page: currentPage } : skipToken
-  )
-  const [deletePost] = useDeletePostMutation()
-  const deletePostById = async (id: number) => {
-    if (!id) {
-      alert('ID do post inválido')
-      return
-    }
-    setIsDeletingById(id)
-    try {
-      await deletePost(id).unwrap()
-      alert('Post deletado com sucesso')
-      refetch()
-    } catch (error: any) {
-      const errorMessage =
-        error?.data?.message || error?.data?.error || 'Erro ao deletar post'
-      alert(errorMessage)
-    } finally {
-      setIsDeletingById(null)
-    }
-  }
-
   useEffect(() => {
     if (data) {
       if (isEditing) {
@@ -71,9 +45,7 @@ export default function Profile() {
       }
     }
   }, [data, isEditing])
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [data?.id])
+  useEffect(() => {}, [data?.id])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -128,19 +100,7 @@ export default function Profile() {
       setAvatarPreview(data ? getMediaUrl(data.info.avatar) : null)
     }
   }
-  const totalPages = userPosts?.count ? Math.ceil(userPosts.count / 5) : 0
 
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage((prev) => prev + 1)
-    }
-  }
-
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage((prev) => prev - 1)
-    }
-  }
   if (isLoading) {
     return (
       <CenterContainer>
@@ -304,69 +264,12 @@ export default function Profile() {
             </Form>
           )}
         </div>
-        <div className="w-1/2">
-          <h2 className="text-center text-2xl font-bold">Posts</h2>
-          {isLoadingPosts ? (
-            <AiOutlineLoading className="animate-spin m-auto text-4xl" />
-          ) : (
-            <>
-              {userPosts?.results ? (
-                <>
-                  <ul className="m-auto justify-between">
-                    {userPosts?.results &&
-                      userPosts.results.map((post) => (
-                        <UserPostCard
-                          key={post.id || ''}
-                          created_at={post.created_at}
-                          onClick={() => null}
-                          clickDelete={() => deletePostById(post.id)}
-                          commentRoute={post.id}
-                          is_liked={post.is_liked}
-                          isDeleting={isDeletingById === post.id}
-                          comments_count={post.comments_count}
-                          likes_count={post.likes_count}
-                        >
-                          {post.content}
-                        </UserPostCard>
-                      ))}
-                  </ul>
-                  <div className="flex flex-col items-center gap-4 mt-8 mb-8">
-                    <p className="text-sm text-gray-400">
-                      Página {currentPage} de {totalPages || 1}
-                      {userPosts?.count && ` • Total: ${userPosts.count} posts`}
-                    </p>
-                    <div className="flex gap-4 items-center">
-                      <Button
-                        onClick={handlePreviousPage}
-                        disabled={currentPage <= 1 || isLoadingPosts}
-                        className="px-6"
-                      >
-                        ← Anterior
-                      </Button>
-                      <Button
-                        onClick={handleNextPage}
-                        disabled={
-                          currentPage >= totalPages ||
-                          isLoadingPosts ||
-                          totalPages === 0
-                        }
-                        className="px-6"
-                      >
-                        Próxima →
-                      </Button>
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <p className="text-center text-gray-400 mt-4">
-                    Nenhum post encontrado
-                  </p>
-                </>
-              )}
-            </>
-          )}
-        </div>
+        <UserPostsList
+          userId={data?.id}
+          showDelete={true}
+          onPostDelete={refetch}
+          className="w-1/2"
+        />
       </Container>
     </>
   )

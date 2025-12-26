@@ -121,7 +121,10 @@ export const apiSlice = createApi({
         method: 'POST'
       })
     }),
-    getUserPost: builder.query<FeedResponse, { id: number; page?: number }>({
+    getUserPost: builder.query<
+      FeedResponse,
+      { id: number | string; page?: number }
+    >({
       query: ({ id, page = 1 }) => ({
         url: `/posts/user/${id}/`,
         params: { page }
