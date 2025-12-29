@@ -10,6 +10,8 @@ import {
 } from '@/lib/slice'
 import { useParams } from 'next/navigation'
 import { FormEvent, useState } from 'react'
+import Image from 'next/image'
+import { isExternalUrl } from '@/utils/api-utils'
 import { AiOutlineLoading } from 'react-icons/ai'
 import { MdDeleteForever, MdEditSquare } from 'react-icons/md'
 
@@ -100,10 +102,13 @@ export default function Comments() {
     <Container>
       <div className="w-full md:w-3/4 lg:w-1/2 m-auto rounded p-4">
         <div className="w-full flex flex-col sm:flex-row justify-center items-center gap-2 sm:gap-4 p-4 border-b border-purple-900">
-          <img
+          <Image
             src={postData?.author.avatar || ' '}
             alt={`${postData?.author} avatar`}
+            width={32}
+            height={32}
             className="w-8 h-8 min-w-8 min-h-8 object-cover rounded-full mr-2 shrink-0"
+            unoptimized={isExternalUrl(postData?.author.avatar || ' ')}
           />
           <h2 className="text-sm sm:text-base">{postData?.author.username}</h2>
           <p className="text-purple-900 text-xs sm:text-sm text-center">
@@ -149,10 +154,13 @@ export default function Comments() {
           commentsData.results.map((comment) => (
             <div className="p-2 sm:p-4" key={comment.id}>
               <div className="w-full flex flex-wrap items-center gap-2 sm:gap-4 p-2 sm:p-4">
-                <img
+                <Image
                   src={comment?.author.avatar || ' '}
                   alt={`${comment?.author.username} avatar`}
+                  width={32}
+                  height={32}
                   className="w-8 h-8 min-w-8 min-h-8 object-cover object-center rounded-full mr-2 shrink-0"
+                  unoptimized={isExternalUrl(comment?.author.avatar || ' ')}
                 />
 
                 <h2 className="text-sm sm:text-base flex-1 min-w-0">
@@ -201,6 +209,7 @@ export default function Comments() {
                     <button
                       onClick={handleCancelEdit}
                       className="bg-red-600 text-white px-4 py-2 rounded cursor-pointer hover:opacity-80 transition-opacity text-sm sm:text-base"
+                      aria-label="Cancelar edição"
                     >
                       Cancelar
                     </button>
@@ -208,6 +217,7 @@ export default function Comments() {
                       onClick={() => handleSaveEdit(comment.id)}
                       disabled={isUpdating}
                       className="bg-green-600 text-white px-4 py-2 rounded cursor-pointer hover:opacity-80 transition-opacity disabled:opacity-50 text-sm sm:text-base"
+                      aria-label="Salvar edição"
                     >
                       {isUpdating ? 'Salvando...' : 'Salvar'}
                     </button>

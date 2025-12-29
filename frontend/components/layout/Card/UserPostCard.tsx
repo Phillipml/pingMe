@@ -15,6 +15,7 @@ type CardProps = {
   isDeleting: boolean
   likes_count: number
   comments_count: number
+  showActions?: boolean
 }
 export default function UserPostCard({
   children,
@@ -25,7 +26,8 @@ export default function UserPostCard({
   is_liked,
   isDeleting,
   likes_count,
-  comments_count
+  comments_count,
+  showActions = false
 }: CardProps) {
   const { toComment } = useNavigation()
   return (
@@ -36,23 +38,29 @@ export default function UserPostCard({
             {new Date(created_at).toLocaleString('pt-BR')}
           </p>
         </div>
-        <div className="w-full sm:w-auto flex items-center justify-start sm:justify-end gap-2 sm:gap-4">
-          <button className="text-xs sm:text-sm flex items-center align-center cursor-pointer hover:text-green-600 transition-colors gap-1">
-            <MdEditSquare className="text-base sm:text-lg" />
-            <span>Editar</span>
-          </button>
-          <button
-            className="text-xs sm:text-sm flex items-center align-center cursor-pointer hover:text-red-600 transition-colors gap-1"
-            onClick={clickDelete}
-          >
-            {isDeleting ? (
-              <AiOutlineLoading className="animate-spin text-base sm:text-lg" />
-            ) : (
-              <MdDeleteForever className="text-base sm:text-lg" />
-            )}
-            <span>Deletar</span>
-          </button>
-        </div>
+        {showActions && (
+          <div className="w-full sm:w-auto flex items-center justify-start sm:justify-end gap-2 sm:gap-4">
+            <button
+              className="text-xs sm:text-sm flex items-center align-center cursor-pointer hover:text-green-600 transition-colors gap-1"
+              aria-label="Editar post"
+            >
+              <MdEditSquare className="text-base sm:text-lg" />
+              <span>Editar</span>
+            </button>
+            <button
+              className="text-xs sm:text-sm flex items-center align-center cursor-pointer hover:text-red-600 transition-colors gap-1"
+              onClick={clickDelete}
+              aria-label="Deletar post"
+            >
+              {isDeleting ? (
+                <AiOutlineLoading className="animate-spin text-base sm:text-lg" />
+              ) : (
+                <MdDeleteForever className="text-base sm:text-lg" />
+              )}
+              <span>Deletar</span>
+            </button>
+          </div>
+        )}
       </div>
       <div className="pb-4 border-b border-purple-950 text-sm sm:text-base wrap-break-word">
         {children}
@@ -61,6 +69,7 @@ export default function UserPostCard({
         <button
           className="flex items-center justify-center gap-1 cursor-pointer hover:opacity-80 transition-opacity text-sm sm:text-base"
           onClick={onClick}
+          aria-label={is_liked ? 'Descurtir post' : 'Curtir post'}
         >
           {is_liked ? (
             <AiFillLike className="text-lg sm:text-xl" />
@@ -72,6 +81,7 @@ export default function UserPostCard({
         <button
           className="flex items-center justify-center gap-1 cursor-pointer hover:opacity-80 transition-opacity text-sm sm:text-base"
           onClick={() => toComment(commentRoute)}
+          aria-label="Ver comentários"
         >
           <MdOutlineInsertComment className="text-lg sm:text-xl" />
           <span>{comments_count}</span>

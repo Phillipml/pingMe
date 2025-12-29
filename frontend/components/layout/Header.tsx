@@ -1,52 +1,56 @@
 'use client'
-import {
-  useGetProfileQuery,
-  useLogoutMutation,
-  useSearchUsersQuery
-} from '@/lib/slice'
+import { useGetProfileQuery } from '@/lib/slice'
 import Container from './Container'
 import { Logo } from '../ui/Logo'
-import { getMediaUrl } from '@/utils/api-utils'
-import Input from '../ui/Input'
+import { UserProfileLink } from '../ui/UserProfileLink'
 import { CiLogout, CiSearch } from 'react-icons/ci'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
-import { FormEvent, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { FormEvent, useState, useEffect } from 'react'
+import { Routes } from '@/utils/routes'
+import { useLogout } from '@/hooks/useLogout'
 
 export default function Header() {
   const router = useRouter()
-  const pathname = usePathname()
-  const { data, isLoading } = useGetProfileQuery()
-  const [logout] = useLogoutMutation()
+
   const [searchUser, setSearchUser] = useState('')
-  const handleLogout = async () => {
-    try {
-      const response = await logout({}).unwrap()
-      alert(response.message)
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('accessToken')
+
+  const { hideHeader } = Routes()
+  const { handleLogout } = useLogout()
+
+  const [hasToken, setHasToken] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+    if (typeof window !== 'undefined') {
+      const checkToken = () => {
+        const token = localStorage.getItem('accessToken')
+        setHasToken(!!token)
       }
-      router.push('/login')
-    } catch (error) {
-      const err = error as { data?: { error?: string; message?: string } }
-      alert(err?.data?.error || err?.data?.message || 'Erro ao fazer logout')
+
+      checkToken()
+      const interval = setInterval(checkToken, 1000)
+      return () => clearInterval(interval)
     }
-  }
-  const HIDDEN_HEADER_ROUTES = [
-    '/login',
-    '/register',
-    '/user-created',
-    '/complete-profile'
-  ] as const
-  const hideHeader = HIDDEN_HEADER_ROUTES.some(
-    (route) => pathname === route || pathname.startsWith(route + '/')
-  )
+  }, [])
+
+  const { data, isLoading, refetch } = useGetProfileQuery(undefined, {
+    skip: !hasToken || !isMounted
+  })
+
+  useEffect(() => {
+    if (hasToken && isMounted) {
+      refetch()
+    }
+  }, [hasToken, isMounted, refetch])
+
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const query = searchUser.trim()
-    if (query.length <= 2) {
-      alert('Digite ao menos 3 caracteres para pesquisar')
-      router.push('/feed')
+    if (query.length <= 1) {
+      alert('Digite ao menos 2 caracteres para pesquisar')
+      setSearchUser('')
       return
     }
 
@@ -62,6 +66,7 @@ export default function Header() {
           <button
             className="rounded-full border p-0.5 cursor-pointer lg:hidden"
             onClick={handleLogout}
+            aria-label="Fazer logout"
           >
             <CiLogout className="text-3xl text-white" />
           </button>
@@ -76,20 +81,22 @@ export default function Header() {
           <button
             className="rounded-full mr-2 border p-0.5 cursor-pointer hidden lg:flex"
             onClick={handleLogout}
+            aria-label="Fazer logout"
           >
             <CiLogout className="text-3xl text-white" />
           </button>
-          <Link href={'/profile'}>
+          {data && (
+            <UserProfileLink
+              user={data}
+              usernameClassName="pl-2 pr-2 truncate"
+            />
+          )}
+          {isLoading && !data && (
             <div>
-              <img
-                src={getMediaUrl(`${data?.info.avatar}`)}
-                className="rounded-full w-12 h-12 object-cover m-auto"
-              />
-              <h2 className="pl-2 pr-2">
-                {isLoading ? '' : `${data?.username}`}
-              </h2>
+              <div className="rounded-full w-12 h-12 object-cover m-auto bg-gray-300 animate-pulse" />
+              <h2 className="pl-2 pr-2 truncate">Carregando...</h2>
             </div>
-          </Link>
+          )}
         </div>
         <div className="flex items-center justify-center lg:justify-end flex-1 order-3 lg:order-3">
           <form
@@ -99,6 +106,7 @@ export default function Header() {
             <button
               type="submit"
               className="flex items-center justify-center bg-gray-900 px-4 h-full rounded-l-full"
+              aria-label="Buscar usuários"
             >
               <CiSearch className="text-gray-400" />
             </button>

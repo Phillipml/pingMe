@@ -48,31 +48,36 @@ export const apiSlice = createApi({
         url: '/auth/login/',
         method: 'POST',
         body: credentials
-      })
+      }),
+      invalidatesTags: ['User']
     }),
     register: builder.mutation<LoginRegisterResponse, RegisterRequest>({
       query: (userData) => ({
         url: '/auth/register/',
         method: 'POST',
         body: userData
-      })
+      }),
+      invalidatesTags: ['User']
     }),
     getProfile: builder.query<User, void>({
-      query: () => '/auth/profile/'
+      query: () => '/auth/profile/',
+      providesTags: ['User']
     }),
     logout: builder.mutation<MessageResponse, LogoutRequest>({
-      query: () => ({
+      query: (logoutData) => ({
         url: '/auth/logout/',
         method: 'POST',
-        body: {}
-      })
+        body: logoutData
+      }),
+      invalidatesTags: ['User']
     }),
     updateProfile: builder.mutation<Profile, Profile | FormData>({
       query: (profileData) => ({
         url: '/auth/profile/update/',
         method: 'PUT',
         body: profileData
-      })
+      }),
+      invalidatesTags: ['User']
     }),
     searchUsers: builder.query<SearchUsersResponse, string>({
       query: (searchQuery) => ({
@@ -110,10 +115,12 @@ export const apiSlice = createApi({
         url: '/posts/create/',
         method: 'POST',
         body: postData
-      })
+      }),
+      invalidatesTags: ['Post']
     }),
     feed: builder.query<FeedResponse, void>({
-      query: () => '/posts/'
+      query: () => '/posts/',
+      providesTags: ['Post']
     }),
     likePost: builder.mutation<LikeResponse, number>({
       query: (id) => ({
@@ -128,13 +135,15 @@ export const apiSlice = createApi({
       query: ({ id, page = 1 }) => ({
         url: `/posts/user/${id}/`,
         params: { page }
-      })
+      }),
+      providesTags: ['Post']
     }),
     deletePost: builder.mutation<MessageResponse, number>({
       query: (id) => ({
         url: `/posts/${id}/delete/`,
         method: 'DELETE'
-      })
+      }),
+      invalidatesTags: ['Post']
     }),
     getPost: builder.query<Post, number | string>({
       query: (id) => ({

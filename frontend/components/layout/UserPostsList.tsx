@@ -54,7 +54,8 @@ export default function UserPostsList({
       await deletePost(id).unwrap()
       alert('Post deletado com sucesso')
       onPostDelete()
-    } catch (error: any) {
+    } catch (err) {
+      const error = err as { data?: { error?: string; message?: string } }
       const errorMessage =
         error?.data?.message || error?.data?.error || 'Erro ao deletar post'
       alert(errorMessage)
@@ -94,6 +95,7 @@ export default function UserPostsList({
                 isDeleting={isDeletingById === post.id}
                 comments_count={post.comments_count}
                 likes_count={post.likes_count}
+                showActions={showDelete}
               >
                 {post.content}
               </UserPostCard>

@@ -20,7 +20,7 @@ export default function Feed() {
   const [isPostCreated, setIsPostCreated] = useState(false)
   const [postData] = useCreatePostMutation()
   const { data, isLoading } = useFeedQuery()
-  const [like, error] = useLikePostMutation()
+  const [like] = useLikePostMutation()
   const createPost = async (e: React.FormEvent) => {
     e.preventDefault()
     try {
@@ -83,10 +83,7 @@ export default function Feed() {
                 Ping criado com sucesso
               </span>
             ) : null}
-            <Button
-              type="submit"
-              className="w-full sm:w-auto sm:w-1/3 self-end"
-            >
+            <Button type="submit" className="w-full sm:w-auto self-end">
               Criar Ping
             </Button>
           </div>

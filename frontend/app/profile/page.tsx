@@ -3,14 +3,10 @@ import Container from '@/components/layout/Container'
 import Form from '@/components/layout/Form'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
-import {
-  useDeletePostMutation,
-  useGetProfileQuery,
-  useGetUserPostQuery,
-  useUpdateProfileMutation
-} from '@/lib/slice'
-import { getMediaUrl } from '@/utils/api-utils'
-import { useState, useEffect } from 'react'
+import { useGetProfileQuery, useUpdateProfileMutation } from '@/lib/slice'
+import { getMediaUrl, isExternalUrl } from '@/utils/api-utils'
+import { useState } from 'react'
+import Image from 'next/image'
 import { TbPhotoEdit } from 'react-icons/tb'
 import CenterContainer from '@/components/layout/CenterContainer'
 import { AiOutlineLoading } from 'react-icons/ai'
@@ -27,25 +23,17 @@ export default function Profile() {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
   const { data, isLoading, refetch } = useGetProfileQuery()
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation()
-  useEffect(() => {
+
+  const handleStartEdit = () => {
     if (data) {
-      if (isEditing) {
-        setUsername(data.username || '')
-        setFirstName(data.info?.first_name || '')
-        setLastName(data.info?.last_name || '')
-        setBio(data.info?.bio || '')
-        setAvatarPreview(getMediaUrl(data.info?.avatar))
-      } else {
-        setUsername('')
-        setFirstName('')
-        setLastName('')
-        setBio('')
-        setAvatar(null)
-        setAvatarPreview(null)
-      }
+      setUsername(data.username || '')
+      setFirstName(data.info?.first_name || '')
+      setLastName(data.info?.last_name || '')
+      setBio(data.info?.bio || '')
+      setAvatarPreview(getMediaUrl(data.info?.avatar))
     }
-  }, [data, isEditing])
-  useEffect(() => {}, [data?.id])
+    setIsEditing(true)
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -114,10 +102,15 @@ export default function Profile() {
       <Container className="max-w-6xl mx-auto pb-8 flex flex-col lg:flex-row justify-around p-2 gap-8">
         <div className="flex flex-col items-center gap-6 p-4 w-full lg:w-auto">
           <div className="relative">
-            <img
+            <Image
               src={avatarPreview || getMediaUrl(data?.info.avatar)}
               alt="Avatar"
+              width={128}
+              height={128}
               className="rounded-full w-24 h-24 sm:w-32 sm:h-32 object-cover border-4 border-violet-600"
+              unoptimized={isExternalUrl(
+                avatarPreview || getMediaUrl(data?.info.avatar)
+              )}
             />
             {isEditing && (
               <label className="absolute bottom-0 right-0 bg-violet-600 rounded-full p-2 cursor-pointer hover:bg-violet-700 transition">
@@ -175,16 +168,7 @@ export default function Profile() {
               )}
 
               <Button
-                onClick={() => {
-                  if (data) {
-                    setUsername(data.username || '')
-                    setFirstName(data.info?.first_name || '')
-                    setLastName(data.info?.last_name || '')
-                    setBio(data.info?.bio || '')
-                    setAvatarPreview(getMediaUrl(data.info?.avatar))
-                  }
-                  setIsEditing(true)
-                }}
+                onClick={handleStartEdit}
                 className="mt-6 w-full sm:w-auto sm:max-w-md"
               >
                 Editar Perfil
