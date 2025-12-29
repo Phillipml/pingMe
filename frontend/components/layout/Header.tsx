@@ -11,14 +11,36 @@ import Input from '../ui/Input'
 import { CiLogout, CiSearch } from 'react-icons/ci'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { FormEvent, useState } from 'react'
+import { FormEvent, useState, useEffect } from 'react'
 
 export default function Header() {
   const router = useRouter()
   const pathname = usePathname()
-  const { data, isLoading } = useGetProfileQuery()
-  const [logout] = useLogoutMutation()
   const [searchUser, setSearchUser] = useState('')
+  const [hasToken, setHasToken] = useState(false)
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const checkToken = () => {
+        const token = localStorage.getItem('accessToken')
+        setHasToken(!!token)
+      }
+
+      checkToken()
+
+      const handleStorageChange = () => {
+        checkToken()
+      }
+
+      window.addEventListener('storage', handleStorageChange)
+      return () => window.removeEventListener('storage', handleStorageChange)
+    }
+  }, [pathname])
+
+  const { data, isLoading } = useGetProfileQuery(undefined, {
+    skip: !hasToken
+  })
+  const [logout] = useLogoutMutation()
   const handleLogout = async () => {
     try {
       const refreshToken = localStorage.getItem('refreshToken') ?? undefined
@@ -27,6 +49,7 @@ export default function Header() {
       if (typeof window !== 'undefined') {
         localStorage.removeItem('accessToken')
         localStorage.removeItem('refreshToken')
+        setHasToken(false)
       }
       router.push('/login')
     } catch (error) {
