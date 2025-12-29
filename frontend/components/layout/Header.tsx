@@ -1,8 +1,5 @@
 'use client'
-import {
-  useGetProfileQuery,
-  useLogoutMutation,
-} from '@/lib/slice'
+import { useGetProfileQuery, useLogoutMutation } from '@/lib/slice'
 import Container from './Container'
 import { Logo } from '../ui/Logo'
 import { getMediaUrl } from '@/utils/api-utils'
@@ -10,6 +7,7 @@ import { CiLogout, CiSearch } from 'react-icons/ci'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { FormEvent, useState, useEffect } from 'react'
+import { Routes } from '@/utils/routes'
 import defaulUserAvatar from '@/public/user.png'
 
 export default function Header() {
@@ -17,6 +15,7 @@ export default function Header() {
   const pathname = usePathname()
   const [searchUser, setSearchUser] = useState('')
   const [hasToken, setHasToken] = useState(false)
+  const { hideHeader } = Routes()
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -56,15 +55,7 @@ export default function Header() {
       alert(err?.data?.error || err?.data?.message || 'Erro ao fazer logout')
     }
   }
-  const HIDDEN_HEADER_ROUTES = [
-    '/login',
-    '/register',
-    '/user-created',
-    '/complete-profile'
-  ] as const
-  const hideHeader = HIDDEN_HEADER_ROUTES.some(
-    (route) => pathname === route || pathname.startsWith(route + '/')
-  )
+
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const query = searchUser.trim()
@@ -109,12 +100,12 @@ export default function Header() {
                 src={
                   data && typeof data.info.avatar === 'string'
                     ? getMediaUrl(`${data.info.avatar}`)
-                    : (typeof defaulUserAvatar === 'string'
-                        ? defaulUserAvatar
-                        : (defaulUserAvatar as any).src)
+                    : typeof defaulUserAvatar === 'string'
+                      ? defaulUserAvatar
+                      : (defaulUserAvatar as any).src
                 }
                 className="rounded-full w-12 h-12 object-cover m-auto"
-              /> 
+              />
               <h2 className="pl-2 pr-2 truncate">
                 {isLoading ? 'Carregando...' : `${data?.username}`}
               </h2>
