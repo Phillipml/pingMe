@@ -1,5 +1,9 @@
 'use client'
-import { useDeletePostMutation, useGetUserPostQuery } from '@/lib/slice'
+import {
+  useDeletePostMutation,
+  useGetUserPostQuery,
+  useUpdatePostMutation
+} from '@/lib/slice'
 import { skipToken } from '@reduxjs/toolkit/query'
 import { useEffect, useState } from 'react'
 import { AiOutlineLoading } from 'react-icons/ai'
@@ -24,10 +28,13 @@ export default function UserPostsList({
 }: UserPostsListProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const [isDeletingById, setIsDeletingById] = useState<number | null>(null)
+  const [editingPostId, setEditingPostId] = useState<number | null>(null)
+  const [editingContent, setEditingContent] = useState('')
   const { data: userPosts, isLoading: isLoadingPosts } = useGetUserPostQuery(
     userId ? { id: userId, page: currentPage } : skipToken
   )
   const [deletePost] = useDeletePostMutation()
+  const [updatePost, { isLoading: isUpdating }] = useUpdatePostMutation()
   useEffect(() => {
     setCurrentPage(1)
   }, [userId])
@@ -63,6 +70,37 @@ export default function UserPostsList({
       setIsDeletingById(null)
     }
   }
+
+  const handleStartEdit = (postId: number, currentContent: string) => {
+    setEditingPostId(postId)
+    setEditingContent(currentContent)
+  }
+
+  const handleCancelEdit = () => {
+    setEditingPostId(null)
+    setEditingContent('')
+  }
+
+  const handleSaveEdit = async (postId: number) => {
+    if (!editingContent.trim()) {
+      alert('O post não pode estar vazio')
+      return
+    }
+    try {
+      await updatePost({
+        postId,
+        data: { content: editingContent.trim() }
+      }).unwrap()
+      setEditingPostId(null)
+      setEditingContent('')
+      onPostDelete()
+    } catch (err) {
+      const error = err as { data?: { error?: string; message?: string } }
+      const errorMessage =
+        error?.data?.message || error?.data?.error || 'Erro ao atualizar post'
+      alert(errorMessage)
+    }
+  }
   if (isLoadingPosts) {
     return (
       <div className={className}>
@@ -90,9 +128,18 @@ export default function UserPostsList({
                 clickDelete={
                   showDelete ? () => deletePostById(post.id) : () => {}
                 }
+                clickEdit={
+                  showDelete ? () => handleStartEdit(post.id, post.content) : undefined
+                }
                 commentRoute={post.id}
                 is_liked={post.is_liked}
                 isDeleting={isDeletingById === post.id}
+                isEditing={editingPostId === post.id}
+                editingContent={editingContent}
+                onEditingContentChange={setEditingContent}
+                onSaveEdit={() => handleSaveEdit(post.id)}
+                onCancelEdit={handleCancelEdit}
+                isUpdating={isUpdating}
                 comments_count={post.comments_count}
                 likes_count={post.likes_count}
                 showActions={showDelete}

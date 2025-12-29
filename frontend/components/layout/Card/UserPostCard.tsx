@@ -10,9 +10,16 @@ type CardProps = {
   created_at: string
   onClick: () => void
   clickDelete: () => void
+  clickEdit?: () => void
   commentRoute: number | string
   is_liked: boolean
   isDeleting: boolean
+  isEditing?: boolean
+  editingContent?: string
+  onEditingContentChange?: (content: string) => void
+  onSaveEdit?: () => void
+  onCancelEdit?: () => void
+  isUpdating?: boolean
   likes_count: number
   comments_count: number
   showActions?: boolean
@@ -22,9 +29,16 @@ export default function UserPostCard({
   created_at,
   onClick,
   clickDelete,
+  clickEdit,
   commentRoute,
   is_liked,
   isDeleting,
+  isEditing = false,
+  editingContent = '',
+  onEditingContentChange,
+  onSaveEdit,
+  onCancelEdit,
+  isUpdating = false,
   likes_count,
   comments_count,
   showActions = false
@@ -38,10 +52,11 @@ export default function UserPostCard({
             {new Date(created_at).toLocaleString('pt-BR')}
           </p>
         </div>
-        {showActions && (
+        {showActions && !isEditing && (
           <div className="w-full sm:w-auto flex items-center justify-start sm:justify-end gap-2 sm:gap-4">
             <button
               className="text-xs sm:text-sm flex items-center align-center cursor-pointer hover:text-green-600 transition-colors gap-1"
+              onClick={clickEdit}
               aria-label="Editar post"
             >
               <MdEditSquare className="text-base sm:text-lg" />
@@ -62,9 +77,36 @@ export default function UserPostCard({
           </div>
         )}
       </div>
-      <div className="pb-4 border-b border-purple-950 text-sm sm:text-base wrap-break-word">
-        {children}
-      </div>
+      {isEditing ? (
+        <div className="pb-4 border-b border-purple-950">
+          <textarea
+            value={editingContent}
+            onChange={(e) => onEditingContentChange?.(e.target.value)}
+            className="w-full resize-none border border-purple-900 rounded p-2 text-sm sm:text-base"
+            rows={3}
+            autoFocus
+          />
+          <div className="flex flex-col sm:flex-row gap-2 mt-2 justify-end">
+            <button
+              onClick={onCancelEdit}
+              className="bg-red-600 text-white px-4 py-2 rounded cursor-pointer hover:opacity-80 transition-opacity text-sm sm:text-base"
+            >
+              Cancelar
+            </button>
+            <button
+              onClick={onSaveEdit}
+              disabled={isUpdating}
+              className="bg-green-600 text-white px-4 py-2 rounded cursor-pointer hover:opacity-80 transition-opacity disabled:opacity-50 text-sm sm:text-base"
+            >
+              {isUpdating ? 'Salvando...' : 'Salvar'}
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="pb-4 border-b border-purple-950 text-sm sm:text-base wrap-break-word">
+          {children}
+        </div>
+      )}
       <div className="flex justify-around mt-2">
         <button
           className="flex items-center justify-center gap-1 cursor-pointer hover:opacity-80 transition-opacity text-sm sm:text-base"

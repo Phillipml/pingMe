@@ -145,6 +145,17 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ['Post']
     }),
+    updatePost: builder.mutation<
+      PostCreateResponse,
+      { postId: number | string; data: CreatePost }
+    >({
+      query: ({ postId, data }) => ({
+        url: `/posts/${postId}/update/`,
+        method: 'PUT',
+        body: data
+      }),
+      invalidatesTags: ['Post']
+    }),
     getPost: builder.query<Post, number | string>({
       query: (id) => ({
         url: `/posts/${id}/`
@@ -201,6 +212,7 @@ export const {
   useLikePostMutation,
   useGetUserPostQuery,
   useDeletePostMutation,
+  useUpdatePostMutation,
   useGetPostQuery,
   useGetCommentsQuery,
   useCreateCommentMutation,
