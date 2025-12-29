@@ -3,7 +3,11 @@ import Container from '@/components/layout/Container'
 import Form from '@/components/layout/Form'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
-import { useGetProfileQuery, useUpdateProfileMutation } from '@/lib/slice'
+import {
+  useDeleteUserMutation,
+  useGetProfileQuery,
+  useUpdateProfileMutation
+} from '@/lib/slice'
 import { getMediaUrl, isExternalUrl } from '@/utils/api-utils'
 import { useState } from 'react'
 import Image from 'next/image'
@@ -11,8 +15,10 @@ import { TbPhotoEdit } from 'react-icons/tb'
 import CenterContainer from '@/components/layout/CenterContainer'
 import { AiOutlineLoading } from 'react-icons/ai'
 import UserPostsList from '@/components/layout/UserPostsList'
+import { useRouter } from 'next/navigation'
 
 export default function Profile() {
+  const router = useRouter()
   const [isEditing, setIsEditing] = useState(false)
   const [error, setError] = useState('')
   const [username, setUsername] = useState('')
@@ -23,6 +29,7 @@ export default function Profile() {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
   const { data, isLoading, refetch } = useGetProfileQuery()
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation()
+  const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation()
 
   const handleStartEdit = () => {
     if (data) {
@@ -86,6 +93,26 @@ export default function Profile() {
       reader.readAsDataURL(file)
     } else {
       setAvatarPreview(data ? getMediaUrl(data.info.avatar) : null)
+    }
+  }
+  const handleDeleteUser = async () => {
+    const confirmed = window.confirm(
+      'Tem certeza que deseja deletar sua conta? Esta ação não pode ser desfeita!'
+    )
+
+    if (confirmed) {
+      try {
+        await deleteUser().unwrap()
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('accessToken')
+          router.push('/login')
+        }
+      } catch (error) {
+        const err = error as { data?: { error?: string; message?: string } }
+        setError(
+          err?.data?.error || err?.data?.message || 'Erro ao deletar conta'
+        )
+      }
     }
   }
 
@@ -166,13 +193,25 @@ export default function Profile() {
                   </p>
                 </div>
               )}
-
-              <Button
-                onClick={handleStartEdit}
-                className="mt-6 w-full sm:w-auto sm:max-w-md"
-              >
-                Editar Perfil
-              </Button>
+              <div className="flex w-full justify-center items-center gap-4">
+                <Button
+                  onClick={handleStartEdit}
+                  className="mt-6 sm:w-auto sm:max-w-md"
+                >
+                  Editar Perfil
+                </Button>
+                <Button
+                  onClick={handleDeleteUser}
+                  className="mt-6 sm:w-auto sm:max-w-md"
+                  colorVariant="red"
+                >
+                  {isDeleting ? (
+                    <AiOutlineLoading className="animate-spin m-auto text-4xl" />
+                  ) : (
+                    'Deletar Perfil'
+                  )}
+                </Button>
+              </div>
             </div>
           ) : (
             <Form onSubmit={handleSubmit} className="w-full max-w-md mx-auto">
