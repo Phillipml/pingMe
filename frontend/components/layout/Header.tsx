@@ -18,14 +18,11 @@ export default function Header() {
   const { hideHeader } = Routes()
   const { handleLogout } = useLogout()
 
-  const [hasToken, setHasToken] = useState(() => {
-    if (typeof window !== 'undefined') {
-      return !!localStorage.getItem('accessToken')
-    }
-    return false
-  })
+  const [hasToken, setHasToken] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
 
   useEffect(() => {
+    setIsMounted(true)
     if (typeof window !== 'undefined') {
       const checkToken = () => {
         const token = localStorage.getItem('accessToken')
@@ -39,14 +36,14 @@ export default function Header() {
   }, [])
 
   const { data, isLoading, refetch } = useGetProfileQuery(undefined, {
-    skip: !hasToken
+    skip: !hasToken || !isMounted
   })
 
   useEffect(() => {
-    if (hasToken) {
+    if (hasToken && isMounted) {
       refetch()
     }
-  }, [hasToken, refetch])
+  }, [hasToken, isMounted, refetch])
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()

@@ -115,10 +115,12 @@ export const apiSlice = createApi({
         url: '/posts/create/',
         method: 'POST',
         body: postData
-      })
+      }),
+      invalidatesTags: ['Post']
     }),
     feed: builder.query<FeedResponse, void>({
-      query: () => '/posts/'
+      query: () => '/posts/',
+      providesTags: ['Post']
     }),
     likePost: builder.mutation<LikeResponse, number>({
       query: (id) => ({
@@ -133,13 +135,15 @@ export const apiSlice = createApi({
       query: ({ id, page = 1 }) => ({
         url: `/posts/user/${id}/`,
         params: { page }
-      })
+      }),
+      providesTags: ['Post']
     }),
     deletePost: builder.mutation<MessageResponse, number>({
       query: (id) => ({
         url: `/posts/${id}/delete/`,
         method: 'DELETE'
-      })
+      }),
+      invalidatesTags: ['Post']
     }),
     getPost: builder.query<Post, number | string>({
       query: (id) => ({
