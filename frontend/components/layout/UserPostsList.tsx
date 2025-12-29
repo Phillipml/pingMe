@@ -94,6 +94,7 @@ export default function UserPostsList({
                 isDeleting={isDeletingById === post.id}
                 comments_count={post.comments_count}
                 likes_count={post.likes_count}
+                showActions={showDelete}
               >
                 {post.content}
               </UserPostCard>
