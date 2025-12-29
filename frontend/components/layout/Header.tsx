@@ -69,8 +69,8 @@ export default function Header() {
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const query = searchUser.trim()
-    if (query.length <= 2) {
-      alert('Digite ao menos 3 caracteres para pesquisar')
+    if (query.length <= 1) {
+      alert('Digite ao menos 2 caracteres para pesquisar')
       router.push('/feed')
       return
     }
