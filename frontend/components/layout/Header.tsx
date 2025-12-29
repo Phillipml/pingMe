@@ -5,56 +5,23 @@ import { Logo } from '../ui/Logo'
 import { getMediaUrl } from '@/utils/api-utils'
 import { CiLogout, CiSearch } from 'react-icons/ci'
 import Link from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { FormEvent, useState, useEffect } from 'react'
 import { Routes } from '@/utils/routes'
 import defaulUserAvatar from '@/public/user.png'
+import { useLogout } from '@/hooks/useLogout'
 
 export default function Header() {
   const router = useRouter()
-  const pathname = usePathname()
+
   const [searchUser, setSearchUser] = useState('')
-  const [hasToken, setHasToken] = useState(false)
+
   const { hideHeader } = Routes()
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const checkToken = () => {
-        const token = localStorage.getItem('accessToken')
-        setHasToken(!!token)
-      }
-
-      checkToken()
-
-      const handleStorageChange = () => {
-        checkToken()
-      }
-
-      window.addEventListener('storage', handleStorageChange)
-      return () => window.removeEventListener('storage', handleStorageChange)
-    }
-  }, [pathname])
+  const { hasToken, handleLogout } = useLogout()
 
   const { data, isLoading } = useGetProfileQuery(undefined, {
     skip: !hasToken
   })
-  const [logout] = useLogoutMutation()
-  const handleLogout = async () => {
-    try {
-      const refreshToken = localStorage.getItem('refreshToken') ?? undefined
-      const response = await logout({ refresh: refreshToken }).unwrap()
-      alert(response.message)
-      if (typeof window !== 'undefined') {
-        localStorage.removeItem('accessToken')
-        localStorage.removeItem('refreshToken')
-        setHasToken(false)
-      }
-      router.push('/login')
-    } catch (error) {
-      const err = error as { data?: { error?: string; message?: string } }
-      alert(err?.data?.error || err?.data?.message || 'Erro ao fazer logout')
-    }
-  }
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
