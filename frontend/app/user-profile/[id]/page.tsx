@@ -9,13 +9,12 @@ import {
   useUnfollowMutation
 } from '@/lib/slice'
 import { useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useMemo, useState } from 'react'
 import Image from 'next/image'
 import { isExternalUrl } from '@/utils/api-utils'
 import { FaRegUserCircle } from 'react-icons/fa'
 
 export default function UserProfile() {
-  const [isFollowing, setIsFollowing] = useState(false)
   const params = useParams()
   const userId = params.id as string
   const { data } = useGetPublicProfileQuery(userId, {
@@ -25,32 +24,31 @@ export default function UserProfile() {
   const [follow, { isLoading: followLoading }] = useFollowMutation()
   const [unfollow, { isLoading: unfollowLoading }] = useUnfollowMutation()
 
-  useEffect(() => {
+  const isFollowingComputed = useMemo(() => {
     if (!data || !followingData?.results) {
-      setIsFollowing(false)
-      return
+      return false
     }
-    const isUserFollowing = followingData.results.some(
-      (user) => user.id == data.id
-    )
-    setIsFollowing(isUserFollowing)
+    return followingData.results.some((user) => user.id == data.id)
   }, [data, followingData])
+
+  const [isFollowingState, setIsFollowingState] = useState(isFollowingComputed)
+
   const followHandle = async () => {
     if (!data?.id) return
     try {
-      if (isFollowing) {
+      if (isFollowingState) {
         await unfollow({ following: data?.id })
-        setIsFollowing(false)
+        setIsFollowingState(false)
       } else {
         await follow({ following: data?.id })
-        setIsFollowing(true)
+        setIsFollowingState(true)
       }
     } catch {
       alert('Erro ao fazer requisição')
     }
   }
   const buttonContent = () => {
-    if (isFollowing) {
+    if (isFollowingState) {
       return 'Deixar de seguir'
     }
     return 'Seguir'
@@ -87,7 +85,7 @@ export default function UserProfile() {
           )}
           <Button
             className="w-full sm:w-auto"
-            colorVariant={isFollowing ? 'red' : 'default'}
+            colorVariant={isFollowingState ? 'red' : 'default'}
             onClick={followHandle}
             loading={followLoading || unfollowLoading}
           >

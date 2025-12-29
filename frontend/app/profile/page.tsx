@@ -5,7 +5,7 @@ import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import { useGetProfileQuery, useUpdateProfileMutation } from '@/lib/slice'
 import { getMediaUrl, isExternalUrl } from '@/utils/api-utils'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Image from 'next/image'
 import { TbPhotoEdit } from 'react-icons/tb'
 import CenterContainer from '@/components/layout/CenterContainer'
@@ -23,16 +23,8 @@ export default function Profile() {
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
   const { data, isLoading, refetch } = useGetProfileQuery()
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation()
-  useEffect(() => {
-    if (!isEditing) {
-      setUsername('')
-      setFirstName('')
-      setLastName('')
-      setBio('')
-      setAvatar(null)
-      setAvatarPreview(null)
-      return
-    }
+
+  const handleStartEdit = () => {
     if (data) {
       setUsername(data.username || '')
       setFirstName(data.info?.first_name || '')
@@ -40,7 +32,8 @@ export default function Profile() {
       setBio(data.info?.bio || '')
       setAvatarPreview(getMediaUrl(data.info?.avatar))
     }
-  }, [isEditing])
+    setIsEditing(true)
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -175,16 +168,7 @@ export default function Profile() {
               )}
 
               <Button
-                onClick={() => {
-                  if (data) {
-                    setUsername(data.username || '')
-                    setFirstName(data.info?.first_name || '')
-                    setLastName(data.info?.last_name || '')
-                    setBio(data.info?.bio || '')
-                    setAvatarPreview(getMediaUrl(data.info?.avatar))
-                  }
-                  setIsEditing(true)
-                }}
+                onClick={handleStartEdit}
                 className="mt-6 w-full sm:w-auto sm:max-w-md"
               >
                 Editar Perfil
