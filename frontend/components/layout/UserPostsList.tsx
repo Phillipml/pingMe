@@ -129,7 +129,9 @@ export default function UserPostsList({
                   showDelete ? () => deletePostById(post.id) : () => {}
                 }
                 clickEdit={
-                  showDelete ? () => handleStartEdit(post.id, post.content) : undefined
+                  showDelete
+                    ? () => handleStartEdit(post.id, post.content)
+                    : undefined
                 }
                 commentRoute={post.id}
                 is_liked={post.is_liked}

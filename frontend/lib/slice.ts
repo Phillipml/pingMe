@@ -192,7 +192,7 @@ export const apiSlice = createApi({
         method: 'DELETE'
       })
     }),
-    deleteUser: builder.mutation<MessageResponse, undefined>({
+    deleteUser: builder.mutation<MessageResponse, void>({
       query: () => ({
         url: '/auth/users/me/delete/',
         method: 'DELETE'
