@@ -3,12 +3,7 @@ import Container from '@/components/layout/Container'
 import Form from '@/components/layout/Form'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
-import {
-  useDeletePostMutation,
-  useGetProfileQuery,
-  useGetUserPostQuery,
-  useUpdateProfileMutation
-} from '@/lib/slice'
+import { useGetProfileQuery, useUpdateProfileMutation } from '@/lib/slice'
 import { getMediaUrl, isExternalUrl } from '@/utils/api-utils'
 import { useState, useEffect } from 'react'
 import Image from 'next/image'
@@ -29,24 +24,23 @@ export default function Profile() {
   const { data, isLoading, refetch } = useGetProfileQuery()
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation()
   useEffect(() => {
-    if (data) {
-      if (isEditing) {
-        setUsername(data.username || '')
-        setFirstName(data.info?.first_name || '')
-        setLastName(data.info?.last_name || '')
-        setBio(data.info?.bio || '')
-        setAvatarPreview(getMediaUrl(data.info?.avatar))
-      } else {
-        setUsername('')
-        setFirstName('')
-        setLastName('')
-        setBio('')
-        setAvatar(null)
-        setAvatarPreview(null)
-      }
+    if (!isEditing) {
+      setUsername('')
+      setFirstName('')
+      setLastName('')
+      setBio('')
+      setAvatar(null)
+      setAvatarPreview(null)
+      return
     }
-  }, [data, isEditing])
-  useEffect(() => {}, [data?.id])
+    if (data) {
+      setUsername(data.username || '')
+      setFirstName(data.info?.first_name || '')
+      setLastName(data.info?.last_name || '')
+      setBio(data.info?.bio || '')
+      setAvatarPreview(getMediaUrl(data.info?.avatar))
+    }
+  }, [isEditing])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()

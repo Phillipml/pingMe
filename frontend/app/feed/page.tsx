@@ -20,7 +20,7 @@ export default function Feed() {
   const [isPostCreated, setIsPostCreated] = useState(false)
   const [postData] = useCreatePostMutation()
   const { data, isLoading } = useFeedQuery()
-  const [like, error] = useLikePostMutation()
+  const [like] = useLikePostMutation()
   const createPost = async (e: React.FormEvent) => {
     e.preventDefault()
     try {

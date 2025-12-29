@@ -26,14 +26,14 @@ export default function UserProfile() {
   const [unfollow, { isLoading: unfollowLoading }] = useUnfollowMutation()
 
   useEffect(() => {
-    if (data && followingData?.results) {
-      const isUserFollowing = followingData.results.some(
-        (user) => user.id == data.id
-      )
-      setIsFollowing(isUserFollowing)
-    } else {
+    if (!data || !followingData?.results) {
       setIsFollowing(false)
+      return
     }
+    const isUserFollowing = followingData.results.some(
+      (user) => user.id == data.id
+    )
+    setIsFollowing(isUserFollowing)
   }, [data, followingData])
   const followHandle = async () => {
     if (!data?.id) return
@@ -45,7 +45,7 @@ export default function UserProfile() {
         await follow({ following: data?.id })
         setIsFollowing(true)
       }
-    } catch (error) {
+    } catch {
       alert('Erro ao fazer requisição')
     }
   }

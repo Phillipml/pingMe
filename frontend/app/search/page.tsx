@@ -13,7 +13,7 @@ export default function Search() {
   const router = useRouter()
   const query = searchParams.get('q') || ''
 
-  const { data, isLoading, error } = useSearchUsersQuery(query, {
+  const { data } = useSearchUsersQuery(query, {
     skip: !query || query.length < 2
   })
   useEffect(() => {

@@ -30,7 +30,7 @@ export const UserProfileLink = ({
       ? getMediaUrl(avatar)
       : typeof defaulUserAvatar === 'string'
         ? defaulUserAvatar
-        : (defaulUserAvatar as any).src
+        : (defaulUserAvatar as { src: string }).src
 
   return (
     <Link href={href} className={className}>
