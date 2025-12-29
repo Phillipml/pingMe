@@ -2,16 +2,15 @@
 import {
   useGetProfileQuery,
   useLogoutMutation,
-  useSearchUsersQuery
 } from '@/lib/slice'
 import Container from './Container'
 import { Logo } from '../ui/Logo'
 import { getMediaUrl } from '@/utils/api-utils'
-import Input from '../ui/Input'
 import { CiLogout, CiSearch } from 'react-icons/ci'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { FormEvent, useState, useEffect } from 'react'
+import defaulUserAvatar from '@/public/user.png'
 
 export default function Header() {
   const router = useRouter()
@@ -71,7 +70,7 @@ export default function Header() {
     const query = searchUser.trim()
     if (query.length <= 1) {
       alert('Digite ao menos 2 caracteres para pesquisar')
-      router.push('/feed')
+      setSearchUser('')
       return
     }
 
@@ -107,11 +106,17 @@ export default function Header() {
           <Link href={'/profile'}>
             <div>
               <img
-                src={getMediaUrl(`${data?.info.avatar}`)}
+                src={
+                  data && typeof data.info.avatar === 'string'
+                    ? getMediaUrl(`${data.info.avatar}`)
+                    : (typeof defaulUserAvatar === 'string'
+                        ? defaulUserAvatar
+                        : (defaulUserAvatar as any).src)
+                }
                 className="rounded-full w-12 h-12 object-cover m-auto"
-              />
-              <h2 className="pl-2 pr-2">
-                {isLoading ? '' : `${data?.username}`}
+              /> 
+              <h2 className="pl-2 pr-2 truncate">
+                {isLoading ? 'Carregando...' : `${data?.username}`}
               </h2>
             </div>
           </Link>
