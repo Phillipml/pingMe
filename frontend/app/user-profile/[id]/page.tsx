@@ -10,6 +10,8 @@ import {
 } from '@/lib/slice'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
+import Image from 'next/image'
+import { isExternalUrl } from '@/utils/api-utils'
 import { FaRegUserCircle } from 'react-icons/fa'
 
 export default function UserProfile() {
@@ -58,10 +60,13 @@ export default function UserProfile() {
     <Container className="flex flex-col lg:flex-row gap-8">
       <div className="flex flex-col sm:flex-row w-full lg:w-1/3 justify-center items-center rounded-2xl shadow-2xl shadow-purple-600 m-auto p-4 sm:p-6 mt-8 gap-4 sm:gap-6">
         {data && data.info.avatar ? (
-          <img
+          <Image
             src={data?.info.avatar || ' '}
             alt={`${data?.username} profile picture`}
+            width={96}
+            height={96}
             className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-full shrink-0"
+            unoptimized={isExternalUrl(data?.info.avatar || ' ')}
           />
         ) : (
           <FaRegUserCircle className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-full shrink-0" />

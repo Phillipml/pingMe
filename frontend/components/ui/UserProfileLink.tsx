@@ -1,7 +1,8 @@
 'use client'
 import Link from 'next/link'
+import Image from 'next/image'
 import { User, BaseUser } from '@/utils/api-interfaces'
-import { getMediaUrl } from '@/utils/api-utils'
+import { getMediaUrl, isExternalUrl } from '@/utils/api-utils'
 import defaulUserAvatar from '@/public/user.png'
 
 interface UserProfileLinkProps {
@@ -34,7 +35,14 @@ export const UserProfileLink = ({
   return (
     <Link href={href} className={className}>
       <div>
-        <img src={avatarSrc} className={avatarClassName} alt={username} />
+        <Image
+          src={avatarSrc}
+          alt={username}
+          width={48}
+          height={48}
+          className={avatarClassName}
+          unoptimized={isExternalUrl(avatarSrc)}
+        />
         {showUsername && <h2 className={usernameClassName}>{username}</h2>}
       </div>
     </Link>

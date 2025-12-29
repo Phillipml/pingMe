@@ -9,8 +9,9 @@ import {
   useGetUserPostQuery,
   useUpdateProfileMutation
 } from '@/lib/slice'
-import { getMediaUrl } from '@/utils/api-utils'
+import { getMediaUrl, isExternalUrl } from '@/utils/api-utils'
 import { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { TbPhotoEdit } from 'react-icons/tb'
 import CenterContainer from '@/components/layout/CenterContainer'
 import { AiOutlineLoading } from 'react-icons/ai'
@@ -114,10 +115,15 @@ export default function Profile() {
       <Container className="max-w-6xl mx-auto pb-8 flex flex-col lg:flex-row justify-around p-2 gap-8">
         <div className="flex flex-col items-center gap-6 p-4 w-full lg:w-auto">
           <div className="relative">
-            <img
+            <Image
               src={avatarPreview || getMediaUrl(data?.info.avatar)}
               alt="Avatar"
+              width={128}
+              height={128}
               className="rounded-full w-24 h-24 sm:w-32 sm:h-32 object-cover border-4 border-violet-600"
+              unoptimized={isExternalUrl(
+                avatarPreview || getMediaUrl(data?.info.avatar)
+              )}
             />
             {isEditing && (
               <label className="absolute bottom-0 right-0 bg-violet-600 rounded-full p-2 cursor-pointer hover:bg-violet-700 transition">

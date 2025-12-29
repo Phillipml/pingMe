@@ -1,5 +1,7 @@
 import { useNavigation } from '@/hooks/useNavigation'
 import Link from 'next/link'
+import Image from 'next/image'
+import { isExternalUrl } from '@/utils/api-utils'
 import { AiFillLike, AiOutlineLike } from 'react-icons/ai'
 import { MdOutlineInsertComment } from 'react-icons/md'
 type CardProps = {
@@ -33,10 +35,13 @@ export default function FeedCard({
     <li className="w-full md:w-2/3 lg:w-1/2 xl:w-1/3 mt-4 grid pb-2">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
         <Link href={href} className="flex items-center justify-center">
-          <img
+          <Image
             src={img || ' '}
             alt={alt}
+            width={32}
+            height={32}
             className="w-8 h-8 min-w-8 min-h-8 object-cover rounded-full mr-2 shrink-0"
+            unoptimized={isExternalUrl(img || ' ')}
           />
           <h2 className="text-sm sm:text-base">@{author}</h2>
         </Link>

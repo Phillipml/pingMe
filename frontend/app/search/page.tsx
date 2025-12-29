@@ -4,6 +4,8 @@ import { useSearchUsersQuery } from '@/lib/slice'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
+import Image from 'next/image'
+import { isExternalUrl } from '@/utils/api-utils'
 import { FaRegUserCircle } from 'react-icons/fa'
 
 export default function Search() {
@@ -40,10 +42,13 @@ export default function Search() {
                 className="flex w-full justify-start items-center gap-8"
               >
                 {users.avatar ? (
-                  <img
+                  <Image
                     src={users.avatar}
                     alt={`${users.username} profile avatar`}
+                    width={56}
+                    height={56}
                     className="rounded-full w-14 h-14 object-cover"
+                    unoptimized={isExternalUrl(users.avatar)}
                   />
                 ) : (
                   <FaRegUserCircle className="rounded-full w-14 h-14 object-cover" />

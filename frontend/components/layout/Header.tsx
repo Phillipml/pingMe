@@ -6,7 +6,7 @@ import { UserProfileLink } from '../ui/UserProfileLink'
 import { CiLogout, CiSearch } from 'react-icons/ci'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { FormEvent, useState } from 'react'
+import { FormEvent, useState, useEffect } from 'react'
 import { Routes } from '@/utils/routes'
 import { useLogout } from '@/hooks/useLogout'
 
@@ -16,11 +16,37 @@ export default function Header() {
   const [searchUser, setSearchUser] = useState('')
 
   const { hideHeader } = Routes()
-  const { hasToken, handleLogout } = useLogout()
+  const { handleLogout } = useLogout()
 
-  const { data, isLoading } = useGetProfileQuery(undefined, {
+  const [hasToken, setHasToken] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return !!localStorage.getItem('accessToken')
+    }
+    return false
+  })
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const checkToken = () => {
+        const token = localStorage.getItem('accessToken')
+        setHasToken(!!token)
+      }
+
+      checkToken()
+      const interval = setInterval(checkToken, 1000)
+      return () => clearInterval(interval)
+    }
+  }, [])
+
+  const { data, isLoading, refetch } = useGetProfileQuery(undefined, {
     skip: !hasToken
   })
+
+  useEffect(() => {
+    if (hasToken) {
+      refetch()
+    }
+  }, [hasToken, refetch])
 
   const handleSearch = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
