@@ -33,7 +33,8 @@ export default function CompleteProfile() {
       setError(
         error?.data?.error || error.data?.message || 'Erro ao atualizar perfil'
       )
-    }3
+    }
+    3
   }
   return (
     <CenterContainer className="grid justify-center">

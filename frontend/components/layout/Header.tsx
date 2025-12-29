@@ -21,10 +21,12 @@ export default function Header() {
   const [searchUser, setSearchUser] = useState('')
   const handleLogout = async () => {
     try {
-      const response = await logout({}).unwrap()
+      const refreshToken = localStorage.getItem('refreshToken') ?? undefined
+      const response = await logout({ refresh: refreshToken }).unwrap()
       alert(response.message)
       if (typeof window !== 'undefined') {
         localStorage.removeItem('accessToken')
+        localStorage.removeItem('refreshToken')
       }
       router.push('/login')
     } catch (error) {

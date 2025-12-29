@@ -22,8 +22,13 @@ export default function Login() {
     try {
       const response = await login({ email, password }).unwrap()
 
-      if (response.access && typeof window !== 'undefined') {
-        localStorage.setItem('accessToken', response.access)
+      if (typeof window !== 'undefined') {
+        if (response.access) {
+          localStorage.setItem('accessToken', response.access)
+        }
+        if (response.refresh) {
+          localStorage.setItem('refreshToken', response.refresh)
+        }
       }
 
       const userStatus = response.user.info.status

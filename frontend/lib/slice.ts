@@ -61,10 +61,10 @@ export const apiSlice = createApi({
       query: () => '/auth/profile/'
     }),
     logout: builder.mutation<MessageResponse, LogoutRequest>({
-      query: () => ({
+      query: (logoutData) => ({
         url: '/auth/logout/',
         method: 'POST',
-        body: {}
+        body: logoutData
       })
     }),
     updateProfile: builder.mutation<Profile, Profile | FormData>({
