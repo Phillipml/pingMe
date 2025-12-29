@@ -66,6 +66,7 @@ export default function Header() {
           <button
             className="rounded-full border p-0.5 cursor-pointer lg:hidden"
             onClick={handleLogout}
+            aria-label="Fazer logout"
           >
             <CiLogout className="text-3xl text-white" />
           </button>
@@ -80,6 +81,7 @@ export default function Header() {
           <button
             className="rounded-full mr-2 border p-0.5 cursor-pointer hidden lg:flex"
             onClick={handleLogout}
+            aria-label="Fazer logout"
           >
             <CiLogout className="text-3xl text-white" />
           </button>
@@ -104,6 +106,7 @@ export default function Header() {
             <button
               type="submit"
               className="flex items-center justify-center bg-gray-900 px-4 h-full rounded-l-full"
+              aria-label="Buscar usuários"
             >
               <CiSearch className="text-gray-400" />
             </button>

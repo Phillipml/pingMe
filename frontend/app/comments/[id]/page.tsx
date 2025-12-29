@@ -209,6 +209,7 @@ export default function Comments() {
                     <button
                       onClick={handleCancelEdit}
                       className="bg-red-600 text-white px-4 py-2 rounded cursor-pointer hover:opacity-80 transition-opacity text-sm sm:text-base"
+                      aria-label="Cancelar edição"
                     >
                       Cancelar
                     </button>
@@ -216,6 +217,7 @@ export default function Comments() {
                       onClick={() => handleSaveEdit(comment.id)}
                       disabled={isUpdating}
                       className="bg-green-600 text-white px-4 py-2 rounded cursor-pointer hover:opacity-80 transition-opacity disabled:opacity-50 text-sm sm:text-base"
+                      aria-label="Salvar edição"
                     >
                       {isUpdating ? 'Salvando...' : 'Salvar'}
                     </button>

@@ -56,6 +56,7 @@ export default function FeedCard({
         <button
           className="flex items-center justify-center gap-1 cursor-pointer text-sm sm:text-base hover:opacity-80 transition-opacity"
           onClick={onClick}
+          aria-label={is_liked ? 'Descurtir post' : 'Curtir post'}
         >
           {is_liked ? (
             <AiFillLike className="text-lg sm:text-xl" />
@@ -67,6 +68,7 @@ export default function FeedCard({
         <button
           className="flex items-center justify-center gap-1 cursor-pointer text-sm sm:text-base hover:opacity-80 transition-opacity"
           onClick={() => toComment(commentRoute)}
+          aria-label="Ver comentários"
         >
           <MdOutlineInsertComment className="text-lg sm:text-xl" />
           <span>{comments_count}</span>
