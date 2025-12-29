@@ -30,35 +30,41 @@ export default function FeedCard({
 }: CardProps) {
   const { toComment } = useNavigation()
   return (
-    <li className="w-1/3 mt-4 grid pb-2">
-      <div className="flex justify-between">
-        <Link href={href} className="flex items-center justify-center mb-4">
+    <li className="w-full md:w-2/3 lg:w-1/2 xl:w-1/3 mt-4 grid pb-2">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-4">
+        <Link href={href} className="flex items-center justify-center">
           <img
             src={img || ' '}
             alt={alt}
-            className="w-8 h-8 object-cover rounded-full mr-2"
+            className="w-8 h-8 min-w-8 min-h-8 object-cover rounded-full mr-2 shrink-0"
           />
-          <h2>@{author}</h2>
+          <h2 className="text-sm sm:text-base">@{author}</h2>
         </Link>
-        <p className="text-purple-900">
+        <p className="text-purple-900 text-xs sm:text-sm">
           {new Date(created_at).toLocaleString('pt-BR')}
         </p>
       </div>
-      <div className="border-b border-purple-950 pb-4">{children}</div>
-      <div className="flex justify-around">
+      <div className="border-b border-purple-950 pb-4 text-sm sm:text-base wrap-break-word">
+        {children}
+      </div>
+      <div className="flex justify-around mt-2">
         <button
-          className="flex items-center justify-center gap-1 cursor-pointer"
+          className="flex items-center justify-center gap-1 cursor-pointer text-sm sm:text-base hover:opacity-80 transition-opacity"
           onClick={onClick}
         >
-          {is_liked ? <AiFillLike /> : <AiOutlineLike />}
-          {likes_count}
+          {is_liked ? (
+            <AiFillLike className="text-lg sm:text-xl" />
+          ) : (
+            <AiOutlineLike className="text-lg sm:text-xl" />
+          )}
+          <span>{likes_count}</span>
         </button>
         <button
-          className="flex items-center justify-center gap-1 cursor-pointer"
+          className="flex items-center justify-center gap-1 cursor-pointer text-sm sm:text-base hover:opacity-80 transition-opacity"
           onClick={() => toComment(commentRoute)}
         >
-          <MdOutlineInsertComment />
-          {comments_count}
+          <MdOutlineInsertComment className="text-lg sm:text-xl" />
+          <span>{comments_count}</span>
         </button>
       </div>
     </li>

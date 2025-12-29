@@ -33,11 +33,11 @@ export default function CompleteProfile() {
       setError(
         error?.data?.error || error.data?.message || 'Erro ao atualizar perfil'
       )
-    }
+    }3
   }
   return (
     <CenterContainer className="grid justify-center">
-      <div className="w-full max-w-md border-2 border-violet-600 rounded-md p-4">
+      <div className="w-full max-w-md border-2 border-violet-600 rounded-md p-2">
         <Logo className="text-2xl mx-auto justify-center border-b-2 border-violet-600 pb-2 mb-8 mt-2" />
         <h2 className="text-center">
           Hora de iniciar sua história aqui com a gente!
@@ -70,7 +70,7 @@ export default function CompleteProfile() {
           {error && <div className="text-red-500 text-sm mb-4">{error}</div>}
 
           <Button type="submit" disabled={isLoading} loading={isLoading}>
-            Salvando
+            Salvar
           </Button>
         </Form>
       </div>
