@@ -191,6 +191,12 @@ export const apiSlice = createApi({
         url: `/posts/comments/${id}/delete/`,
         method: 'DELETE'
       })
+    }),
+    deleteUser: builder.mutation<MessageResponse, void>({
+      query: () => ({
+        url: '/auth/users/me/delete/',
+        method: 'DELETE'
+      })
     })
   })
 })
@@ -217,5 +223,6 @@ export const {
   useGetCommentsQuery,
   useCreateCommentMutation,
   useUpdateCommentMutation,
-  useDeleteCommentMutation
+  useDeleteCommentMutation,
+  useDeleteUserMutation
 } = apiSlice

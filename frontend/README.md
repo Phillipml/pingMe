@@ -125,6 +125,7 @@ frontend/
    - Upload de nova foto de perfil com preview
    - Botão de editar que alterna entre visualização e edição
    - Ícone de câmera (TbPhotoEdit) para alterar avatar no modo de edição
+   - **Botão para deletar conta** com confirmação e redirecionamento automático após deleção
    - **Listagem de posts do usuário com paginação** (5 posts por página)
    - Controles de navegação (anterior/próxima) para navegar entre páginas
    - Exibição de contador de posts e página atual
@@ -289,6 +290,7 @@ O projeto usa Redux Toolkit Query (RTK Query) para gerenciar estado e requisiç�
   - `useCreateCommentMutation`: Criar um comentário em um post
   - `useUpdateCommentMutation`: Atualizar um comentário próprio
   - `useDeleteCommentMutation`: Deletar um comentário próprio
+  - `useDeleteUserMutation`: Deletar conta do usuário autenticado
 - **Queries** (operações de leitura):
   - `useGetProfileQuery`: Buscar perfil do usuário autenticado
   - `useGetPublicProfileQuery`: Buscar perfil público de outro usuário
@@ -465,6 +467,7 @@ import { getMediaUrl } from '@/utils/api-utils'
 - `GET /api/auth/profile/` - Obter perfil (via `useGetProfileQuery`)
 - `GET /api/auth/profile/{id}/` - Obter perfil público (via `useGetPublicProfileQuery`)
 - `PUT /api/auth/profile/update/` - Atualizar perfil (via `useUpdateProfileMutation`)
+- `DELETE /api/auth/users/me/delete/` - Deletar conta (via `useDeleteUserMutation`)
 - `GET /api/auth/users/?q=termo` - Buscar usuários (via `useSearchUsersQuery`)
 - `POST /api/auth/logout/` - Logout (via `useLogoutMutation`)
 - `POST /api/auth/token/refresh/` - Renovar token (automático via interceptor Axios)
@@ -577,6 +580,7 @@ O projeto usa uma estratégia híbrida para armazenamento de tokens:
 - Preview de avatar ao selecionar nova imagem
 - Redirecionamento inteligente baseado em status
 - Visualização de perfil público de outros usuários
+- **Deletar conta do usuário** com confirmação e limpeza automática de dados (localStorage e redirecionamento)
 
 ✅ **Feed e Posts**
 
