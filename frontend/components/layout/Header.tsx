@@ -1,14 +1,13 @@
 'use client'
-import { useGetProfileQuery, useLogoutMutation } from '@/lib/slice'
+import { useGetProfileQuery } from '@/lib/slice'
 import Container from './Container'
 import { Logo } from '../ui/Logo'
-import { getMediaUrl } from '@/utils/api-utils'
+import { UserProfileLink } from '../ui/UserProfileLink'
 import { CiLogout, CiSearch } from 'react-icons/ci'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { FormEvent, useState, useEffect } from 'react'
+import { FormEvent, useState } from 'react'
 import { Routes } from '@/utils/routes'
-import defaulUserAvatar from '@/public/user.png'
 import { useLogout } from '@/hooks/useLogout'
 
 export default function Header() {
@@ -61,23 +60,18 @@ export default function Header() {
           >
             <CiLogout className="text-3xl text-white" />
           </button>
-          <Link href={'/profile'}>
+          {data && (
+            <UserProfileLink
+              user={data}
+              usernameClassName="pl-2 pr-2 truncate"
+            />
+          )}
+          {isLoading && !data && (
             <div>
-              <img
-                src={
-                  data && typeof data.info.avatar === 'string'
-                    ? getMediaUrl(`${data.info.avatar}`)
-                    : typeof defaulUserAvatar === 'string'
-                      ? defaulUserAvatar
-                      : (defaulUserAvatar as any).src
-                }
-                className="rounded-full w-12 h-12 object-cover m-auto"
-              />
-              <h2 className="pl-2 pr-2 truncate">
-                {isLoading ? 'Carregando...' : `${data?.username}`}
-              </h2>
+              <div className="rounded-full w-12 h-12 object-cover m-auto bg-gray-300 animate-pulse" />
+              <h2 className="pl-2 pr-2 truncate">Carregando...</h2>
             </div>
-          </Link>
+          )}
         </div>
         <div className="flex items-center justify-center lg:justify-end flex-1 order-3 lg:order-3">
           <form
