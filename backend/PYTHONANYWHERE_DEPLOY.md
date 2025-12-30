@@ -68,7 +68,7 @@ Cole:
 # ============================================================================
 SECRET_KEY=sua-chave-secreta-gerada-aqui
 DEBUG=False
-ALLOWED_HOSTS=Phillipml.pythonanywhere.com,www.Phillipml.pythonanywhere.com
+ALLOWED_HOSTS=seu-usuario.pythonanywhere.com,www.seu-usuario.pythonanywhere.com
 
 # ============================================================================
 # Configuração de Banco de Dados
@@ -76,14 +76,14 @@ ALLOWED_HOSTS=Phillipml.pythonanywhere.com,www.Phillipml.pythonanywhere.com
 # ============================================================================
 
 # Opção 1: DATABASE_URL (RECOMENDADO - mais fácil e portátil)
-DATABASE_URL=mysql://Phillipml:sua-senha-mysql@Phillipml.mysql.pythonanywhere-services.com:3306/Phillipml$nome-do-banco
+DATABASE_URL=mysql://seu-usuario:sua-senha-mysql@seu-usuario.mysql.pythonanywhere-services.com:3306/seu-usuario$nome-do-banco
 
 # Opção 2: Variáveis Individuais (alternativa)
 # Use apenas se não quiser usar DATABASE_URL
-# DB_NAME=Phillipml$nome-do-banco
-# DB_USER=Phillipml
+# DB_NAME=seu-usuario$nome-do-banco
+# DB_USER=seu-usuario
 # DB_PASSWORD=sua-senha-mysql
-# DB_HOST=Phillipml.mysql.pythonanywhere-services.com
+# DB_HOST=seu-usuario.mysql.pythonanywhere-services.com
 # DB_PORT=3306
 
 # ============================================================================
@@ -101,9 +101,9 @@ make get_secret_key
 **Obter informações do MySQL:**
 1. Acesse a aba "Databases" no Python Anywhere
 2. Se ainda não criou, crie um novo banco MySQL
-3. Anote o nome do banco (formato: `Phillipml$nome-do-banco`)
+3. Anote o nome do banco (formato: `seu-usuario$nome-do-banco`)
 4. Use seu usuário e senha do Python Anywhere
-5. O host será: `Phillipml.mysql.pythonanywhere-services.com`
+5. O host será: `seu-usuario.mysql.pythonanywhere-services.com`
 
 **Importante:** O projeto usa `dj-database-url` para interpretar o `DATABASE_URL`. O formato é:
 - MySQL: `mysql://usuario:senha@host:porta/nome-do-banco`
@@ -143,13 +143,13 @@ No painel do PythonAnywhere, vá até a aba "Web".
 
 #### B. Configure o WSGI file
 
-Edite o arquivo WSGI (`/var/www/Phillipml_pythonanywhere_com_wsgi.py`):
+Edite o arquivo WSGI (`/var/www/seu-usuario_pythonanywhere_com_wsgi.py`):
 
 ```python
 import os
 import sys
 
-path = '/home/Phillipml/pingMe/backend'
+path = '/home/seu-usuario/pingMe/backend'
 if path not in sys.path:
     sys.path.append(path)
 
@@ -163,11 +163,11 @@ application = get_wsgi_application()
 
 Na aba "Web", vá em "Static files":
 - URL: `/static/`
-- Directory: `/home/Phillipml/pingMe/backend/staticfiles`
+- Directory: `/home/seu-usuario/pingMe/backend/staticfiles`
 
 E para media:
 - URL: `/media/`
-- Directory: `/home/Phillipml/pingMe/backend/media`
+- Directory: `/home/seu-usuario/pingMe/backend/media`
 
 #### D. Reload Web App
 
@@ -176,8 +176,8 @@ Clique em "Reload" na aba "Web"
 ### 4. Testar
 
 Acesse:
-- API: `https://Phillipml.pythonanywhere.com/api/`
-- Admin: `https://Phillipml.pythonanywhere.com/admin/`
+- API: `https://seu-usuario.pythonanywhere.com/api/`
+- Admin: `https://seu-usuario.pythonanywhere.com/admin/`
 
 ### 5. Configurar CORS (Frontend)
 
@@ -226,7 +226,7 @@ staticfiles/
 
 - Apenas 1 web app
 - MySQL disponível (não PostgreSQL)
-- Domínio: `Phillipml.pythonanywhere.com`
+- Domínio: `seu-usuario.pythonanywhere.com`
 - App dorme após 90 dias de inatividade (precisa acessar para "acordar")
 
 ## 🐛 Troubleshooting
