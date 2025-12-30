@@ -104,7 +104,7 @@ python3.10 -c "from django.core.management.utils import get_random_secret_key; p
 **Importante:** O projeto usa `dj-database-url` para interpretar o `DATABASE_URL`. O formato é:
 - MySQL: `mysql://usuario:senha@host:porta/nome-do-banco`
 
-#### E. Executar Migrações
+#### D. Executar Migrações
 
 ```bash
 cd ~/pingMe/backend
@@ -114,13 +114,13 @@ python3.10 manage.py migrate token_blacklist
 
 **Importante:** Execute também as migrações do token_blacklist!
 
-#### F. Coletar Arquivos Estáticos
+#### E. Coletar Arquivos Estáticos
 
 ```bash
 python3.10 manage.py collectstatic --noinput
 ```
 
-#### G. Criar Superusuário (Opcional)
+#### F. Criar Superusuário (Opcional)
 
 ```bash
 python3.10 manage.py createsuperuser
@@ -129,6 +129,8 @@ python3.10 manage.py createsuperuser
 ### 3. Configurar o Web App
 
 #### A. Acesse a aba "Web"
+
+No painel do PythonAnywhere, vá até a aba "Web".
 
 #### B. Configure o WSGI file
 

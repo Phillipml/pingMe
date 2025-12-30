@@ -218,15 +218,32 @@ npm run lint         # Executa ESLint e corrige erros
 npm run format       # Formata código com Prettier
 ```
 
+**Nota:** Para executar os comandos do diretório raiz, use o Makefile:
+```bash
+make dev-frontend    # Inicia servidor frontend
+make front-lint      # Executa lint do frontend
+make front-format    # Formata código do frontend
+```
+
 ## Configuração
 
 ### Variáveis de Ambiente
 
-Crie um arquivo `.env.local` no diretório `frontend/` (opcional):
+Crie um arquivo `.env.local` no diretório `frontend/`:
 
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:8000/api
+NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
 ```
+
+**Para acesso via celular**, use o IP da sua máquina:
+
+```env
+NEXT_PUBLIC_API_URL=http://192.168.0.18:8000/api
+NEXT_PUBLIC_BACKEND_URL=http://192.168.0.18:8000
+```
+
+**Importante:** Substitua `192.168.0.18` pelo IP real da sua máquina. Reinicie o servidor do frontend após alterar essas variáveis.
 
 ### API Base URL
 
@@ -235,6 +252,8 @@ A URL base da API está configurada em `frontend/utils/api-utils.ts`:
 ```typescript
 export const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api'
+export const BACKEND_BASE_URL =
+  process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'
 ```
 
 ## Autenticação

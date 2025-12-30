@@ -1624,7 +1624,8 @@ O endpoint `PUT /auth/profile/update/` retorna apenas os campos do perfil (sem o
 - Apenas o autor pode editar ou deletar seus próprios posts
 
 ### Paginação
-- Todos os endpoints de listagem retornam 20 itens por página
+- Feed e listagens gerais: 20 itens por página (padrão do DRF)
+- Posts de usuário específico: 5 itens por página
 - Use `?page=2` para próxima página
 - Resposta inclui `count`, `next`, `previous` e `results`
 
