@@ -1,6 +1,6 @@
 # Documentação da API PingMe
 
-Documentação completa da API REST. Explica como usar todos os endpoints para autenticação, posts, curtidas, comentários e seguir usuários.
+**Projeto Pessoal** - Documentação completa da API REST. Explica como usar todos os endpoints para autenticação, posts, curtidas, comentários e seguir usuários.
 
 ## Índice
 
@@ -1653,8 +1653,12 @@ O endpoint `PUT /auth/profile/update/` retorna apenas os campos do perfil (sem o
 - **Base URL Local:** `http://localhost:8000/api/`
 - **Admin Panel:** `http://localhost:8000/admin/` (requer superusuário)
 - **Media Files:** `http://localhost:8000/media/`
-- **Repositório:** [GitHub](https://github.com/phillipml/pingMe)
+- **Repositório:** [GitHub](https://github.com/Phillipml/pingMe)
 - **Autor:** Phillip Menezes - contato.phillip.menezes@gmail.com
+
+## Sobre o Projeto
+
+Este é um projeto pessoal desenvolvido para fins de aprendizado e portfólio.
 
 ## Tecnologias e Ferramentas
 

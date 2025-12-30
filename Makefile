@@ -1,13 +1,31 @@
 POETRY=cd backend && poetry run
 NPM=cd frontend && npm run
 
-poetry-install:
+install:
+	cd backend && poetry install
+	cd frontend && npm install
+
+install-prod:
+	cd backend && poetry install --only=main
+	cd frontend && npm ci --production
+
+install-backend:
 	cd backend && poetry install
 
-poetry-setup: poetry-install
+install-backend-prod:
+	cd backend && poetry install --only=main
 
-get_secret_key:
-	$(POETRY) python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+install-frontend:
+	cd frontend && npm install
+
+install-frontend-prod:
+	cd frontend && npm ci --production
+
+dev-backend:
+	$(POETRY) python manage.py runserver 0.0.0.0:8000
+
+dev-frontend:
+	$(NPM) dev
 
 makemigrations:
 	$(POETRY) python manage.py makemigrations
@@ -23,11 +41,8 @@ createsuperuser:
 check:
 	$(POETRY) python manage.py check
 
-dev-backend:
-	$(POETRY) python manage.py runserver 0.0.0.0:8000
-
-dev-frontend:
-	$(NPM) dev
+get_secret_key:
+	$(POETRY) python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 
 test:
 	$(POETRY) pytest
@@ -37,8 +52,7 @@ test-auth:
 
 test-coverage:
 	$(POETRY) pytest --cov=. --cov-report=html
-front-format:
-	$(NPM) format
+
 back-format:
 	$(POETRY) black .
 
@@ -49,6 +63,9 @@ type-check:
 	$(POETRY) mypy .
 
 quality: back-format back-lint type-check
+
+front-format:
+	$(NPM) format
 
 front-lint:
 	$(NPM) lint
