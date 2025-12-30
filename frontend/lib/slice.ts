@@ -49,7 +49,7 @@ export const apiSlice = createApi({
         method: 'POST',
         body: credentials
       }),
-      invalidatesTags: ['User']
+      invalidatesTags: ['User', 'Post']
     }),
     register: builder.mutation<LoginRegisterResponse, RegisterRequest>({
       query: (userData) => ({
@@ -69,7 +69,7 @@ export const apiSlice = createApi({
         method: 'POST',
         body: logoutData
       }),
-      invalidatesTags: ['User']
+      invalidatesTags: ['User', 'Post']
     }),
     updateProfile: builder.mutation<Profile, Profile | FormData>({
       query: (profileData) => ({
