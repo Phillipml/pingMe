@@ -430,7 +430,7 @@ ALLOWED_HOSTS=localhost,127.0.0.1
 DATABASE_URL=mysql://postgres:postgres@localhost:3306/pingme
 
 # Produção (PythonAnywhere - substitua pelos valores reais):
-# DATABASE_URL=mysql://Phillipml:sua-senha@Phillipml.mysql.pythonanywhere-services.com:3306/Phillipml$nome-do-banco
+# DATABASE_URL=mysql://seu-usuario:sua-senha@seu-usuario.mysql.pythonanywhere-services.com:3306/seu-usuario$nome-do-banco
 
 # Opção 2: Variáveis Individuais (use apenas se não usar DATABASE_URL)
 # Descomente as linhas abaixo caso prefira essa abordagem
