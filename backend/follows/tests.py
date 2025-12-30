@@ -33,15 +33,6 @@ def user2():
 
 
 @pytest.fixture
-def user3():
-    user = User.objects.create_user(
-        username="user3", email="user3@example.com", password="pass123"
-    )
-    Profile.objects.create(user=user)
-    return user
-
-
-@pytest.fixture
 def authenticated_client(api_client, user1):
     refresh = RefreshToken.for_user(user1)
     api_client.credentials(HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}")
@@ -52,13 +43,11 @@ def authenticated_client(api_client, user1):
 class TestFollowUser:
     def test_follow_user(self, authenticated_client, user1, user2):
         response = authenticated_client.post(
-            "/api/follows/follow/", {"following": user2.id}
+            "/api/follows/follow/",
+            {"following": user2.id},
         )
         assert response.status_code == status.HTTP_201_CREATED
         assert Follow.objects.filter(follower=user1, following=user2).exists()
-        assert "follow" in response.data
-        assert "follower" in response.data["follow"]
-        assert "following" in response.data["follow"]
         assert "avatar" in response.data["follow"]["follower"]
         assert "avatar" in response.data["follow"]["following"]
 
@@ -75,7 +64,8 @@ class TestFollowUser:
     def test_follow_already_following(self, authenticated_client, user1, user2):
         Follow.objects.create(follower=user1, following=user2)
         response = authenticated_client.post(
-            "/api/follows/follow/", {"following": user2.id}
+            "/api/follows/follow/",
+            {"following": user2.id},
         )
         assert response.status_code == status.HTTP_400_BAD_REQUEST
 
@@ -88,7 +78,10 @@ class TestUnfollowUser:
             "/api/follows/unfollow/", {"following": user2.id}
         )
         assert response.status_code == status.HTTP_200_OK
-        assert not Follow.objects.filter(follower=user1, following=user2).exists()
+        assert not Follow.objects.filter(
+            follower=user1,
+            following=user2,
+        ).exists()
 
     def test_unfollow_not_following(self, authenticated_client, user2):
         response = authenticated_client.delete(
