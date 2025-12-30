@@ -13,21 +13,28 @@ export default function Register() {
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
   const [register, { isLoading }] = useRegisterMutation()
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
-    try {
-      await register({ username, email, password }).unwrap()
-      router.push('/user-created')
-    } catch (err: unknown) {
-      const error = err as { data?: { error?: string; message?: string } }
-      setError(
-        error?.data?.error ||
-          error?.data?.message ||
-          'Erro ao criar conta. Verifique os dados informados.'
-      )
+    if (password !== confirmPassword) {
+      alert('As senhas não são iguais')
+      setPassword('')
+      setConfirmPassword('')
+    } else {
+      try {
+        await register({ username, email, password }).unwrap()
+        router.push('/user-created')
+      } catch (err: unknown) {
+        const error = err as { data?: { error?: string; message?: string } }
+        setError(
+          error?.data?.error ||
+            error?.data?.message ||
+            'Erro ao criar conta. Verifique os dados informados.'
+        )
+      }
     }
   }
 
@@ -66,6 +73,14 @@ export default function Register() {
             value={password}
             placeholder="*Password"
             onChange={(e) => setPassword(e.target.value)}
+            className="text-sm sm:text-base"
+            required
+          />
+          <Input
+            type="password"
+            value={confirmPassword}
+            placeholder="*Confirm Password"
+            onChange={(e) => setConfirmPassword(e.target.value)}
             className="text-sm sm:text-base"
             required
           />
