@@ -40,3 +40,48 @@ isort = "^7.0.0"
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 88
+target-version = ['py313']
+exclude = '''
+/(
+    \.git
+  | \.venv
+  | migrations
+  | __pycache__
+)/
+'''
+
+[tool.flake8]
+max-line-length = 88
+exclude = [
+    ".git",
+    "__pycache__",
+    "migrations",
+    ".venv",
+]
+ignore = ["E203", "E266", "E501", "W503"]
+per-file-ignores = [
+    "*/migrations/*:E501",
+]
+
+[tool.mypy]
+python_version = "3.13"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
+ignore_missing_imports = true
+exclude = [
+    "migrations/",
+    "__pycache__/",
+    ".venv/",
+    "venv/",
+]
+plugins = ["mypy_django_plugin.main"]
+show_error_codes = true
+# Ignorar erros comuns do Django que não são críticos
+disable_error_code = ["assignment", "arg-type", "dict-item", "import-untyped"]
+
+[tool.django-stubs]
+django_settings_module = "backend.settings"

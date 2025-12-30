@@ -1,6 +1,7 @@
 from pathlib import Path
 from datetime import timedelta
 from decouple import config, Csv
+import sys
 import pymysql
 import dj_database_url
 
@@ -11,7 +12,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config("SECRET_KEY", default=None)
 if not SECRET_KEY:
     raise ValueError(
-        "SECRET_KEY precisa ser configurada no arquivo .env. Execute: make get_secret_keys"
+        "SECRET_KEY precisa ser configurada no arquivo .env. "
+        "Execute: make get_secret_keys"
     )
 
 DEBUG = config("DEBUG", default=False, cast=bool)
@@ -70,55 +72,70 @@ TEMPLATES = [
 WSGI_APPLICATION = "backend.wsgi.application"
 
 
-DATABASE_URL = config("DATABASE_URL", default=None)
+IS_TESTING = (
+    "test" in sys.argv or "pytest" in sys.argv[0] or "pytest" in " ".join(sys.argv)
+)
 
-if DATABASE_URL:
-    DATABASES = {"default": dj_database_url.parse(DATABASE_URL)}
+if IS_TESTING:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": ":memory:",
+        }
+    }
 else:
-    DB_NAME = config("DB_NAME", default="")
-    DB_USER = config("DB_USER", default="")
-    DB_PASSWORD = config("DB_PASSWORD", default="")
-    DB_HOST = config("DB_HOST", default="")
-    DB_PORT = config("DB_PORT", default="3306")
+    DATABASE_URL = config("DATABASE_URL", default=None)
 
-    if all([DB_NAME, DB_USER, DB_PASSWORD, DB_HOST]):
-        DATABASES = {
-            "default": {
-                "ENGINE": "django.db.backends.mysql",
-                "NAME": DB_NAME,
-                "USER": DB_USER,
-                "PASSWORD": DB_PASSWORD,
-                "HOST": DB_HOST,
-                "PORT": DB_PORT,
-                "OPTIONS": {
-                    "charset": "utf8mb4",
-                    "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
-                },
-            }
-        }
+    if DATABASE_URL:
+        DATABASES = {"default": dj_database_url.parse(DATABASE_URL)}
     else:
-        DATABASES = {
-            "default": {
-                "ENGINE": "django.db.backends.sqlite3",
-                "NAME": BASE_DIR / "db.sqlite3",
+        DB_NAME = config("DB_NAME", default="")
+        DB_USER = config("DB_USER", default="")
+        DB_PASSWORD = config("DB_PASSWORD", default="")
+        DB_HOST = config("DB_HOST", default="")
+        DB_PORT = config("DB_PORT", default="3306")
+
+        if all([DB_NAME, DB_USER, DB_PASSWORD, DB_HOST]):
+            DATABASES = {
+                "default": {
+                    "ENGINE": "django.db.backends.mysql",
+                    "NAME": DB_NAME,
+                    "USER": DB_USER,
+                    "PASSWORD": DB_PASSWORD,
+                    "HOST": DB_HOST,
+                    "PORT": DB_PORT,
+                    "OPTIONS": {
+                        "charset": "utf8mb4",
+                        "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+                    },
+                }
             }
-        }
+        else:
+            DATABASES = {
+                "default": {
+                    "ENGINE": "django.db.backends.sqlite3",
+                    "NAME": BASE_DIR / "db.sqlite3",
+                }
+            }
 
 
 AUTH_USER_MODEL = "authentication.User"
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": (
+            "django.contrib.auth.password_validation."
+            "UserAttributeSimilarityValidator"
+        ),
     },
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "NAME": ("django.contrib.auth.password_validation." "MinimumLengthValidator"),
     },
     {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+        "NAME": ("django.contrib.auth.password_validation." "CommonPasswordValidator"),
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        "NAME": ("django.contrib.auth.password_validation." "NumericPasswordValidator"),
     },
 ]
 REST_FRAMEWORK = {
@@ -131,7 +148,7 @@ REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",
     ],
-    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "DEFAULT_PAGINATION_CLASS": ("rest_framework.pagination.PageNumberPagination"),
     "PAGE_SIZE": 20,
 }
 SIMPLE_JWT = {

@@ -9,7 +9,6 @@ from .serializers import (
     FollowCreateSerializer,
     FollowerFollowingSerializer,
 )
-from authentication.models import User
 
 
 @api_view(["POST"])

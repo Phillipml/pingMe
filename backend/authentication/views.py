@@ -9,7 +9,6 @@ from .serializers import (
     UserSerializer,
     UserRegistrationSerializer,
     ProfileSerializer,
-    ProfileDetailSerializer,
     UserWithProfileSerializer,
 )
 
@@ -103,7 +102,8 @@ def token_refresh(request):
 
     if not refresh_token:
         return Response(
-            {"error": "Refresh token é obrigatório"}, status=status.HTTP_400_BAD_REQUEST
+            {"error": "Refresh token é obrigatório"},
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
     try:
@@ -125,7 +125,8 @@ def token_refresh(request):
         return response
     except Exception:
         return Response(
-            {"error": "Token inválido ou expirado"}, status=status.HTTP_401_UNAUTHORIZED
+            {"error": "Token inválido ou expirado"},
+            status=status.HTTP_401_UNAUTHORIZED,
         )
 
 
@@ -136,7 +137,8 @@ def logout(request):
 
     if not refresh_token:
         return Response(
-            {"error": "Refresh token é obrigatório"}, status=status.HTTP_400_BAD_REQUEST
+            {"error": "Refresh token é obrigatório"},
+            status=status.HTTP_400_BAD_REQUEST,
         )
 
     try:
@@ -169,7 +171,8 @@ def profile_detail(request, user_id):
         return Response(serializer.data)
     except User.DoesNotExist:
         return Response(
-            {"error": "Usuário não encontrado"}, status=status.HTTP_404_NOT_FOUND
+            {"error": "Usuário não encontrado"},
+            status=status.HTTP_404_NOT_FOUND,
         )
 
 

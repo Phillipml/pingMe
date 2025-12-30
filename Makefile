@@ -46,9 +46,9 @@ back-lint:
 	$(POETRY) flake8
 
 type-check:
-	$(POETRY) mypy
+	$(POETRY) mypy .
 
-quality: format back-lint type-check
+quality: back-format back-lint type-check
 
 front-lint:
 	$(NPM) lint
