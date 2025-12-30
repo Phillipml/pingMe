@@ -127,10 +127,10 @@ make test-auth
 make test-coverage
 
 # Qualidade
-make format
-make lint
-make type-check
-make quality
+make back-format     # Formata código (black)
+make back-lint       # Verifica erros (flake8)
+make type-check      # Verifica tipos (mypy)
+make quality         # Roda tudo (format + lint + type-check)
 ```
 
 ### Testes
@@ -166,9 +166,10 @@ poetry run pytest
 
 ```bash
 # Do diretório raiz (recomendado)
-make format
-make lint
-make quality
+make back-format     # Formata código (black)
+make back-lint       # Verifica erros (flake8)
+make type-check      # Verifica tipos (mypy)
+make quality         # Roda tudo (format + lint + type-check)
 ```
 
 ## Docker

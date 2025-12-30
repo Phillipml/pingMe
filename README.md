@@ -326,10 +326,11 @@ make test-auth         # Só autenticação
 make test-coverage     # Com cobertura
 
 # Qualidade de código
-make format            # Formata backend (black)
-make back-lint         # Verifica erros backend (flake8)
-make front-lint        # Verifica erros frontend (eslint)
-make quality           # Roda tudo (backend)
+make back-format      # Formata backend (black)
+make back-lint        # Verifica erros backend (flake8)
+make front-format     # Formata frontend (prettier)
+make front-lint       # Verifica erros frontend (eslint)
+make quality          # Roda tudo (backend: format + lint + type-check)
 
 # Docker
 make docker-up         # Inicia containers
@@ -391,7 +392,9 @@ O sistema suporta configuração flexível de banco de dados com três níveis d
   - Diretório: `backend/media/`
   - Avatares: `backend/media/avatars/`
   - Acesso via URL: `/media/avatars/nome-arquivo.jpg`
-- **Paginação**: 20 itens por página (padrão do DRF)
+- **Paginação**: 
+  - Feed e listagens gerais: 20 itens por página (padrão do DRF)
+  - Posts de usuário específico: 5 itens por página
 - **Timezone**: UTC
 - **Language**: en-us
 

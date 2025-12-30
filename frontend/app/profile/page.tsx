@@ -5,6 +5,8 @@ import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import {
   useDeleteUserMutation,
+  useGetMyFollowersQuery,
+  useGetMyFollowingQuery,
   useGetProfileQuery,
   useUpdateProfileMutation
 } from '@/lib/slice'
@@ -16,6 +18,10 @@ import CenterContainer from '@/components/layout/CenterContainer'
 import { AiOutlineLoading } from 'react-icons/ai'
 import UserPostsList from '@/components/layout/UserPostsList'
 import { useRouter } from 'next/navigation'
+import { IoMdCloseCircleOutline } from 'react-icons/io'
+import { FollowingResponse } from '@/utils/api-interfaces'
+import Link from 'next/link'
+import Modal from '@/components/layout/Modal'
 
 export default function Profile() {
   const router = useRouter()
@@ -27,10 +33,20 @@ export default function Profile() {
   const [bio, setBio] = useState('')
   const [avatar, setAvatar] = useState<File | null>(null)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
-  const { data, isLoading, refetch } = useGetProfileQuery()
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation()
   const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation()
+  const [showModal, setShowModal] = useState(false)
+  const [modalContent, setModalContent] = useState<FollowingResponse | null>(
+    null
+  )
+  const { data, isLoading, refetch } = useGetProfileQuery()
+  const { data: followers } = useGetMyFollowersQuery()
+  const { data: following } = useGetMyFollowingQuery()
 
+  const handleModal = (data: FollowingResponse) => {
+    setShowModal(true)
+    setModalContent(data)
+  }
   const handleStartEdit = () => {
     if (data) {
       setUsername(data.username || '')
@@ -301,12 +317,48 @@ export default function Profile() {
             </Form>
           )}
         </div>
-        <UserPostsList
-          userId={data?.id}
-          showDelete={true}
-          onPostDelete={refetch}
-          className="w-full lg:w-1/2"
-        />
+        <div className="w-full lg:w-1/2">
+          <div className="flex justify-center items-center gap-4 p-4 mb-4 border-b">
+            <Button onClick={() => following && handleModal(following)}>
+              {following?.count} seguindo
+            </Button>
+            <Button onClick={() => followers && handleModal(followers)}>
+              {followers?.count} seguidores
+            </Button>
+          </div>
+
+          <Modal isOpen={showModal} onClose={() => setShowModal(false)}>
+            {modalContent?.count === 0 ? (
+              <p>Nenhum usuário</p>
+            ) : (
+              modalContent &&
+              modalContent.results.map((follower, i) => (
+                <Link
+                  key={follower.id}
+                  href={`user-profile/${follower.id}`}
+                  className={`${i % 2 === 0 ? 'bg-gray-950' : ''} flex gap-4 w-full p-4`}
+                >
+                  <Image
+                    src={follower?.avatar ?? ''}
+                    alt={follower.username}
+                    width={48}
+                    height={48}
+                    className="rounded-full max-h-12 object-cover"
+                    unoptimized
+                  />
+                  <p>{follower.username}</p>
+                </Link>
+              ))
+            )}
+          </Modal>
+
+          <UserPostsList
+            userId={data?.id}
+            showDelete={true}
+            onPostDelete={refetch}
+            className="w-full"
+          />
+        </div>
       </Container>
     </>
   )
