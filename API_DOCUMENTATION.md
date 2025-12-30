@@ -1670,3 +1670,6 @@ O endpoint `PUT /auth/profile/update/` retorna apenas os campos do perfil (sem o
 - Poetry para gerenciamento de dependências
 - Docker Compose para MySQL 8.0 e Redis 7.2
 - Variáveis de ambiente via python-decouple
+- Black 25.9.0 (formatação - 88 caracteres)
+- flake8 7.3.0 (lint - 88 caracteres, alinhado com black)
+- mypy 1.18.2 + django-stubs 5.2.7 (verificação de tipos)

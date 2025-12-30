@@ -46,7 +46,7 @@ pingMe/
 │   │   ├── views.py            # Endpoints de autenticação
 │   │   ├── serializers.py      # Serializers de usuário e perfil
 │   │   ├── urls.py             # Rotas de autenticação
-│   │   └── tests.py             # Testes de autenticação
+│   │   └── tests.py            # Testes de autenticação
 │   ├── posts/                  # App de posts, curtidas e comentários
 │   │   ├── models.py           # Post, Like, Comment
 │   │   ├── views.py            # Endpoints de posts
@@ -68,7 +68,8 @@ pingMe/
 │   ├── media/                  # Arquivos de mídia (avatares)
 │   ├── db.sqlite3              # Banco de dados SQLite (dev)
 │   ├── manage.py               # Script de gerenciamento Django
-│   ├── pyproject.toml          # Dependências (Poetry)
+│   ├── pyproject.toml          # Dependências (Poetry) e configurações
+│   ├── .flake8                 # Configuração do flake8
 │   ├── requirements.txt        # Dependências (pip)
 │   ├── docker-compose.yml      # Configuração Docker (MySQL + Redis)
 │   ├── Dockerfile              # Dockerfile do backend
@@ -125,7 +126,7 @@ Backend:
 - Redis 7.2 (broker de mensagens e cache)
 - PyMySQL 1.1.0 (driver MySQL)
 - python-decouple 3.8 (gerenciamento de variáveis de ambiente)
-- dj-database-url 2.3.0 (configuração flexível de banco via URL)
+- dj-database-url 2.1.0 (configuração flexível de banco via URL)
 - Poetry (gerenciamento de dependências)
 - SQLite (fallback) / MySQL 8.0 (via Docker ou produção)
 
@@ -141,8 +142,8 @@ Frontend:
 
 Ferramentas de Desenvolvimento:
 - pytest 8.4.2 + pytest-django 4.11.1 + pytest-cov 7.0.0 (testes)
-- black 25.9.0 (formatação de código)
-- flake8 7.3.0 (lint)
+- black 25.9.0 (formatação de código - linha 88 caracteres)
+- flake8 7.3.0 (lint - configurado para 88 caracteres, alinhado com black)
 - mypy 1.18.2 + django-stubs 5.2.7 (verificação de tipos)
 - bandit 1.8.6 (análise de segurança)
 - isort 7.0.0 (organização de imports)
@@ -328,6 +329,7 @@ make test-coverage     # Com cobertura
 # Qualidade de código
 make back-format      # Formata backend (black)
 make back-lint        # Verifica erros backend (flake8)
+make type-check       # Verifica tipos backend (mypy)
 make front-format     # Formata frontend (prettier)
 make front-lint       # Verifica erros frontend (eslint)
 make quality          # Roda tudo (backend: format + lint + type-check)
@@ -337,7 +339,14 @@ make docker-up         # Inicia containers
 make docker-down       # Para containers
 ```
 
-Importante: não precisa ativar o shell do Poetry manualmente. O Makefile já faz isso automaticamente.
+**Importante:** Não precisa ativar o shell do Poetry manualmente. O Makefile já faz isso automaticamente.
+
+**Nota sobre Qualidade de Código:**
+- O comando `make quality` executa: `back-format` (black), `back-lint` (flake8) e `type-check` (mypy)
+- Black e flake8 estão configurados para 88 caracteres por linha (padrão recomendado do Black)
+- Arquivos de migração são automaticamente excluídos das verificações (gerados automaticamente pelo Django)
+- O mypy está configurado para Django com django-stubs e ignora erros comuns do framework
+- Configurações estão em `backend/.flake8` e `backend/pyproject.toml`
 
 ## Configurações
 

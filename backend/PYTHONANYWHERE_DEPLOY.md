@@ -104,6 +104,10 @@ python3.10 -c "from django.core.management.utils import get_random_secret_key; p
 **Importante:** O projeto usa `dj-database-url` para interpretar o `DATABASE_URL`. O formato é:
 - MySQL: `mysql://usuario:senha@host:porta/nome-do-banco`
 
+**Nota sobre Qualidade de Código:**
+- O projeto usa Black (88 caracteres), flake8 (88 caracteres) e mypy para qualidade de código
+- Execute `make quality` antes de fazer deploy para garantir que o código está formatado e sem erros
+
 #### D. Executar Migrações
 
 ```bash
@@ -190,6 +194,13 @@ git pull
 poetry install  # ou pip install -r requirements.txt
 python3.10 manage.py migrate
 python3.10 manage.py collectstatic --noinput
+```
+
+**Importante:** Antes de fazer deploy, certifique-se de que o código está formatado e sem erros:
+```bash
+# Se estiver usando Poetry localmente
+cd ~/pingMe
+make quality  # Formata código, verifica lint e tipos
 ```
 
 Depois, recarregue o web app.
