@@ -221,8 +221,8 @@ npm run format       # Formata código com Prettier
 **Nota:** Para executar os comandos do diretório raiz, use o Makefile:
 ```bash
 make dev-frontend    # Inicia servidor frontend
-make front-lint      # Executa lint do frontend
-make front-format    # Formata código do frontend
+make front-lint      # Executa lint do frontend (ESLint)
+make front-format    # Formata código do frontend (Prettier)
 ```
 
 ## Configuração

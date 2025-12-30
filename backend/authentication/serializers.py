@@ -44,7 +44,14 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ["username", "first_name", "last_name", "bio", "avatar", "status"]
+        fields = [
+            "username",
+            "first_name",
+            "last_name",
+            "bio",
+            "avatar",
+            "status",
+        ]
 
     def validate_username(self, value):
         if value:
@@ -79,7 +86,9 @@ class ProfileSerializer(serializers.ModelSerializer):
             ):
                 raise serializers.ValidationError(
                     {
-                        "username": "Este username já está em uso. Por favor, escolha outro."
+                        "username": (
+                            "Este username já está em uso. " "Por favor, escolha outro."
+                        )
                     }
                 )
             user = instance.user

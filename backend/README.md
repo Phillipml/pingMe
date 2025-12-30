@@ -127,9 +127,9 @@ make test-auth
 make test-coverage
 
 # Qualidade
-make back-format     # Formata código (black)
-make back-lint       # Verifica erros (flake8)
-make type-check      # Verifica tipos (mypy)
+make back-format     # Formata código (black - 88 caracteres)
+make back-lint       # Verifica erros (flake8 - 88 caracteres, alinhado com black)
+make type-check      # Verifica tipos (mypy com django-stubs)
 make quality         # Roda tudo (format + lint + type-check)
 ```
 
@@ -166,11 +166,17 @@ poetry run pytest
 
 ```bash
 # Do diretório raiz (recomendado)
-make back-format     # Formata código (black)
-make back-lint       # Verifica erros (flake8)
-make type-check      # Verifica tipos (mypy)
+make back-format     # Formata código (black - 88 caracteres)
+make back-lint       # Verifica erros (flake8 - 88 caracteres, alinhado com black)
+make type-check      # Verifica tipos (mypy com django-stubs)
 make quality         # Roda tudo (format + lint + type-check)
 ```
+
+**Configuração:**
+- Black e flake8 configurados para 88 caracteres por linha (padrão recomendado do Black)
+- Arquivos de migração são automaticamente excluídos das verificações
+- O mypy está configurado para Django com django-stubs e ignora erros comuns do framework
+- Configurações estão em `backend/.flake8` e `backend/pyproject.toml`
 
 ## Docker
 
@@ -334,11 +340,12 @@ Para acessar a API de outros dispositivos na mesma rede Wi-Fi:
 
 ## Segurança
 
-- Autenticação JWT
-- CORS configurado
-- Validação de senhas
+- Autenticação JWT com tokens em cookies HttpOnly e body da resposta
+- CORS configurado para origens específicas
+- Validação de senhas (mínimo 8 caracteres)
 - Validação de username único (não permite duplicatas no registro e atualização)
-- Upload seguro (apenas autenticados)
+- Upload seguro (apenas autenticados, formatos JPG, PNG, GIF, WebP)
+- Blacklist de tokens no logout
 
 ## Upload de Imagens
 
@@ -375,13 +382,13 @@ Principais:
 - Redis 7.2 (broker para Celery)
 - PyMySQL 1.1.0 (driver MySQL)
 - python-decouple 3.8 (variáveis de ambiente)
-- dj-database-url 2.3.0 (configuração flexível de banco)
+- dj-database-url 2.1.0 (configuração flexível de banco)
 - Poetry (gerenciamento de dependências)
 
 Desenvolvimento:
-- pytest 8.4.2 + pytest-django 4.11.1 + pytest-cov 7.0.0
-- black 25.9.0 (formatação)
-- flake8 7.3.0 (lint)
+- pytest 8.4.2 + pytest-django 4.11.1 + pytest-cov 7.0.0 (testes)
+- black 25.9.0 (formatação - 88 caracteres)
+- flake8 7.3.0 (lint - 88 caracteres, alinhado com black)
 - mypy 1.18.2 + django-stubs 5.2.7 (verificação de tipos)
 - bandit 1.8.6 (análise de segurança)
 - isort 7.0.0 (organização de imports)

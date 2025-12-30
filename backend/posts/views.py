@@ -140,9 +140,12 @@ def comment_create(request, post_id):
     serializer = CommentCreateSerializer(data=request.data)
 
     if serializer.is_valid():
-        # Cria o comentário diretamente garantindo que o author seja request.user
+        # Cria o comentário diretamente garantindo que o author
+        # seja request.user
         comment = Comment.objects.create(
-            author=request.user, post=post, content=serializer.validated_data["content"]
+            author=request.user,
+            post=post,
+            content=serializer.validated_data["content"],
         )
         # Recarrega o comentário do banco com o relacionamento author carregado
         comment = Comment.objects.select_related("author").get(id=comment.id)
@@ -205,7 +208,8 @@ def comment_update_delete(request, comment_id):
     elif request.method == "DELETE":
         comment.delete()
         return Response(
-            {"message": "Comentário deletado com sucesso"}, status=status.HTTP_200_OK
+            {"message": "Comentário deletado com sucesso"},
+            status=status.HTTP_200_OK,
         )
 
 
