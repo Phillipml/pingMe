@@ -33,16 +33,16 @@ export default function Profile() {
   const [bio, setBio] = useState('')
   const [avatar, setAvatar] = useState<File | null>(null)
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
-  const { data, isLoading, refetch } = useGetProfileQuery()
   const [updateProfile, { isLoading: isUpdating }] = useUpdateProfileMutation()
   const [deleteUser, { isLoading: isDeleting }] = useDeleteUserMutation()
-  const { data: followers } = useGetMyFollowersQuery()
-  const { data: following } = useGetMyFollowingQuery()
-
   const [showModal, setShowModal] = useState(false)
   const [modalContent, setModalContent] = useState<FollowingResponse | null>(
     null
   )
+  const { data, isLoading, refetch } = useGetProfileQuery()
+  const { data: followers } = useGetMyFollowersQuery()
+  const { data: following } = useGetMyFollowingQuery()
+
   const handleModal = (data: FollowingResponse) => {
     setShowModal(true)
     setModalContent(data)
