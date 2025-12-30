@@ -3,12 +3,12 @@ import Container from '@/components/layout/Container'
 import { useSearchUsersQuery } from '@/lib/slice'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, Suspense } from 'react'
 import Image from 'next/image'
 import { isExternalUrl } from '@/utils/api-utils'
 import { FaRegUserCircle } from 'react-icons/fa'
 
-export default function Search() {
+function SearchContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const query = searchParams.get('q') || ''
@@ -63,5 +63,19 @@ export default function Search() {
         <h2 className="text-center">Nenhum usuário encontrado</h2>
       )}
     </Container>
+  )
+}
+
+export default function Search() {
+  return (
+    <Suspense
+      fallback={
+        <Container>
+          <div className="text-center">Carregando...</div>
+        </Container>
+      }
+    >
+      <SearchContent />
+    </Suspense>
   )
 }

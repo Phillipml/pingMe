@@ -179,6 +179,7 @@ frontend/
 ### Instalação
 
 1. Instale as dependências (do diretório raiz):
+
    ```bash
    make install-frontend
    ```
@@ -188,6 +189,7 @@ frontend/
    - Por padrão: `http://localhost:8000/api`
 
 3. Inicie o servidor de desenvolvimento:
+
    ```bash
    make dev-frontend
    ```
@@ -211,6 +213,7 @@ npm run format       # Formata código com Prettier
 ```
 
 **Nota:** Para executar os comandos do diretório raiz, use o Makefile:
+
 ```bash
 make dev-frontend    # Inicia servidor frontend
 make front-lint      # Executa lint do frontend (ESLint)
