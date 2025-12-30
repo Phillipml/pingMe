@@ -1,6 +1,6 @@
 # PingMe Frontend
 
-Frontend da aplicação PingMe desenvolvido com Next.js 16, React 19 e TypeScript. Interface moderna e responsiva para rede social com autenticação, feed de posts, perfis de usuário e interações sociais.
+**Projeto Pessoal** - Frontend da aplicação PingMe desenvolvido com Next.js 16, React 19 e TypeScript. Interface moderna e responsiva para rede social com autenticação, feed de posts, perfis de usuário e interações sociais.
 
 ## Tecnologias
 
@@ -178,11 +178,9 @@ frontend/
 
 ### Instalação
 
-1. Instale as dependências:
-
+1. Instale as dependências (do diretório raiz):
    ```bash
-   cd frontend
-   npm install
+   make install-frontend
    ```
 
 2. Configure a URL da API (se necessário):
@@ -190,14 +188,8 @@ frontend/
    - Por padrão: `http://localhost:8000/api`
 
 3. Inicie o servidor de desenvolvimento:
-
    ```bash
-   # Do diretório raiz do projeto
    make dev-frontend
-
-   # Ou diretamente do diretório frontend
-   cd frontend
-   npm run dev
    ```
 
 4. Acesse a aplicação:
@@ -694,6 +686,10 @@ CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
 ## Licença
 
 MIT
+
+## Sobre o Projeto
+
+Este é um projeto pessoal desenvolvido para fins de aprendizado e portfólio.
 
 ## Autor
 

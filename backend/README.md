@@ -1,6 +1,6 @@
 # PingMe Backend
 
-API REST Django para aplicação de rede social. Gerencia autenticação, posts, curtidas, comentários e sistema de seguir usuários.
+**Projeto Pessoal** - API REST Django para aplicação de rede social. Gerencia autenticação, posts, curtidas, comentários e sistema de seguir usuários.
 
 ## Estrutura do Projeto
 
@@ -43,15 +43,13 @@ follows - Gerencia relacionamentos
 
 ### Instalação
 
-1. Instale as dependências
+1. Instale as dependências (do diretório raiz)
    ```bash
-   cd backend
-   poetry install
+   make install-backend
    ```
 
-2. Execute as migrações (do diretório raiz)
+2. Execute as migrações
    ```bash
-   cd ..
    make migrations
    ```
 
@@ -244,7 +242,7 @@ ALLOWED_HOSTS=localhost,127.0.0.1
 DATABASE_URL=mysql://postgres:postgres@localhost:3306/pingme
 
 # Produção (PythonAnywhere - substitua pelos valores reais):
-# DATABASE_URL=mysql://seu-usuario:sua-senha@seu-usuario.mysql.pythonanywhere-services.com:3306/seu-usuario$nome-do-banco
+# DATABASE_URL=mysql://Phillipml:sua-senha@Phillipml.mysql.pythonanywhere-services.com:3306/Phillipml$nome-do-banco
 
 # Opção 2: Variáveis Individuais (use apenas se não usar DATABASE_URL)
 # Descomente as linhas abaixo caso prefira essa abordagem
@@ -263,7 +261,7 @@ CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000
 # CORS_ALLOWED_ORIGINS=http://localhost:3000,http://127.0.0.1:3000,http://192.168.0.18:3000
 ```
 
-**Para gerar uma SECRET_KEY automaticamente:**
+**Para gerar uma SECRET_KEY automaticamente (do diretório raiz):**
 
 ```bash
 make get_secret_key
@@ -394,12 +392,9 @@ Desenvolvimento:
 - isort 7.0.0 (organização de imports)
 - pre-commit 4.3.0 (hooks)
 
-## Contribuindo
+## Sobre o Projeto
 
-1. Crie uma branch
-2. Faça suas alterações
-3. Rode os testes
-4. Abra um Pull Request
+Este é um projeto pessoal desenvolvido para fins de aprendizado e portfólio.
 
 ## Licença
 

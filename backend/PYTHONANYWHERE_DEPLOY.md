@@ -1,6 +1,6 @@
 # 🚀 Deploy no PythonAnywhere
 
-Este guia explica como fazer deploy do backend PingMe no PythonAnywhere.
+**Projeto Pessoal** - Este guia explica como fazer deploy do backend PingMe no PythonAnywhere.
 
 ## 📋 Pré-requisitos
 
@@ -26,26 +26,29 @@ O projeto já está configurado com:
 
 ```bash
 cd ~
-git clone https://github.com/seu-usuario/pingMe.git
+git clone https://github.com/Phillipml/pingMe.git
 cd pingMe/backend
 ```
 
 #### B. Instalar Dependências
 
 ```bash
-pip3.10 install --user poetry
-poetry install
+cd ~/pingMe
+make install-prod
 ```
 
-**OU** se não usar Poetry:
+**OU** manualmente:
 
 ```bash
-pip3.10 install --user -r requirements.txt
+cd ~/pingMe/backend
+pip3.10 install --user poetry
+poetry install --only=main
 ```
 
 Se precisar criar requirements.txt:
 
 ```bash
+cd ~/pingMe/backend
 poetry export -f requirements.txt --output requirements.txt --without-hashes
 ```
 
@@ -65,7 +68,7 @@ Cole:
 # ============================================================================
 SECRET_KEY=sua-chave-secreta-gerada-aqui
 DEBUG=False
-ALLOWED_HOSTS=seu-usuario.pythonanywhere.com,www.seu-usuario.pythonanywhere.com
+ALLOWED_HOSTS=Phillipml.pythonanywhere.com,www.Phillipml.pythonanywhere.com
 
 # ============================================================================
 # Configuração de Banco de Dados
@@ -73,14 +76,14 @@ ALLOWED_HOSTS=seu-usuario.pythonanywhere.com,www.seu-usuario.pythonanywhere.com
 # ============================================================================
 
 # Opção 1: DATABASE_URL (RECOMENDADO - mais fácil e portátil)
-DATABASE_URL=mysql://seu-usuario:sua-senha-mysql@seu-usuario.mysql.pythonanywhere-services.com:3306/seu-usuario$nome-do-banco
+DATABASE_URL=mysql://Phillipml:sua-senha-mysql@Phillipml.mysql.pythonanywhere-services.com:3306/Phillipml$nome-do-banco
 
 # Opção 2: Variáveis Individuais (alternativa)
 # Use apenas se não quiser usar DATABASE_URL
-# DB_NAME=seu-usuario$nome-do-banco
-# DB_USER=seu-usuario
+# DB_NAME=Phillipml$nome-do-banco
+# DB_USER=Phillipml
 # DB_PASSWORD=sua-senha-mysql
-# DB_HOST=seu-usuario.mysql.pythonanywhere-services.com
+# DB_HOST=Phillipml.mysql.pythonanywhere-services.com
 # DB_PORT=3306
 
 # ============================================================================
@@ -91,15 +94,16 @@ CORS_ALLOWED_ORIGINS=https://seu-frontend.com,http://localhost:3000
 
 **Gerar SECRET_KEY:**
 ```bash
-python3.10 -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+cd ~/pingMe
+make get_secret_key
 ```
 
 **Obter informações do MySQL:**
 1. Acesse a aba "Databases" no Python Anywhere
 2. Se ainda não criou, crie um novo banco MySQL
-3. Anote o nome do banco (formato: `seu-usuario$nome-do-banco`)
+3. Anote o nome do banco (formato: `Phillipml$nome-do-banco`)
 4. Use seu usuário e senha do Python Anywhere
-5. O host será: `seu-usuario.mysql.pythonanywhere-services.com`
+5. O host será: `Phillipml.mysql.pythonanywhere-services.com`
 
 **Importante:** O projeto usa `dj-database-url` para interpretar o `DATABASE_URL`. O formato é:
 - MySQL: `mysql://usuario:senha@host:porta/nome-do-banco`
@@ -111,23 +115,24 @@ python3.10 -c "from django.core.management.utils import get_random_secret_key; p
 #### D. Executar Migrações
 
 ```bash
-cd ~/pingMe/backend
-python3.10 manage.py migrate
-python3.10 manage.py migrate token_blacklist
+cd ~/pingMe
+make migrate
 ```
 
-**Importante:** Execute também as migrações do token_blacklist!
+**Importante:** Execute também as migrações do token_blacklist manualmente se necessário.
 
 #### E. Coletar Arquivos Estáticos
 
 ```bash
+cd ~/pingMe/backend
 python3.10 manage.py collectstatic --noinput
 ```
 
 #### F. Criar Superusuário (Opcional)
 
 ```bash
-python3.10 manage.py createsuperuser
+cd ~/pingMe
+make createsuperuser
 ```
 
 ### 3. Configurar o Web App
@@ -138,13 +143,13 @@ No painel do PythonAnywhere, vá até a aba "Web".
 
 #### B. Configure o WSGI file
 
-Edite o arquivo WSGI (`/var/www/seu-usuario_pythonanywhere_com_wsgi.py`):
+Edite o arquivo WSGI (`/var/www/Phillipml_pythonanywhere_com_wsgi.py`):
 
 ```python
 import os
 import sys
 
-path = '/home/seu-usuario/pingMe/backend'
+path = '/home/Phillipml/pingMe/backend'
 if path not in sys.path:
     sys.path.append(path)
 
@@ -154,17 +159,15 @@ from django.core.wsgi import get_wsgi_application
 application = get_wsgi_application()
 ```
 
-**Importante:** Ajuste `seu-usuario` para seu username do PythonAnywhere.
-
 #### C. Configurar Static Files
 
 Na aba "Web", vá em "Static files":
 - URL: `/static/`
-- Directory: `/home/seu-usuario/pingMe/backend/staticfiles`
+- Directory: `/home/Phillipml/pingMe/backend/staticfiles`
 
 E para media:
 - URL: `/media/`
-- Directory: `/home/seu-usuario/pingMe/backend/media`
+- Directory: `/home/Phillipml/pingMe/backend/media`
 
 #### D. Reload Web App
 
@@ -173,8 +176,8 @@ Clique em "Reload" na aba "Web"
 ### 4. Testar
 
 Acesse:
-- API: `https://seu-usuario.pythonanywhere.com/api/`
-- Admin: `https://seu-usuario.pythonanywhere.com/admin/`
+- API: `https://Phillipml.pythonanywhere.com/api/`
+- Admin: `https://Phillipml.pythonanywhere.com/admin/`
 
 ### 5. Configurar CORS (Frontend)
 
@@ -189,18 +192,18 @@ CORS_ALLOWED_ORIGINS=https://seu-frontend.vercel.app,https://seu-frontend.netlif
 Quando fizer alterações:
 
 ```bash
-cd ~/pingMe/backend
+cd ~/pingMe
 git pull
-poetry install  # ou pip install -r requirements.txt
-python3.10 manage.py migrate
+make install-prod
+make migrate
+cd backend
 python3.10 manage.py collectstatic --noinput
 ```
 
 **Importante:** Antes de fazer deploy, certifique-se de que o código está formatado e sem erros:
 ```bash
-# Se estiver usando Poetry localmente
 cd ~/pingMe
-make quality  # Formata código, verifica lint e tipos
+make quality
 ```
 
 Depois, recarregue o web app.
@@ -223,7 +226,7 @@ staticfiles/
 
 - Apenas 1 web app
 - MySQL disponível (não PostgreSQL)
-- Domínio: `seu-usuario.pythonanywhere.com`
+- Domínio: `Phillipml.pythonanywhere.com`
 - App dorme após 90 dias de inatividade (precisa acessar para "acordar")
 
 ## 🐛 Troubleshooting
@@ -254,4 +257,8 @@ staticfiles/
   ```bash
   mkdir -p ~/pingMe/backend/media/avatars
   ```
+
+## Sobre o Projeto
+
+Este é um projeto pessoal desenvolvido para fins de aprendizado e portfólio.
 

@@ -1,6 +1,6 @@
 # PingMe
 
-API backend de rede social feita com Django REST Framework. Permite criar posts, curtir, comentar e seguir outros usuários.
+**Projeto Pessoal** - API backend de rede social feita com Django REST Framework. Permite criar posts, curtir, comentar e seguir outros usuários.
 
 ## O que tem nesse projeto
 
@@ -161,21 +161,17 @@ Ferramentas de Desenvolvimento:
 
 1. Clone o repositório
    ```bash
-   git clone <url-do-repositorio>
+   git clone https://github.com/Phillipml/pingMe.git
    cd pingMe
    ```
 
 2. Instale as dependências
    ```bash
-   cd backend
-   poetry install
+   make install
    ```
 
 3. Configure o banco de dados
-   
-   Volte para o diretório raiz e execute:
    ```bash
-   cd ..
    make check
    make migrations
    ```
@@ -434,7 +430,7 @@ ALLOWED_HOSTS=localhost,127.0.0.1
 DATABASE_URL=mysql://postgres:postgres@localhost:3306/pingme
 
 # Produção (PythonAnywhere - substitua pelos valores reais):
-# DATABASE_URL=mysql://seu-usuario:sua-senha@seu-usuario.mysql.pythonanywhere-services.com:3306/seu-usuario$nome-do-banco
+# DATABASE_URL=mysql://Phillipml:sua-senha@Phillipml.mysql.pythonanywhere-services.com:3306/Phillipml$nome-do-banco
 
 # Opção 2: Variáveis Individuais (use apenas se não usar DATABASE_URL)
 # Descomente as linhas abaixo caso prefira essa abordagem
@@ -489,15 +485,9 @@ NEXT_PUBLIC_BACKEND_URL=http://192.168.0.18:8000
 - **Upload Seguro**: Upload de imagens apenas para usuários autenticados
 - **Permissões**: Apenas autores podem editar/deletar seus próprios posts e comentários
 
-## Contribuindo
+## Sobre o Projeto
 
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/nova-feature`)
-3. Faça suas alterações
-4. Rode os testes (`make test`)
-5. Commit suas mudanças (`git commit -m 'Adiciona nova feature'`)
-6. Push para sua branch (`git push origin feature/nova-feature`)
-7. Abra um Pull Request
+Este é um projeto pessoal desenvolvido para fins de aprendizado e portfólio.
 
 ## Licença
 
