@@ -25,7 +25,7 @@ export default function Register() {
       setConfirmPassword('')
     } else if (username.length > 0 && username.length <= 3) {
       alert('username deve conter pelo menos 3 letras')
-    } else if (password.length > 0 && password.length <= 6) {
+    } else if (password.length > 0 && password.length <= 5) {
       alert('senha deve conter pelo menos 6 caracteres')
     } else {
       try {
