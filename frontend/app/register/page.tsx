@@ -23,6 +23,10 @@ export default function Register() {
       alert('As senhas não são iguais')
       setPassword('')
       setConfirmPassword('')
+    } else if (username.length > 0 && username.length <= 3) {
+      alert('username deve conter pelo menos 3 letras')
+    } else if (password.length > 0 && password.length <= 6) {
+      alert('senha deve conter pelo menos 6 caracteres')
     } else {
       try {
         await register({ username, email, password }).unwrap()
