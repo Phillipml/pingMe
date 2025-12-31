@@ -9,7 +9,7 @@ import {
   useUnfollowMutation
 } from '@/lib/slice'
 import { useParams } from 'next/navigation'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import Image from 'next/image'
 import { isExternalUrl } from '@/utils/api-utils'
 import { FaRegUserCircle } from 'react-icons/fa'
@@ -30,8 +30,10 @@ export default function UserProfile() {
     }
     return followingData.results.some((user) => user.id == data.id)
   }, [data, followingData])
-
   const [isFollowingState, setIsFollowingState] = useState(isFollowingComputed)
+  useEffect(() => {
+    setIsFollowingState(isFollowingComputed)
+  }, [isFollowingComputed])
 
   const followHandle = async () => {
     if (!data?.id) return

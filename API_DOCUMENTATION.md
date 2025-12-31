@@ -710,11 +710,7 @@ Authorization: Bearer seu-access-token
 
 **Paginação:** 20 itens por página. Use `?page=2` para próxima página.
 
----
-
-### 2. Listar Todos os Usuários (Admin)
-
-**Nota:** Esta funcionalidade está disponível para administradores. Para usuários comuns, use a busca de usuários acima.
+**Nota:** Esta funcionalidade está disponível apenas para administradores. Para usuários comuns, use a busca de usuários acima.
 
 ---
 

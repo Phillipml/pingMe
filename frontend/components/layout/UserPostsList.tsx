@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react'
 import { AiOutlineLoading } from 'react-icons/ai'
 import Button from '../ui/Button'
 import UserPostCard from './Card/UserPostCard'
+import { useLikePost } from '@/hooks/useLikePost'
 
 interface UserPostsListProps {
   userId: number | string | null | undefined
@@ -34,6 +35,7 @@ export default function UserPostsList({
     userId ? { id: userId, page: currentPage } : skipToken
   )
   const [deletePost] = useDeletePostMutation()
+  const { likePost } = useLikePost()
   const [updatePost, { isLoading: isUpdating }] = useUpdatePostMutation()
   useEffect(() => {
     setCurrentPage(1)
@@ -124,7 +126,7 @@ export default function UserPostsList({
               <UserPostCard
                 key={post.id || ''}
                 created_at={post.created_at}
-                onClick={() => null}
+                onClick={() => likePost(post.id)}
                 clickDelete={
                   showDelete ? () => deletePostById(post.id) : () => {}
                 }
