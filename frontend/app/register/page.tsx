@@ -25,21 +25,38 @@ export default function Register() {
       setConfirmPassword('')
     } else if (username.length > 0 && username.length <= 3) {
       alert('username deve conter pelo menos 3 letras')
-    } else if (password.length > 0 && password.length <= 6) {
+    } else if (password.length > 0 && password.length <= 5) {
       alert('senha deve conter pelo menos 6 caracteres')
     } else {
       try {
         await register({ username, email, password }).unwrap()
         router.push('/user-created')
       } catch (err: unknown) {
-        const error = err as { data?: { error?: string; message?: string } }
-        setError(
-          error?.data?.error ||
-            error?.data?.message ||
-            'Erro ao criar conta. Verifique os dados informados.'
-        )
+        const error = err as { data?: Record<string, string[] | string> }
+        if (!error?.data) {
+          setError('Erro ao criar conta. Verifique os dados informados.')
+          return
+        }
+        const fields = ['username', 'email', 'password'] as const
+        for (const field of fields) {
+          if (error.data[field]) {
+            const fieldError = error.data[field]
+            const message = Array.isArray(fieldError)
+              ? fieldError[0]
+              : fieldError
+            setError(String(message))
+            return
+          }
+        }
+        const firstError = Object.values(error.data).find((val) => val)
+        if (firstError) {
+          const message = Array.isArray(firstError) ? firstError[0] : firstError
+          setError(String(message))
+          return
+        }
       }
     }
+    setError('Erro ao criar conta. Verifique os dados informados.')
   }
 
   return (
@@ -53,7 +70,7 @@ export default function Register() {
         </h2>
         <Form onSubmit={handleSubmit}>
           {error && (
-            <div className="text-red-500 text-xs sm:text-sm mb-4 p-2 bg-red-50 rounded">
+            <div className="mb-4 text-red-500 text-sm text-center p-2 bg-red-500/10 rounded">
               {error}
             </div>
           )}

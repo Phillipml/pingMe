@@ -26,7 +26,30 @@ def register(request):
             },
             status=status.HTTP_201_CREATED,
         )
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    errors = serializer.errors.copy()
+    for field, field_errors in errors.items():
+        if isinstance(field_errors, list):
+            translated_errors = []
+            for error in field_errors:
+                error_str = str(error)
+                if "A user with that username already exists." in error_str:
+                    translated_errors.append(
+                        "Este username já está em uso. Por favor, escolha outro."
+                    )
+                elif "user with this email already exists." in error_str:
+                    translated_errors.append(
+                        "Este email já está em uso. Por favor, escolha outro."
+                    )
+                elif "User with this Email already exists." in error_str:
+                    translated_errors.append(
+                        "Este email já está em uso. Por favor, escolha outro."
+                    )
+                else:
+                    translated_errors.append(error_str)
+            errors[field] = translated_errors
+
+    return Response(errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["POST"])

@@ -32,7 +32,7 @@ export default function Login() {
       }
 
       const userStatus = response.user.info.status
-      if (userStatus == 0) {
+      if (userStatus === 0) {
         router.push('/complete-profile')
       } else {
         router.push('/feed')

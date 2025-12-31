@@ -104,8 +104,10 @@ Content-Type: application/json
 **Erros que podem acontecer:**
 - 400: Email ou username já existem, ou algum campo está inválido
   - Se o username já existe: `{"username": ["Este username já está em uso. Por favor, escolha outro."]}`
-  - Se o email já existe: erro de validação do Django
+  - Se o email já existe: `{"email": ["Este email já está em uso. Por favor, escolha outro."]}`
 - Campos obrigatórios faltando
+
+**Nota:** Todas as mensagens de erro retornam em português.
 
 **Exemplo com cURL:**
 ```bash
@@ -491,7 +493,10 @@ const response = await fetch('http://localhost:8000/api/auth/profile/update/', {
 **Erros que podem acontecer:**
 - `400`: Dados inválidos ou username já em uso
   - Se o username já existe: `{"username": ["Este username já está em uso. Por favor, escolha outro."]}`
+  - Se o email já existe: `{"email": ["Este email já está em uso. Por favor, escolha outro."]}`
   - Campos inválidos ou formato de imagem não suportado
+
+**Nota:** Todas as mensagens de erro retornam em português.
 
 ---
 
@@ -1641,6 +1646,7 @@ O endpoint `PUT /auth/profile/update/` retorna apenas os campos do perfil (sem o
 - Email deve ser único
 - Username deve ser único
 - Campos obrigatórios devem ser enviados ou retornarão erro 400
+- **Todas as mensagens de erro retornam em português**
 
 ---
 

@@ -353,6 +353,7 @@ Para acessar a API de outros dispositivos na mesma rede Wi-Fi:
 - Validação de username único (não permite duplicatas no registro e atualização)
 - Upload seguro (apenas autenticados, formatos JPG, PNG, GIF, WebP)
 - Blacklist de tokens no logout
+- **Mensagens de erro em português**: Todas as mensagens de validação e erro retornam em português
 
 ## Upload de Imagens
 
