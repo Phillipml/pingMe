@@ -126,7 +126,8 @@ export const apiSlice = createApi({
       query: (id) => ({
         url: `/posts/${id}/like/`,
         method: 'POST'
-      })
+      }),
+      invalidatesTags: ['Post']
     }),
     getUserPost: builder.query<
       FeedResponse,
