@@ -3,7 +3,11 @@ import CenterContainer from '@/components/layout/CenterContainer'
 import Container from '@/components/layout/Container'
 import Form from '@/components/layout/Form'
 import Button from '@/components/ui/Button'
-import { useCreatePostMutation, useFeedQuery } from '@/lib/slice'
+import {
+  useCreatePostMutation,
+  useFeedQuery,
+  useGetProfileQuery
+} from '@/lib/slice'
 import { useState } from 'react'
 import { AiOutlineLoading } from 'react-icons/ai'
 import FeedCard from '@/components/layout/Card/FeedCard'
@@ -14,6 +18,7 @@ export default function Feed() {
   const [isPostCreated, setIsPostCreated] = useState(false)
   const [postData] = useCreatePostMutation()
   const { data, isLoading } = useFeedQuery()
+  const { data: loggedUser } = useGetProfileQuery()
   const { likePost } = useLikePost()
   const createPost = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -67,7 +72,11 @@ export default function Feed() {
           {data &&
             data.results.map((post) => (
               <FeedCard
-                href={`/user-profile/${post.author.id}`}
+                href={
+                  loggedUser?.id === post.author.id
+                    ? '/profile'
+                    : `/user-profile/${post.author.id}`
+                }
                 key={post.id}
                 img={post.author.avatar || ' '}
                 alt={`${post.author.username}'s avatar`}
