@@ -70,7 +70,7 @@ export default function Register() {
         </h2>
         <Form onSubmit={handleSubmit}>
           {error && (
-            <div className="text-red-500 text-xs sm:text-sm mb-4 p-2 bg-red-50 rounded">
+            <div className="mb-4 text-red-500 text-sm text-center p-2 bg-red-500/10 rounded">
               {error}
             </div>
           )}
