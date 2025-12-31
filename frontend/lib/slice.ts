@@ -47,12 +47,19 @@ const baseQueryWithReauth: BaseQueryFn<
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
   const result = await baseQuery(args, api, extraOptions)
-  const url = typeof args === 'string' ? args : args.url
-  if (!url.includes('/auth/login/') && !url.includes('/auth/register/')) {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('accessToken')
-      localStorage.removeItem('refreshToken')
-      window.location.href = '/login'
+
+  if (result.error && result.error.status === 401) {
+    const url = typeof args === 'string' ? args : (args as FetchArgs).url || ''
+
+    const isAuthEndpoint =
+      url.includes('/auth/login/') || url.includes('/auth/register/')
+
+    if (!isAuthEndpoint) {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('accessToken')
+        localStorage.removeItem('refreshToken')
+        window.location.href = '/login'
+      }
     }
   }
 
