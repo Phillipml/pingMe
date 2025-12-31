@@ -22,25 +22,45 @@ import {
   CommentUpdateResponse
 } from '@/utils/api-interfaces'
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { BaseQueryFn } from '@reduxjs/toolkit/query'
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query'
+import { FetchArgs } from '@reduxjs/toolkit/query'
+
+const baseQuery = fetchBaseQuery({
+  baseUrl: API_BASE_URL,
+  credentials: 'include',
+  prepareHeaders: (headers) => {
+    const token =
+      typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null
+
+    if (token) {
+      headers.set('Authorization', `Bearer ${token}`)
+    }
+
+    return headers
+  }
+})
+
+const baseQueryWithReauth: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+  let result = await baseQuery(args, api, extraOptions)
+  if (result.error && result.error.status === 401) {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('accessToken')
+      localStorage.removeItem('refreshToken')
+      window.location.href = '/login'
+    }
+  }
+
+  return result
+}
 
 export const apiSlice = createApi({
   reducerPath: 'api',
-  baseQuery: fetchBaseQuery({
-    baseUrl: API_BASE_URL,
-    credentials: 'include',
-    prepareHeaders: (headers) => {
-      const token =
-        typeof window !== 'undefined'
-          ? localStorage.getItem('accessToken')
-          : null
-
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`)
-      }
-
-      return headers
-    }
-  }),
+  baseQuery: baseQueryWithReauth,
   tagTypes: ['User', 'Post'],
   endpoints: (builder) => ({
     login: builder.mutation<LoginRegisterResponse, LoginRequest>({
