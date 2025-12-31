@@ -5,6 +5,7 @@ import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import { Logo } from '@/components/ui/Logo'
 import { useRegisterMutation } from '@/lib/slice'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
@@ -62,7 +63,9 @@ export default function Register() {
   return (
     <CenterContainer>
       <div className="w-full max-w-md border-2 border-violet-600 rounded-md p-4 sm:p-6 md:p-8 text-center mx-4">
-        <Logo className="text-xl sm:text-2xl mx-auto justify-center border-b-2 border-violet-600 pb-2 mb-6 sm:mb-8 mt-2" />
+        <Link href={'/'}>
+          <Logo className="text-xl sm:text-2xl mx-auto justify-center border-b-2 border-violet-600 pb-2 mb-6 sm:mb-8 mt-2" />
+        </Link>
         <h2 className="mb-6 sm:mb-8 text-center text-sm sm:text-base px-2">
           Seja bem vindo ao PingMe!
           <br />
