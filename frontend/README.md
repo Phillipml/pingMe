@@ -2,7 +2,7 @@
 
 **Projeto Pessoal** - Frontend da aplicação PingMe desenvolvido com Next.js 16, React 19 e TypeScript. Interface moderna e responsiva para rede social com autenticação, feed de posts, perfis de usuário e interações sociais.
 
-## Tecnologias
+## Tecnologias Usadas
 
 - **Next.js 16.0.1** - Framework React com App Router
 - **React 19.2.0** - Biblioteca UI
@@ -195,7 +195,7 @@ frontend/
    ```
 
 4. Acesse a aplicação:
-   - Abra [http://localhost:3000](http://localhost:3000) no navegador
+   - **Frontend**: http://localhost:3000
 
 ## Scripts Disponíveis
 

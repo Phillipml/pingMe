@@ -17,20 +17,23 @@ backend/
 
 ## Visão Geral dos Apps
 
-authentication - Gerencia usuários
+### Authentication
+Gerencia usuários e autenticação:
 - Modelo User personalizado
 - Modelo Profile com avatar (upload de imagem)
 - Autenticação por email
 - Validação de username único (não permite duplicatas)
 - Endpoints: register, login, logout, token refresh, profile, change password, user search/list, delete account
 
-posts - Gerencia conteúdo
+### Posts
+Gerencia conteúdo:
 - Modelo Post (apenas texto)
 - Modelo Like (curtidas) - toggle like/unlike
 - Modelo Comment (comentários)
 - Endpoints: feed, criar, editar, deletar, curtir, listar likes, comentários (CRUD completo)
 
-follows - Gerencia relacionamentos
+### Follows
+Gerencia relacionamentos:
 - Modelo Follow (seguir usuários)
 
 ## Como Começar
@@ -63,44 +66,50 @@ follows - Gerencia relacionamentos
    make dev-backend
    ```
 
-A API estará em:
-- http://localhost:8000 (ou http://127.0.0.1:8000)
-- Admin: http://localhost:8000/admin/
-- Media: http://localhost:8000/media/
+A API estará rodando em:
+- **API**: http://localhost:8000 (ou http://127.0.0.1:8000)
+- **Admin**: http://localhost:8000/admin/
+- **Media**: http://localhost:8000/media/
 
 **Nota:** O servidor está configurado para escutar em `0.0.0.0:8000`, permitindo acesso de outros dispositivos na mesma rede. Veja a seção "Acesso via Celular/Dispositivos Móveis" abaixo.
 
 ## Modelos do Banco de Dados
 
-User - Modelo de usuário
+### User
+Modelo de usuário:
 - Estende AbstractUser do Django
 - Autenticação por email
 - Campos: email, username, created_at, updated_at
 - Validação: username deve ser único (verificado no serializer)
 
-Profile - Perfil do usuário
+### Profile
+Perfil do usuário:
 - Um usuário tem um perfil (OneToOne)
 - Campos: first_name, last_name, bio, avatar, status
 - Avatar suporta upload de imagem (JPG, PNG, etc.)
-- Imagens salvam em backend/media/avatars/
+- Imagens salvam em `backend/media/avatars/`
 - Status: 0 = primeiro login, 1 = perfil atualizado
 
-Post - Postagem
+### Post
+Postagem:
 - Autor: ForeignKey para User
 - Campos: content (texto), created_at, updated_at
 - Nota: Posts aceitam apenas texto, não suportam imagens
 
-Like - Curtida
+### Like
+Curtida:
 - Usuário: ForeignKey para User
 - Post: ForeignKey para Post
 - Um usuário só pode curtir um post uma vez
 
-Comment - Comentário
+### Comment
+Comentário:
 - Post: ForeignKey para Post
 - Autor: ForeignKey para User (sempre o usuário que criou o comentário, não o autor do post)
 - Campos: content, created_at, updated_at
 
-Follow - Relacionamento de seguir
+### Follow
+Relacionamento de seguir:
 - Follower: quem está seguindo
 - Following: quem está sendo seguido
 - Um usuário só pode seguir outro uma vez

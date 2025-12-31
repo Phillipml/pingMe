@@ -1,8 +1,8 @@
 # PingMe
 
-**Projeto Pessoal** - API backend de rede social feita com Django REST Framework. Permite criar posts, curtir, comentar e seguir outros usuários.
+**Projeto Pessoal** - Rede social completa com backend Django REST Framework e frontend Next.js. Permite criar posts, curtir, comentar e seguir outros usuários.
 
-## O que tem nesse projeto
+## Funcionalidades
 
 ### Backend
 - Autenticação de usuários com JWT
@@ -191,15 +191,12 @@ Ferramentas de Desenvolvimento:
    make dev-frontend
    ```
 
-Pronto! 
-- API estará rodando em http://127.0.0.1:8000
-- Frontend estará rodando em http://localhost:3000
+Pronto! A aplicação estará rodando:
 
-Links úteis:
-- Frontend: http://localhost:3000
-- API: http://127.0.0.1:8000/
-- Admin: http://127.0.0.1:8000/admin/
-- Media: http://127.0.0.1:8000/media/
+- **Frontend**: http://localhost:3000
+- **API**: http://127.0.0.1:8000/
+- **Admin**: http://127.0.0.1:8000/admin/
+- **Media**: http://127.0.0.1:8000/media/
 
 ### Acessar via Celular/Dispositivos Móveis
 
@@ -278,7 +275,8 @@ make docker-down
 
 A API está dividida em 3 apps principais:
 
-authentication - Gerencia usuários e autenticação
+### Authentication
+Gerencia usuários e autenticação:
 - Cadastro e login
 - Validação de username único (não permite duplicatas)
 - Perfil com bio e avatar
@@ -287,13 +285,15 @@ authentication - Gerencia usuários e autenticação
 - Deletar conta
 - Listar usuários (apenas admin)
 
-posts - Gerencia o conteúdo
+### Posts
+Gerencia o conteúdo:
 - Criar, editar e deletar posts
 - Curtir posts
 - Comentar em posts
 - Ver feed
 
-follows - Gerencia relacionamentos
+### Follows
+Gerencia relacionamentos:
 - Seguir outros usuários
 - Ver seguidores e quem você segue
 

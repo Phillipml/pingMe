@@ -1,24 +1,24 @@
-# 🚀 Deploy no PythonAnywhere
+# Deploy no PythonAnywhere
 
 **Projeto Pessoal** - Este guia explica como fazer deploy do backend PingMe no PythonAnywhere.
 
-## 📋 Pré-requisitos
+## Pré-requisitos
 
 1. Conta no PythonAnywhere (free ou paid)
 2. Projeto no GitHub (ou repositório git)
 
-## 🔧 Passo a Passo
+## Passo a Passo
 
 ### 1. Preparar o Projeto
 
 O projeto já está configurado com:
-- ✅ Variáveis de ambiente usando `python-decouple`
-- ✅ Configuração flexível de banco de dados (DATABASE_URL > variáveis individuais > SQLite)
-- ✅ Suporte a MySQL (via DATABASE_URL ou variáveis individuais)
-- ✅ SQLite como fallback para desenvolvimento
-- ✅ STATIC_ROOT configurado
-- ✅ MEDIA_ROOT configurado
-- ✅ Sistema de logging com rotação automática
+- Variáveis de ambiente usando `python-decouple`
+- Configuração flexível de banco de dados (DATABASE_URL > variáveis individuais > SQLite)
+- Suporte a MySQL (via DATABASE_URL ou variáveis individuais)
+- SQLite como fallback para desenvolvimento
+- STATIC_ROOT configurado
+- MEDIA_ROOT configurado
+- Sistema de logging com rotação automática
 
 ### 2. No PythonAnywhere
 
@@ -208,7 +208,7 @@ make quality
 
 Depois, recarregue o web app.
 
-## 🔒 Segurança
+## Segurança
 
 **NUNCA** commite o arquivo `.env` no Git!
 
@@ -222,14 +222,14 @@ media/
 staticfiles/
 ```
 
-## ⚠️ Limitações do Plano Free
+## Limitações do Plano Free
 
 - Apenas 1 web app
 - MySQL disponível (não PostgreSQL)
 - Domínio: `seu-usuario.pythonanywhere.com`
 - App dorme após 90 dias de inatividade (precisa acessar para "acordar")
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 **Erro 500:**
 - Verifique os logs em "Web" > "Error log"
