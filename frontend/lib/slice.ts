@@ -46,7 +46,7 @@ const baseQueryWithReauth: BaseQueryFn<
   unknown,
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
-  let result = await baseQuery(args, api, extraOptions)
+  const result = await baseQuery(args, api, extraOptions)
   if (result.error && result.error.status === 401) {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('accessToken')

@@ -32,14 +32,31 @@ export default function Register() {
         await register({ username, email, password }).unwrap()
         router.push('/user-created')
       } catch (err: unknown) {
-        const error = err as { data?: { error?: string; message?: string } }
-        setError(
-          error?.data?.error ||
-            error?.data?.message ||
-            'Erro ao criar conta. Verifique os dados informados.'
-        )
+        const error = err as { data?: Record<string, string[] | string> }
+        if (!error?.data) {
+          setError('Erro ao criar conta. Verifique os dados informados.')
+          return
+        }
+        const fields = ['username', 'email', 'password'] as const
+        for (const field of fields) {
+          if (error.data[field]) {
+            const fieldError = error.data[field]
+            const message = Array.isArray(fieldError)
+              ? fieldError[0]
+              : fieldError
+            setError(String(message))
+            return
+          }
+        }
+        const firstError = Object.values(error.data).find((val) => val)
+        if (firstError) {
+          const message = Array.isArray(firstError) ? firstError[0] : firstError
+          setError(String(message))
+          return
+        }
       }
     }
+    setError('Erro ao criar conta. Verifique os dados informados.')
   }
 
   return (

@@ -112,7 +112,8 @@ pingMe/
 ├── Makefile                    # Comandos de automação
 ├── LICENSE                     # Licença MIT
 ├── README.md                   # Documentação principal
-└── API_DOCUMENTATION.md        # Documentação completa da API
+├── API_DOCUMENTATION.md         # Documentação completa da API
+└── pIngMeAPI.postman_collection.json # Coleção Postman para testes
 ```
 
 ## Tecnologias Usadas
@@ -297,6 +298,27 @@ Gerencia relacionamentos:
 - Seguir outros usuários
 - Ver seguidores e quem você segue
 
+## Testando a API
+
+### Usando Postman
+
+Importe a coleção do Postman para testar todos os endpoints da API:
+
+1. Abra o Postman
+2. Clique em "Import" (canto superior esquerdo)
+3. Selecione o arquivo `pIngMeAPI.postman_collection.json`
+4. A coleção será importada com todos os endpoints organizados
+
+**Nota:** Certifique-se de que o backend está rodando em `http://localhost:8000` antes de testar.
+
+### Variáveis de Ambiente no Postman
+
+Para facilitar os testes, configure as seguintes variáveis na coleção:
+
+- `base_url`: `http://localhost:8000/api`
+- `accessToken`: (será preenchido automaticamente após login)
+- `refreshToken`: (será preenchido automaticamente após login)
+
 ## Rodando Testes
 
 ```bash
@@ -391,6 +413,7 @@ O sistema suporta configuração flexível de banco de dados com três níveis d
 - Validação de senhas do Django (mínimo 8 caracteres)
 - Validação de username único (não permite usernames duplicados no registro e atualização de perfil)
 - Upload de imagens apenas para avatares (JPG, PNG, GIF, WebP)
+- **Mensagens de erro em português**: Todas as mensagens de validação e erro retornam em português
 
 ### Outros
 - **Media Files**: 

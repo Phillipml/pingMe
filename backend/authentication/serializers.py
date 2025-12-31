@@ -1,3 +1,4 @@
+from django.db import IntegrityError
 from rest_framework import serializers
 from .models import User, Profile
 
@@ -24,6 +25,18 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ["username", "email", "password"]
+        extra_kwargs = {
+            "username": {
+                "error_messages": {
+                    "unique": "Este username já está em uso. Por favor, escolha outro."
+                }
+            },
+            "email": {
+                "error_messages": {
+                    "unique": "Este email já está em uso. Por favor, escolha outro."
+                }
+            },
+        }
 
     def validate_username(self, value):
         if User.objects.filter(username=value).exists():
@@ -32,10 +45,36 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             )
         return value
 
+    def validate_email(self, value):
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError(
+                "Este email já está em uso. Por favor, escolha outro."
+            )
+        return value
+
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
-        Profile.objects.create(user=user)
-        return user
+        try:
+            user = User.objects.create_user(**validated_data)
+            Profile.objects.create(user=user)
+            return user
+        except IntegrityError as e:
+            error_message = str(e).lower()
+            if "username" in error_message:
+                raise serializers.ValidationError(
+                    {
+                        "username": [
+                            "Este username já está em uso. Por favor, escolha outro."
+                        ]
+                    }
+                )
+            elif "email" in error_message:
+                raise serializers.ValidationError(
+                    {"email": ["Este email já está em uso. Por favor, escolha outro."]}
+                )
+            else:
+                raise serializers.ValidationError(
+                    "Erro ao criar usuário. Verifique os dados informados."
+                )
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -69,6 +108,37 @@ class ProfileSerializer(serializers.ModelSerializer):
                     "Este username já está em uso. Por favor, escolha outro."
                 )
         return value
+
+    def validate_email(self, value):
+        if User.objects.filter(email=value).exists():
+            raise serializers.ValidationError(
+                "Este email já está em uso. Por favor, escolha outro."
+            )
+        return value
+
+    def create(self, validated_data):
+        try:
+            user = User.objects.create_user(**validated_data)
+            Profile.objects.create(user=user)
+            return user
+        except IntegrityError as e:
+            error_message = str(e)
+            if "username" in error_message.lower():
+                raise serializers.ValidationError(
+                    {
+                        "username": [
+                            "Este username já está em uso. Por favor, escolha outro."
+                        ]
+                    }
+                )
+            elif "email" in error_message.lower():
+                raise serializers.ValidationError(
+                    {"email": ["Este email já está em uso. Por favor, escolha outro."]}
+                )
+            else:
+                raise serializers.ValidationError(
+                    "Erro ao criar usuário. Verifique os dados informados."
+                )
 
     def update(self, instance, validated_data):
         user_data = validated_data.pop("user", {})
