@@ -52,7 +52,11 @@ export default function Login() {
       <div className="w-full max-w-md border-2 border-violet-600 rounded-md p-3 sm:p-4">
         <Logo className="text-xl sm:text-2xl mx-auto justify-center border-b-2 border-violet-600 pb-2 mb-4 sm:mb-8 mt-2" />
         <h2 className="mb-4 sm:mb-8 text-center text-lg sm:text-xl">Login</h2>
-        <Form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+        <Form
+          onSubmit={handleSubmit}
+          className="space-y-3 sm:space-y-4"
+          noValidate
+        >
           {error && (
             <div className="text-red-500 text-sm text-center p-2 bg-red-500/10 rounded">
               {error}
